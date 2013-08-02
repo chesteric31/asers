@@ -25,7 +25,6 @@ import be.asers.model.Series;
  * {@link Series} Finder service. 
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
 public class Finder {
 

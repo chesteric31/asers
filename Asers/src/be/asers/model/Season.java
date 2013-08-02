@@ -6,14 +6,22 @@ import java.util.List;
  * Season entity.
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
-public class Season {
+public class Season extends AbstractIdentity {
+    
+    public static final String TABLE_NAME = "SEASON";
+
+    public static final String COLUMN_NUMBER = "NUMBER";
+    public static final String COLUMN_SERIES = "FK_SERIES";
+    
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
+            + " PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, FOREIGN KEY (" + COLUMN_SERIES
+            + ") REFERENCES " + Series.TABLE_NAME + "(" + AbstractIdentity.COLUMN_ID + "));";
 
     private int number;
-    private Series series;
+    private AbstractIdentity series;
     private List<Episode> episodes;
-
+    
     /**
      * @return the number
      */
@@ -31,14 +39,14 @@ public class Season {
     /**
      * @return the series
      */
-    public Series getSeries() {
+    public AbstractIdentity getSeries() {
         return series;
     }
 
     /**
      * @param series the series to set
      */
-    public void setSeries(Series series) {
+    public void setSeries(AbstractIdentity series) {
         this.series = series;
     }
 
@@ -61,15 +69,7 @@ public class Season {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Season [number=");
-        builder.append(number);
-        builder.append(", series=");
-        builder.append(series.getTitle());
-        builder.append(", episodes=");
-        builder.append(episodes);
-        builder.append("]");
-        return builder.toString();
+        return String.valueOf(number);
     }
 
 }

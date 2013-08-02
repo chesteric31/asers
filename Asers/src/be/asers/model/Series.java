@@ -7,9 +7,25 @@ import java.util.List;
  * Series entity.
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
-public class Series {
+public class Series extends AbstractIdentity {
+
+    public static final String TABLE_NAME = "SERIES";
+
+    public static final String COLUMN_TITLE = "TITLE";
+    public static final String COLUMN_TV_RAGE_ID = "TV_RAGE_ID";
+    public static final String COLUMN_NETWORK = "NETWORK";
+    public static final String COLUMN_START_DATE = "START_DATE";
+    public static final String COLUMN_END_DATE = "END_DATE";
+    public static final String COLUMN_EPISODES_NUMBER = "EPISODES_NUMBER";
+    public static final String COLUMN_RUN_TIME = "RUN_TIME";
+    public static final String COLUMN_COUNTRY = "COUNTRY";
+    
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
+            + " PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER,"
+            + COLUMN_NETWORK + " TEXT, " + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, "
+            + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT, "
+            + ");";
 
     private String title;
     private int tvRageId;
@@ -152,27 +168,7 @@ public class Series {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Series [title=");
-        builder.append(title);
-        builder.append(", tvRageId=");
-        builder.append(tvRageId);
-        builder.append(", network=");
-        builder.append(network);
-        builder.append(", seasons=");
-        builder.append(seasons);
-        builder.append(", startDate=");
-        builder.append(startDate);
-        builder.append(", endDate=");
-        builder.append(endDate);
-        builder.append(", episodesNumber=");
-        builder.append(episodesNumber);
-        builder.append(", runTime=");
-        builder.append(runTime);
-        builder.append(", country=");
-        builder.append(country);
-        builder.append("]");
-        return builder.toString();
+        return title;
     }
 
 }

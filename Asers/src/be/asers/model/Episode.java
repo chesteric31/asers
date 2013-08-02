@@ -6,9 +6,28 @@ import java.util.Date;
  * Episode entity.
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
-public class Episode {
+public class Episode extends AbstractIdentity {
+
+    public static final String TABLE_NAME = "EPISODE";
+
+    public static final String COLUMN_NUMBER = "NUMBER";
+    public static final String COLUMN_EPISODE = "EPISODE";
+    public static final String COLUMN_PRODUCTION_CODE = "PRODUCTION_CODE";
+    public static final String COLUMN_AIR_DATE = "AIR_DATE";
+    public static final String COLUMN_TITLE = "TITLE";
+    public static final String COLUMN_SPECIAL = "SPECIAL";
+    public static final String COLUMN_TV_RAGE_LINK = "TV_RAGE_LINK";
+    public static final String COLUMN_SEASON = "FK_SEASON";
+
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
+            + " PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, "
+            + COLUMN_PRODUCTION_CODE + " TEXT, " + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, "
+            + COLUMN_SPECIAL + " BOOLEAN, " + COLUMN_TV_RAGE_LINK + " TEXT, FOREIGN KEY (" + COLUMN_SEASON
+            + ") REFERENCES " + Season.TABLE_NAME + "(" + Season.COLUMN_ID + "));";
+
+    public static final String[] ALL_COLUMNS = { COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
+            COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_SEASON };
 
     private Integer number;
     private Integer episode;
@@ -18,7 +37,7 @@ public class Episode {
     private Boolean special;
     private String tvRageLink;
     private Season season;
-
+    
     /**
      * @return the number the sequence number (can be null for special episode)
      */
@@ -136,32 +155,7 @@ public class Episode {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Episode [number=");
-        if (number != null) {
-            builder.append(number);
-        }
-        builder.append(", episode=");
-        builder.append(episode);
-        builder.append(", productionCode=");
-        if (productionCode != null) {
-            builder.append(productionCode);
-        }
-        builder.append(", airDate=");
-        builder.append(airDate);
-        builder.append(", title=");
-        builder.append(title);
-        builder.append(", special=");
-        builder.append(special);
-        builder.append(", tvRageLink=");
-        builder.append(tvRageLink);
-        builder.append(", season=");
-        if (season == null) {
-            System.out.println();
-        }
-        builder.append(season.getNumber());
-        builder.append("]");
-        return builder.toString();
+        return title;
     }
 
 }

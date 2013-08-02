@@ -8,7 +8,6 @@ import android.view.Menu;
  * First activity of the project.
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
 public class MainActivity extends Activity {
 
