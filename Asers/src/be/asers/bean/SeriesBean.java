@@ -1,40 +1,19 @@
-package be.asers.model;
+package be.asers.bean;
 
 import java.util.Date;
 import java.util.List;
 
 /**
- * Series entity.
- * 
+ * Series bean.
+ *
  * @author chesteric31
  */
-public class Series extends AbstractIdentity {
+public class SeriesBean {
 
-    public static final String TABLE_NAME = "SERIES";
-
-    public static final String COLUMN_TITLE = "TITLE";
-    public static final String COLUMN_TV_RAGE_ID = "TV_RAGE_ID";
-    public static final String COLUMN_NETWORK = "NETWORK";
-    public static final String COLUMN_START_DATE = "START_DATE";
-    public static final String COLUMN_END_DATE = "END_DATE";
-    public static final String COLUMN_EPISODES_NUMBER = "EPISODES_NUMBER";
-    public static final String COLUMN_RUN_TIME = "RUN_TIME";
-    public static final String COLUMN_COUNTRY = "COUNTRY";
-
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID + " PRIMARY KEY, "
-            + COLUMN_TITLE + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER," + COLUMN_NETWORK + " TEXT, "
-            + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, " + COLUMN_EPISODES_NUMBER + " INTEGER, "
-            + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT);";
-
-    public static final String[] ALL_COLUMNS = { COLUMN_ID, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_NETWORK,
-            COLUMN_START_DATE, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER, COLUMN_RUN_TIME, COLUMN_COUNTRY };
-
-    public static final String DATE_PATTERN = "MMM yyyy";
-    
     private String title;
     private int tvRageId;
     private String network;
-    private List<Season> seasons;
+    private List<SeasonBean> seasons;
     private Date startDate;
     private Date endDate;
     private int episodesNumber;
@@ -86,14 +65,14 @@ public class Series extends AbstractIdentity {
     /**
      * @return the seasons
      */
-    public List<Season> getSeasons() {
+    public List<SeasonBean> getSeasons() {
         return seasons;
     }
 
     /**
      * @param seasons the seasons to set
      */
-    public void setSeasons(List<Season> seasons) {
+    public void setSeasons(List<SeasonBean> seasons) {
         this.seasons = seasons;
     }
 

@@ -1,26 +1,17 @@
-package be.asers.model;
+package be.asers.bean;
 
 import java.util.List;
 
 /**
- * Season entity.
+ * Season bean.
  *
  * @author chesteric31
  */
-public class Season extends AbstractIdentity {
+public class SeasonBean {
     
-    public static final String TABLE_NAME = "SEASON";
-
-    public static final String COLUMN_NUMBER = "NUMBER";
-    public static final String COLUMN_SERIES = "FK_SERIES";
-
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID + " PRIMARY KEY, "
-            + COLUMN_NUMBER + " INTEGER, " + COLUMN_SERIES + " INTEGER, FOREIGN KEY (" + COLUMN_SERIES + ") REFERENCES "
-            + Series.TABLE_NAME + "(" + AbstractIdentity.COLUMN_ID + "));";
-
     private int number;
-    private Series series;
-    private List<Episode> episodes;
+    private SeriesBean series;
+    private List<EpisodeBean> episodes;
     
     /**
      * @return the number
@@ -39,28 +30,28 @@ public class Season extends AbstractIdentity {
     /**
      * @return the series
      */
-    public AbstractIdentity getSeries() {
+    public SeriesBean getSeries() {
         return series;
     }
 
     /**
      * @param series the series to set
      */
-    public void setSeries(Series series) {
+    public void setSeries(SeriesBean series) {
         this.series = series;
     }
 
     /**
      * @return the episodes
      */
-    public List<Episode> getEpisodes() {
+    public List<EpisodeBean> getEpisodes() {
         return episodes;
     }
 
     /**
      * @param episodes the episodes to set
      */
-    public void setEpisodes(List<Episode> episodes) {
+    public void setEpisodes(List<EpisodeBean> episodes) {
         this.episodes = episodes;
     }
 

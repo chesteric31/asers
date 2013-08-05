@@ -13,12 +13,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import be.asers.bean.EpisodeBean;
+import be.asers.bean.SeasonBean;
+import be.asers.bean.SeriesBean;
+import be.asers.dao.SeriesDao;
 import be.asers.model.Episode;
-import be.asers.model.Season;
 import be.asers.model.Series;
 
 /**
@@ -30,11 +34,9 @@ public class Finder {
 
     private static final String END_DATA_DELIMITER = "</pre>";
     private static final String NOT_SPECIAL_EPISODE = "n";
-    private static final String EPISODE_DATE_PATTERN = "dd/MMM/yy";
     private static final String FIRST_COLUMN_TITLE = "number";
     private static final String NEW_LINE = "\n";
     private static final String COMMA = ",";
-    private static final String SERIES_DATE_PATTERN = "MMM yyyy";
     private static final String MIN = "min";
     private static final String EPS = "eps";
     private static final String DOUBLE_QUOTES = "\"";
@@ -44,6 +46,8 @@ public class Finder {
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
     private Context context;
+    
+    private SeriesDao seriesDao;
 
     /**
      * Constructor.
@@ -60,45 +64,89 @@ public class Finder {
      * @param title the title to use
      * @return the found {@link Series} entity
      */
-    public Series findSeries(String title) {
+    public SeriesBean findSeries(String title) {
         if (title == null || title.isEmpty()) {
             throw new IllegalArgumentException("The series title cannot be empty!");
         }
-        String content;
-        try {
-            URL url = new URL(ALL_SERIES_URL);
-            content = retrieveBasicUrlContent(url);
-            String[] tokens = content.split(COMMA);
-            int i = 0;
-            for (String token : tokens) {
-                if (token.equalsIgnoreCase(title)) {
-                    return buildSeries(tokens, i, token);
+        Series series = seriesDao.findByTitle(title);
+        if (series == null) {
+            String content;
+            try {
+                URL url = new URL(ALL_SERIES_URL);
+                content = retrieveBasicUrlContent(url);
+                String[] tokens = content.split(COMMA);
+                int i = 0;
+                for (String token : tokens) {
+                    if (token.equalsIgnoreCase(title)) {
+                        SeriesBean bean = buildSeries(tokens, i, token);
+                        return createSeries(bean);
+                    }
+                    i++;
                 }
-                i++;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            return null;
+        } else {
+            return mapSeries(series);
         }
-        return null;
+    }
+    
+    /**
+     * Creates a new {@link Series} from a {@link SeriesBean}.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @return the created new {@link SeriesBean}
+     */
+    public SeriesBean createSeries(SeriesBean series) {
+        ContentValues values = new ContentValues();
+        values.put(Series.COLUMN_COUNTRY, series.getCountry());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
+        values.put(Series.COLUMN_END_DATE, dateFormat.format(series.getEndDate()));
+        values.put(Series.COLUMN_EPISODES_NUMBER, series.getEpisodesNumber());
+        values.put(Series.COLUMN_NETWORK, series.getNetwork());
+        values.put(Series.COLUMN_RUN_TIME, series.getRunTime());
+        values.put(Series.COLUMN_START_DATE, dateFormat.format(series.getStartDate()));
+        values.put(Series.COLUMN_TITLE, series.getTitle());
+        values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
+        Series model = seriesDao.create(values);
+        return mapSeries(model);
+    }
+
+    private SeriesBean mapSeries(Series model) {
+        if (model != null) {
+            SeriesBean bean = new SeriesBean();
+            bean.setCountry(model.getCountry());
+            bean.setEndDate(model.getEndDate());
+            bean.setEpisodesNumber(model.getEpisodesNumber());
+            bean.setNetwork(model.getNetwork());
+            bean.setRunTime(model.getRunTime());
+            bean.setStartDate(model.getStartDate());
+            bean.setTitle(model.getTitle());
+            bean.setTvRageId(model.getTvRageId());
+            return bean;
+        } else {
+            return null;
+        }
     }
 
     /**
-     * Builds a {@link Series} object from the tokens.
+     * Builds a {@link SeriesBean} from the tokens.
      * 
      * @param tokens the tokens to use
      * @param i the counter to use
      * @param token the token to use
-     * @return the build {@link Series}
+     * @return the built {@link SeriesBean}
      * @throws ParseException if the parse failed
      */
-    private Series buildSeries(String[] tokens, int i, String token) throws ParseException {
-        Series series = new Series();
+    private SeriesBean buildSeries(String[] tokens, int i, String token) throws ParseException {
+        SeriesBean series = new SeriesBean();
         series.setTitle(token);
         int j = i + 1;
         series.setTvRageId(Integer.valueOf(tokens[j]));
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SERIES_DATE_PATTERN, Locale.US);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
         j++;
         Date startDate = simpleDateFormat.parse(tokens[j]);
         series.setStartDate(startDate);
@@ -181,20 +229,20 @@ public class Finder {
     }
 
     /**
-     * Finds the {@link Series} details following the title criteria.
+     * Finds the {@link SeriesBean} details following the title criteria.
      * 
      * @param title the title to use
-     * @return the found {@link Series} entity
+     * @return the found {@link SeriesBean}
      * @throws IOException if an error occurred
      */
-    public Series findSeriesDetails(String title) throws IOException {
-        Series series = findSeries(title);
+    public SeriesBean findSeriesDetails(String title) throws IOException {
+        SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = retrieveReaderFromUrl(url);
         String line = null;
         boolean skipFurtherLines = false;
         int i = 0;
-        Season lastSeason = new Season();
+        SeasonBean lastSeason = new SeasonBean();
         lastSeason.setSeries(series);
         lastSeason.setNumber(0);
         while ((line = reader.readLine()) != null) {
@@ -214,16 +262,16 @@ public class Finder {
     /**
      * Process the episodes.
      * 
-     * @param series the {@link Series} to use
+     * @param series the {@link SeriesBean} to use
      * @param line the line to process
      * @param skipNextLines if we must skip the next lines
-     * @param lastSeason the last {@link Season} processed
-     * @return the {@link Season} entity
+     * @param lastSeason the last {@link SeasonBean} processed
+     * @return the {@link SeasonBean} entity
      */
-    private Season processEpisodes(Series series, String line, boolean skipNextLines, Season lastSeason) {
+    private SeasonBean processEpisodes(SeriesBean series, String line, boolean skipNextLines, SeasonBean lastSeason) {
         if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
             String[] strings = line.split(COMMA);
-            Episode episode = buildEpisode(strings);
+            EpisodeBean episode = buildEpisode(strings);
             Integer seasonNumber = Integer.valueOf(strings[1]);
             if (Boolean.TRUE.equals(episode.getSpecial())) {
                 specialEpisodeProcess(series, episode, seasonNumber);
@@ -231,9 +279,9 @@ public class Finder {
                 if (lastSeason.getNumber() != seasonNumber) {
                     lastSeason = buildSeason(series, seasonNumber);
                 }
-                List<Episode> episodes = lastSeason.getEpisodes();
+                List<EpisodeBean> episodes = lastSeason.getEpisodes();
                 if (episodes == null) {
-                    episodes = new ArrayList<Episode>();
+                    episodes = new ArrayList<EpisodeBean>();
                 }
                 episodes.add(episode);
                 lastSeason.setEpisodes(episodes);
@@ -244,19 +292,19 @@ public class Finder {
     }
 
     /**
-     * Builds the {@link Season} from the {@link Series} and the {@link Season} number.
+     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the {@link SeasonBean} number.
      * 
-     * @param series the {@link Series} to use
-     * @param seasonNumber the {@link Season} number to use
-     * @return the build {@link Season}
+     * @param series the {@link SeriesBean} to use
+     * @param seasonNumber the {@link SeasonBean} number to use
+     * @return the build {@link SeasonBean}
      */
-    private Season buildSeason(Series series, Integer seasonNumber) {
-        Season lastSeason;
-        List<Season> seasons = series.getSeasons();
+    private SeasonBean buildSeason(SeriesBean series, Integer seasonNumber) {
+        SeasonBean lastSeason;
+        List<SeasonBean> seasons = series.getSeasons();
         if (seasons == null) {
-            seasons = new ArrayList<Season>();
+            seasons = new ArrayList<SeasonBean>();
         }
-        lastSeason = new Season();
+        lastSeason = new SeasonBean();
         lastSeason.setNumber(seasonNumber);
         lastSeason.setSeries(series);
         seasons.add(lastSeason);
@@ -265,15 +313,15 @@ public class Finder {
     }
 
     /**
-     * Special {@link Episode} process.
+     * Special {@link EpisodeBean} process.
      * 
-     * @param series the {@link Series} to use
-     * @param episode the {@link Episode} to process
-     * @param seasonNumber the {@link Season} number to use
+     * @param series the {@link SeriesBean} to use
+     * @param episode the {@link EpisodeBean} to process
+     * @param seasonNumber the {@link SeasonBean} number to use
      */
-    private void specialEpisodeProcess(Series series, Episode episode, Integer seasonNumber) {
-        List<Season> seasons = series.getSeasons();
-        for (Season season : seasons) {
+    private void specialEpisodeProcess(SeriesBean series, EpisodeBean episode, Integer seasonNumber) {
+        List<SeasonBean> seasons = series.getSeasons();
+        for (SeasonBean season : seasons) {
             if (seasonNumber.equals(season.getNumber())) {
                 episode.setSeason(season);
                 season.getEpisodes().add(episode);
@@ -282,13 +330,13 @@ public class Finder {
     }
 
     /**
-     * Builds the {@link Episode} from the String array.
+     * Builds the {@link EpisodeBean} from the String array.
      * 
-     * @param strings the String array contained all the {@link Episode} informations
-     * @return the built {@link Episode}
+     * @param strings the String array contained all the {@link EpisodeBean} informations
+     * @return the built {@link EpisodeBean}
      */
-    private Episode buildEpisode(String[] strings) {
-        Episode episode = new Episode();
+    private EpisodeBean buildEpisode(String[] strings) {
+        EpisodeBean episode = new EpisodeBean();
         if (!strings[0].isEmpty()) {
             episode.setNumber(Integer.valueOf(strings[0]));
         }
@@ -298,7 +346,7 @@ public class Finder {
         if (!strings[3].isEmpty()) {
             episode.setProductionCode(strings[3]);
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EPISODE_DATE_PATTERN, Locale.US); 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US); 
         try {
             String date = strings[4];
             date = date.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
@@ -316,6 +364,20 @@ public class Finder {
         }
         episode.setTvRageLink(strings[7]);
         return episode;
+    }
+
+    /**
+     * @return the seriesDao
+     */
+    public SeriesDao getSeriesDao() {
+        return seriesDao;
+    }
+
+    /**
+     * @param seriesDao the seriesDao to set
+     */
+    public void setSeriesDao(SeriesDao seriesDao) {
+        this.seriesDao = seriesDao;
     }
 
 }

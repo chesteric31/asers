@@ -1,36 +1,14 @@
-package be.asers.model;
+package be.asers.bean;
 
 import java.util.Date;
 
 /**
- * Episode entity.
+ * Episode bean.
  *
  * @author chesteric31
  */
-public class Episode extends AbstractIdentity {
+public class EpisodeBean {
 
-    public static final String TABLE_NAME = "EPISODE";
-
-    public static final String COLUMN_NUMBER = "NUMBER";
-    public static final String COLUMN_EPISODE = "EPISODE";
-    public static final String COLUMN_PRODUCTION_CODE = "PRODUCTION_CODE";
-    public static final String COLUMN_AIR_DATE = "AIR_DATE";
-    public static final String COLUMN_TITLE = "TITLE";
-    public static final String COLUMN_SPECIAL = "SPECIAL";
-    public static final String COLUMN_TV_RAGE_LINK = "TV_RAGE_LINK";
-    public static final String COLUMN_SEASON = "FK_SEASON";
-
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID + " PRIMARY KEY, "
-            + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, " + COLUMN_PRODUCTION_CODE + " TEXT, "
-            + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, " + COLUMN_SPECIAL + " BOOLEAN, "
-            + COLUMN_TV_RAGE_LINK + " TEXT, " + COLUMN_SEASON + " INTEGER, FOREIGN KEY (" + COLUMN_SEASON
-            + ") REFERENCES " + Season.TABLE_NAME + "(" + Season.COLUMN_ID + "));";
-
-    public static final String[] ALL_COLUMNS = { COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
-            COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_SEASON };
-
-    public static final String DATE_PATTERN = "dd/MMM/yy";
-    
     private Integer number;
     private Integer episode;
     private String productionCode;
@@ -38,7 +16,7 @@ public class Episode extends AbstractIdentity {
     private String title;
     private Boolean special;
     private String tvRageLink;
-    private Season season;
+    private SeasonBean season;
     
     /**
      * @return the number the sequence number (can be null for special episode)
@@ -57,14 +35,14 @@ public class Episode extends AbstractIdentity {
     /**
      * @return the season the season number
      */
-    public Season getSeason() {
+    public SeasonBean getSeason() {
         return season;
     }
 
     /**
      * @param season the season to set
      */
-    public void setSeason(Season season) {
+    public void setSeason(SeasonBean season) {
         this.season = season;
     }
 

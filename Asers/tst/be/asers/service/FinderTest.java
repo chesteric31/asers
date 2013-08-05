@@ -8,11 +8,15 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
-import be.asers.model.Episode;
-import be.asers.model.Season;
-import be.asers.model.Series;
+import android.test.RenamingDelegatingContext;
+import be.asers.bean.EpisodeBean;
+import be.asers.bean.SeasonBean;
+import be.asers.bean.SeriesBean;
+import be.asers.dao.SeriesDao;
+import be.asers.db.DatabaseManager;
 
 /**
  * Test class for Finder. 
@@ -42,6 +46,11 @@ public class FinderTest extends AndroidTestCase {
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
         finder = new Finder(context);
+        RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
+        finder.setSeriesDao(new SeriesDao(otherContext));
+        DatabaseManager databaseManager = new DatabaseManager(otherContext);
+        SQLiteDatabase database = databaseManager.getWritableDatabase();
+        databaseManager.onUpgrade(database, 0, 1);
     }
     
     /**
@@ -49,7 +58,7 @@ public class FinderTest extends AndroidTestCase {
      */
     public void testFindSeries() {
         String title = "friends";
-        Series series = finder.findSeries(title);
+        SeriesBean series = finder.findSeries(title);
         assertTrue(title.equalsIgnoreCase(series.getTitle()));
         // "Friends (1994)",Friends,3616,Sep 1994,May
         // 2004,"239 eps","30 min","NBC",US
@@ -163,18 +172,18 @@ public class FinderTest extends AndroidTestCase {
      * @throws IOException if an error occurred
      */
     public void testFindSeriesDetails() throws IOException {
-        Series series = finder.findSeriesDetails("Friends");
+        SeriesBean series = finder.findSeriesDetails("Friends");
         assertTrue(series != null);
         int episodesNumber = 0;
-        List<Season> seasons = series.getSeasons();
+        List<SeasonBean> seasons = series.getSeasons();
         assertTrue(seasons.size() == 10);
-        for (Season season : seasons) {
+        for (SeasonBean season : seasons) {
             episodesNumber += season.getEpisodes().size();
         }
         assertTrue(episodesNumber == series.getEpisodesNumber());
-        Season firstSeason = series.getSeasons().get(0);
+        SeasonBean firstSeason = series.getSeasons().get(0);
         assertTrue(series.equals(firstSeason.getSeries()));
-        Episode firstEpisode = firstSeason.getEpisodes().get(0);
+        EpisodeBean firstEpisode = firstSeason.getEpisodes().get(0);
         assertTrue(series.equals(firstEpisode.getSeason().getSeries()));
         assertTrue(firstSeason.equals(firstEpisode.getSeason()));
         assertTrue(firstEpisode.getAirDate() != null);

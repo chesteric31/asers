@@ -31,9 +31,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(Episode.CREATE_TABLE);
-        database.execSQL(Season.CREATE_TABLE);
         database.execSQL(Series.CREATE_TABLE);
+        database.execSQL(Season.CREATE_TABLE);
+        database.execSQL(Episode.CREATE_TABLE);        
     }
 
     /**
