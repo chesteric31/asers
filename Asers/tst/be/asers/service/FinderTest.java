@@ -18,7 +18,6 @@ import be.asers.model.Series;
  * Test class for Finder. 
  *
  * @author chesteric31
- * @version $Revision$ $Date::                  $ $Author$
  */
 public class FinderTest extends AndroidTestCase {
 
