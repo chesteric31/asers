@@ -77,6 +77,12 @@ public class SeriesDao extends AbstractDao {
         }
     }
 
+    /**
+     * Finds by the title.
+     * 
+     * @param title the title of the series to find
+     * @return the found series, null if none found
+     */
     public Series findByTitle(String title) {
         Series series = null;
         StringBuilder sqlBuilder = new StringBuilder("SELECT ");

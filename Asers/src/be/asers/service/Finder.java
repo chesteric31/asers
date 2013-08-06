@@ -70,28 +70,39 @@ public class Finder {
         }
         Series series = seriesDao.findByTitle(title);
         if (series == null) {
-            String content;
-            try {
-                URL url = new URL(ALL_SERIES_URL);
-                content = retrieveBasicUrlContent(url);
-                String[] tokens = content.split(COMMA);
-                int i = 0;
-                for (String token : tokens) {
-                    if (token.equalsIgnoreCase(title)) {
-                        SeriesBean bean = buildSeries(tokens, i, token);
-                        return createSeries(bean);
-                    }
-                    i++;
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-            return null;
+            return findInInternet(title);
         } else {
             return mapSeries(series);
         }
+    }
+
+    /**
+     * Finds the series from the epguides.com site.
+     * 
+     * @param title the title for the series to find
+     * @return the found {@link SeriesBean}, null, if none found
+     */
+    private SeriesBean findInInternet(String title) {
+        String content;
+        try {
+            URL url = new URL(ALL_SERIES_URL);
+            content = retrieveBasicUrlContent(url);
+            String[] tokens = content.split(COMMA);
+            int i = 0;
+            for (String token : tokens) {
+//                if (token.matches("(.*)" + title + "(.*)")) {
+                if (token.equalsIgnoreCase(title)) {
+                    SeriesBean bean = buildSeries(tokens, i, token);
+                    return createSeries(bean);
+                }
+                i++;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
     
     /**
@@ -115,6 +126,12 @@ public class Finder {
         return mapSeries(model);
     }
 
+    /**
+     * Translates a {@link Series} model to a {@link SeriesBean}.
+     * 
+     * @param model the {@link Series} to map
+     * @return the mapped {@link SeriesBean}
+     */
     private SeriesBean mapSeries(Series model) {
         if (model != null) {
             SeriesBean bean = new SeriesBean();

@@ -26,11 +26,11 @@ public class Series extends AbstractIdentity {
             + COLUMN_NETWORK + " TEXT, " + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, "
             + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT);";
 
-    public static final String[] ALL_COLUMNS = { COLUMN_ID, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_NETWORK,
+    public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_NETWORK,
             COLUMN_START_DATE, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER, COLUMN_RUN_TIME, COLUMN_COUNTRY };
 
     public static final String DATE_PATTERN = "MMM yyyy";
-    
+
     private String title;
     private int tvRageId;
     private String network;
