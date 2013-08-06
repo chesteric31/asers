@@ -14,9 +14,10 @@ public class Season extends AbstractIdentity {
     public static final String COLUMN_NUMBER = "NUMBER";
     public static final String COLUMN_SERIES = "FK_SERIES";
 
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID + " PRIMARY KEY, "
-            + COLUMN_NUMBER + " INTEGER, " + COLUMN_SERIES + " INTEGER, FOREIGN KEY (" + COLUMN_SERIES + ") REFERENCES "
-            + Series.TABLE_NAME + "(" + AbstractIdentity.COLUMN_ID + "));";
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, " + COLUMN_SERIES
+            + " INTEGER, FOREIGN KEY (" + COLUMN_SERIES + ") REFERENCES " + Series.TABLE_NAME + "("
+            + AbstractIdentity.COLUMN_ID + "));";
 
     private int number;
     private Series series;

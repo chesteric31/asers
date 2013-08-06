@@ -20,11 +20,12 @@ public class Episode extends AbstractIdentity {
     public static final String COLUMN_TV_RAGE_LINK = "TV_RAGE_LINK";
     public static final String COLUMN_SEASON = "FK_SEASON";
 
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID + " PRIMARY KEY, "
-            + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, " + COLUMN_PRODUCTION_CODE + " TEXT, "
-            + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, " + COLUMN_SPECIAL + " BOOLEAN, "
-            + COLUMN_TV_RAGE_LINK + " TEXT, " + COLUMN_SEASON + " INTEGER, FOREIGN KEY (" + COLUMN_SEASON
-            + ") REFERENCES " + Season.TABLE_NAME + "(" + Season.COLUMN_ID + "));";
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, "
+            + COLUMN_PRODUCTION_CODE + " TEXT, " + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, "
+            + COLUMN_SPECIAL + " BOOLEAN, " + COLUMN_TV_RAGE_LINK + " TEXT, " + COLUMN_SEASON
+            + " INTEGER, FOREIGN KEY (" + COLUMN_SEASON + ") REFERENCES " + Season.TABLE_NAME + "(" + Season.COLUMN_ID
+            + "));";
 
     public static final String[] ALL_COLUMNS = { COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
             COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_SEASON };
