@@ -22,7 +22,7 @@ import be.asers.service.Finder;
 public class MainActivity extends Activity {
 
     protected static final int ADD_SERIES_REQUEST = 0;
-    private Finder finder = new Finder(this);
+    private Finder finder = null;
 
     /**
      * {@inheritDoc}
@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        finder = new Finder(this);
         setContentView(R.layout.activity_main);
         fillSpinnerData();
         addListenerOnAddSeriesButon();
@@ -57,7 +58,7 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_SERIES_REQUEST) {
             // On vérifie aussi que l'opération s'est bien déroulée
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_CANCELED) {
                 // On affiche le bouton qui a été choisi
                 Toast.makeText(this, "blbla", Toast.LENGTH_SHORT).show();
             }
