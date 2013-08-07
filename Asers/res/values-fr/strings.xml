@@ -9,5 +9,7 @@
     <string name="add_series_button">Ajout de Séries</string>
     <string name="modify_series_button">Modification de Séries</string>
     <string name="delete_series_button">Suppression de Séries</string>
+    <string name="title_activity_add_series">Ajout de Séries</string>
+    <string name="add_series_title">Séries à chercher</string>
 
 </resources>

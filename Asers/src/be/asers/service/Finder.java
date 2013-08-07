@@ -56,8 +56,9 @@ public class Finder {
      */
     public Finder(Context context) {
         this.context = context;
+        this.seriesDao = new SeriesDao(this.context);
     }
-
+    
     /**
      * Finds the series where the status has active.
      * 
@@ -403,18 +404,5 @@ public class Finder {
         return episode;
     }
 
-    /**
-     * @return the seriesDao
-     */
-    public SeriesDao getSeriesDao() {
-        return seriesDao;
-    }
-
-    /**
-     * @param seriesDao the seriesDao to set
-     */
-    public void setSeriesDao(SeriesDao seriesDao) {
-        this.seriesDao = seriesDao;
-    }
 
 }
