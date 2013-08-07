@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * Episode entity.
- *
+ * 
  * @author chesteric31
  */
 public class Episode extends AbstractIdentity {
@@ -18,20 +18,21 @@ public class Episode extends AbstractIdentity {
     public static final String COLUMN_TITLE = "TITLE";
     public static final String COLUMN_SPECIAL = "SPECIAL";
     public static final String COLUMN_TV_RAGE_LINK = "TV_RAGE_LINK";
+    public static final String COLUMN_TO_SEE = "TO_SEE";
     public static final String COLUMN_SEASON = "FK_SEASON";
 
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, "
             + COLUMN_PRODUCTION_CODE + " TEXT, " + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, "
-            + COLUMN_SPECIAL + " BOOLEAN, " + COLUMN_TV_RAGE_LINK + " TEXT, " + COLUMN_SEASON
-            + " INTEGER, FOREIGN KEY (" + COLUMN_SEASON + ") REFERENCES " + Season.TABLE_NAME + "(" + Season.COLUMN_ID
-            + "));";
+            + COLUMN_SPECIAL + " BOOLEAN, " + COLUMN_TV_RAGE_LINK + " TEXT, " + COLUMN_SEASON + " INTEGER, "
+            + COLUMN_TO_SEE + " BOOLEAN, FOREIGN KEY (" + COLUMN_SEASON + ") REFERENCES " + Season.TABLE_NAME + "("
+            + Season.COLUMN_ID + "));";
 
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
             COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_SEASON };
 
     public static final String DATE_PATTERN = "dd/MMM/yy";
-    
+
     private Integer number;
     private Integer episode;
     private String productionCode;
@@ -39,8 +40,9 @@ public class Episode extends AbstractIdentity {
     private String title;
     private Boolean special;
     private String tvRageLink;
+    private Boolean toSee;
     private Season season;
-    
+
     /**
      * @return the number the sequence number (can be null for special episode)
      */
@@ -151,6 +153,20 @@ public class Episode extends AbstractIdentity {
      */
     public void setTvRageLink(String tvRageLink) {
         this.tvRageLink = tvRageLink;
+    }
+
+    /**
+     * @return the toSee
+     */
+    public Boolean getToSee() {
+        return toSee;
+    }
+
+    /**
+     * @param toSee the toSee to set
+     */
+    public void setToSee(Boolean toSee) {
+        this.toSee = toSee;
     }
 
     /**
