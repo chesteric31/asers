@@ -19,6 +19,7 @@ public class SeriesBean {
     private int episodesNumber;
     private int runTime;
     private String country;
+    private String status;
 
     /**
      * @return the title
@@ -145,13 +146,31 @@ public class SeriesBean {
     public void setCountry(String country) {
         this.country = country;
     }
+    
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return title;
+        if (title != null) {
+            return title;
+        } else {
+            return "";
+        }
     }
 
 }

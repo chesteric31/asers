@@ -2,7 +2,9 @@ package be.asers.dao;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.content.ContentValues;
@@ -71,6 +73,7 @@ public class SeriesDao extends AbstractDao {
             series.setEpisodesNumber(cursor.getInt(6));
             series.setRunTime(cursor.getInt(7));
             series.setCountry(cursor.getString(8));
+            series.setStatus(cursor.getString(9));
             return series;
         } else {
             return null;
@@ -103,6 +106,24 @@ public class SeriesDao extends AbstractDao {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             series = retrieveSeries(cursor);
+            cursor.close();
+        }
+        return series;
+    }
+
+    /**
+     * Finds all active series.
+     * 
+     * @return the found active series
+     */
+    public List<Series> findActiveSeries() {
+        List<Series> series = new ArrayList<Series>();
+        Cursor cursor = getDatabase().query(Series.TABLE_NAME, Series.ALL_COLUMNS,
+                Series.COLUMN_STATUS + " = '" + Series.STATUS_ACTIVE + "'", null, null, null, null);
+        if (cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                series.add(retrieveSeries(cursor));
+            }
             cursor.close();
         }
         return series;

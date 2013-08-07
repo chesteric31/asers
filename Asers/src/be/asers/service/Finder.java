@@ -26,8 +26,8 @@ import be.asers.model.Episode;
 import be.asers.model.Series;
 
 /**
- * {@link Series} Finder service. 
- *
+ * {@link Series} Finder service.
+ * 
  * @author chesteric31
  */
 public class Finder {
@@ -46,7 +46,7 @@ public class Finder {
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
     private Context context;
-    
+
     private SeriesDao seriesDao;
 
     /**
@@ -57,7 +57,23 @@ public class Finder {
     public Finder(Context context) {
         this.context = context;
     }
-    
+
+    /**
+     * Finds the series where the status has active.
+     * 
+     * @return the found {@link Series}s with active status
+     */
+    public List<SeriesBean> findMySeries() {
+        List<Series> series = seriesDao.findActiveSeries();
+        List<SeriesBean> beans = new ArrayList<SeriesBean>();
+        if (!series.isEmpty()) {
+            for (Series serie : series) {
+                beans.add(mapSeries(serie));        
+            }
+        }
+        return beans;
+    }
+
     /**
      * Finds the series following the title criteria.
      * 
@@ -90,7 +106,7 @@ public class Finder {
             String[] tokens = content.split(COMMA);
             int i = 0;
             for (String token : tokens) {
-//                if (token.matches("(.*)" + title + "(.*)")) {
+                // if (token.matches("(.*)" + title + "(.*)")) {
                 if (token.equalsIgnoreCase(title)) {
                     SeriesBean bean = buildSeries(tokens, i, token);
                     return createSeries(bean);
@@ -104,7 +120,7 @@ public class Finder {
         }
         return null;
     }
-    
+
     /**
      * Creates a new {@link Series} from a {@link SeriesBean}.
      * 
@@ -236,7 +252,7 @@ public class Finder {
                 String password = preferences.getString("proxyPassword", "");
                 String userPassword = user + ":" + password;
                 String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
-                connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);        
+                connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
             }
         }
         InputStream inputStream = connection.getInputStream();
@@ -309,7 +325,8 @@ public class Finder {
     }
 
     /**
-     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the {@link SeasonBean} number.
+     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the
+     * {@link SeasonBean} number.
      * 
      * @param series the {@link SeriesBean} to use
      * @param seasonNumber the {@link SeasonBean} number to use
@@ -349,7 +366,8 @@ public class Finder {
     /**
      * Builds the {@link EpisodeBean} from the String array.
      * 
-     * @param strings the String array contained all the {@link EpisodeBean} informations
+     * @param strings the String array contained all the {@link EpisodeBean}
+     *            informations
      * @return the built {@link EpisodeBean}
      */
     private EpisodeBean buildEpisode(String[] strings) {
@@ -363,7 +381,7 @@ public class Finder {
         if (!strings[3].isEmpty()) {
             episode.setProductionCode(strings[3]);
         }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US); 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US);
         try {
             String date = strings[4];
             date = date.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
@@ -375,7 +393,7 @@ public class Finder {
         episode.setTitle(strings[5]);
         boolean notSpecial = NOT_SPECIAL_EPISODE.equals(strings[6]);
         if (notSpecial) {
-            episode.setSpecial(Boolean.FALSE);    
+            episode.setSpecial(Boolean.FALSE);
         } else {
             episode.setSpecial(Boolean.TRUE);
         }

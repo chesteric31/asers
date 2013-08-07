@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Asers</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="my_series_label">Mes Séries</string>
+    <string name="management_series_label">Gestion des Séries</string>
+    <string name="add_series_button">Ajout de Séries</string>
+    <string name="modify_series_button">Modification de Séries</string>
+    <string name="delete_series_button">Suppression de Séries</string>
+
+</resources>

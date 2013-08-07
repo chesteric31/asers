@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Asers</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="my_series_label">Mijn Series</string>
+    <string name="management_series_label">Series beheer</string>
+    <string name="add_series_button">Toevoeging van Series</string>
+    <string name="modify_series_button">Wijziging van Series</string>
+    <string name="delete_series_button">Verwijdering van Series</string>
+
+</resources>
