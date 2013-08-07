@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
@@ -17,6 +18,7 @@ import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
 import be.asers.db.DatabaseManager;
+import be.asers.model.Series;
 
 /**
  * Test class for Finder. 
@@ -76,6 +78,37 @@ public class FinderTest extends AndroidTestCase {
         assertTrue(series.getRunTime() == 30);
         assertTrue("NBC".equals(series.getNetwork()));
         assertTrue("US".equals(series.getCountry()));
+    }
+
+    /**
+     * Test method for {@link be.asers.service.Finder#findMySeries()}.
+     */
+    public void testFindMySeries() {
+        List<SeriesBean> series = finder.findMySeries();
+        assertTrue(series.isEmpty());
+    }
+
+    /**
+     * Test method for {@link be.asers.service.Finder#addSeries(SeriesBean)}.
+     */
+    public void testAddSeries() {
+        SeriesBean series = new SeriesBean();
+        series.setCountry("BE");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2013);
+        calendar.set(Calendar.MONTH, 1);
+        clearDate(calendar);
+        Date time = calendar.getTime();
+        series.setEndDate(time);
+        series.setEpisodesNumber(1);
+        series.setNetwork("RTBF");
+        series.setRunTime(30);
+        series.setStartDate(time);
+        series.setStatus(Series.STATUS_ACTIVE);
+        series.setTitle("My Serie");
+        series.setTvRageId(0);
+        SeriesBean addedSeries = finder.addSeries(series);
+        assertTrue(series.equals(addedSeries));
     }
 
     /**

@@ -34,7 +34,7 @@ public class SeriesDao extends AbstractDao {
      * @param values the {@link ContentValues} to persist
      * @return the created {@link Series} in database
      */
-    public Series create(ContentValues values) {
+    public Series add(ContentValues values) {
         long insertId = getDatabase().insert(Series.TABLE_NAME, null, values);
         Cursor cursor = getDatabase().query(Series.TABLE_NAME, Series.ALL_COLUMNS, Series.COLUMN_ID + " = " + insertId,
                 null, null, null, null);

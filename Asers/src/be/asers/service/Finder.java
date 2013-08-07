@@ -109,7 +109,7 @@ public class Finder {
                 // if (token.matches("(.*)" + title + "(.*)")) {
                 if (token.equalsIgnoreCase(title)) {
                     SeriesBean bean = buildSeries(tokens, i, token);
-                    return createSeries(bean);
+                    return addSeries(bean);
                 }
                 i++;
             }
@@ -127,7 +127,7 @@ public class Finder {
      * @param series the {@link SeriesBean} to use
      * @return the created new {@link SeriesBean}
      */
-    public SeriesBean createSeries(SeriesBean series) {
+    public SeriesBean addSeries(SeriesBean series) {
         ContentValues values = new ContentValues();
         values.put(Series.COLUMN_COUNTRY, series.getCountry());
         SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
@@ -138,7 +138,8 @@ public class Finder {
         values.put(Series.COLUMN_START_DATE, dateFormat.format(series.getStartDate()));
         values.put(Series.COLUMN_TITLE, series.getTitle());
         values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
-        Series model = seriesDao.create(values);
+        values.put(Series.COLUMN_STATUS, series.getStatus());
+        Series model = seriesDao.add(values);
         return mapSeries(model);
     }
 
@@ -159,6 +160,7 @@ public class Finder {
             bean.setStartDate(model.getStartDate());
             bean.setTitle(model.getTitle());
             bean.setTvRageId(model.getTvRageId());
+            bean.setStatus(model.getStatus());
             return bean;
         } else {
             return null;

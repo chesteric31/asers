@@ -173,4 +173,135 @@ public class SeriesBean {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result;
+        if (country == null) {
+            result += 0;
+        } else {
+            result += country.hashCode();
+        }
+        result = prime * result;
+        if (endDate == null) {
+            result += 0;
+        } else {
+            result += endDate.hashCode();
+        }
+        result = prime * result + episodesNumber;
+        result = prime * result;
+        if (network == null) {
+            result += 0;
+        } else {
+            result += network.hashCode();
+        }
+        result = prime * result + runTime;
+        result = prime * result;
+        if (seasons == null) {
+            result += 0;
+        } else {
+            result += seasons.hashCode();
+        }
+        result = prime * result;
+        if (startDate == null) {
+            result += 0;
+        } else {
+            result += startDate.hashCode();
+        }
+        result = prime * result;
+        if (status == null) {
+            result += 0;
+        } else {
+            result += status.hashCode();
+        }
+        result = prime * result;
+        if (title == null) {
+            result += 0;
+        } else {
+            result += title.hashCode();
+        }
+        result = prime * result + tvRageId;
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SeriesBean)) {
+            return false;
+        }
+        SeriesBean other = (SeriesBean) obj;
+        if (country == null) {
+            if (other.country != null) {
+                return false;
+            }
+        } else if (!country.equals(other.country)) {
+            return false;
+        }
+        if (endDate == null) {
+            if (other.endDate != null) {
+                return false;
+            }
+        } else if (!endDate.equals(other.endDate)) {
+            return false;
+        }
+        if (episodesNumber != other.episodesNumber) {
+            return false;
+        }
+        if (network == null) {
+            if (other.network != null) {
+                return false;
+            }
+        } else if (!network.equals(other.network)) {
+            return false;
+        }
+        if (runTime != other.runTime) {
+            return false;
+        }
+        if (seasons == null) {
+            if (other.seasons != null) {
+                return false;
+            }
+        } else if (!seasons.equals(other.seasons)) {
+            return false;
+        }
+        if (startDate == null) {
+            if (other.startDate != null) {
+                return false;
+            }
+        } else if (!startDate.equals(other.startDate)) {
+            return false;
+        }
+        if (status == null) {
+            if (other.status != null) {
+                return false;
+            }
+        } else if (!status.equals(other.status)) {
+            return false;
+        }
+        if (title == null) {
+            if (other.title != null) {
+                return false;
+            }
+        } else if (!title.equals(other.title)) {
+            return false;
+        }
+        if (tvRageId != other.tvRageId) {
+            return false;
+        }
+        return true;
+    }
+    
 }
