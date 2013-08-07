@@ -20,16 +20,22 @@ public class Series extends AbstractIdentity {
     public static final String COLUMN_EPISODES_NUMBER = "EPISODES_NUMBER";
     public static final String COLUMN_RUN_TIME = "RUN_TIME";
     public static final String COLUMN_COUNTRY = "COUNTRY";
+    public static final String COLUMN_STATUS = "STATUS";
 
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER,"
             + COLUMN_NETWORK + " TEXT, " + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, "
-            + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT);";
+            + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT, "
+            + COLUMN_STATUS + ");";
 
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_NETWORK,
-            COLUMN_START_DATE, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER, COLUMN_RUN_TIME, COLUMN_COUNTRY };
+            COLUMN_START_DATE, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER, 
+            COLUMN_RUN_TIME, COLUMN_COUNTRY, COLUMN_STATUS };
 
     public static final String DATE_PATTERN = "MMM yyyy";
+
+    public static final String STATUS_ACTIVE = "ACTIVE";
+    public static final String STATUS_INACTIVE = "INACTIVE";
 
     private String title;
     private int tvRageId;
@@ -40,6 +46,7 @@ public class Series extends AbstractIdentity {
     private int episodesNumber;
     private int runTime;
     private String country;
+    private String status;
 
     /**
      * @return the title
@@ -165,6 +172,20 @@ public class Series extends AbstractIdentity {
      */
     public void setCountry(String country) {
         this.country = country;
+    }
+    
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     /**
