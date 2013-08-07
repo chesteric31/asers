@@ -27,6 +27,10 @@
         </activity>
 
         <uses-library android:name="android.test.runner" />
+
+        <activity
+            android:name="be.asers.AddSeriesActivity"
+            android:label="@string/title_activity_add_series" />
     </application>
 
     <instrumentation

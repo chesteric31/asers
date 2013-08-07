@@ -9,5 +9,7 @@
     <string name="add_series_button">Toevoeging van Series</string>
     <string name="modify_series_button">Wijziging van Series</string>
     <string name="delete_series_button">Verwijdering van Series</string>
-
+    <string name="title_activity_add_series">Toevoeging van Series</string>
+	<string name="add_series_title">Series te vinden</string>
+    
 </resources>

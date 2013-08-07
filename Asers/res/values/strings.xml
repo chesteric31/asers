@@ -9,5 +9,7 @@
     <string name="add_series_button">Add Series</string>
     <string name="modify_series_button">Modify Series</string>
     <string name="delete_series_button">Delete Series</string>
+    <string name="title_activity_add_series">Add Series</string>
+    <string name="add_series_title">Series to find</string>
 
 </resources>

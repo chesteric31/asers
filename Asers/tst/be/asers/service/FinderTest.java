@@ -16,7 +16,6 @@ import android.test.RenamingDelegatingContext;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
-import be.asers.dao.SeriesDao;
 import be.asers.db.DatabaseManager;
 import be.asers.model.Series;
 
@@ -47,9 +46,8 @@ public class FinderTest extends AndroidTestCase {
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
-        finder = new Finder(context);
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
-        finder.setSeriesDao(new SeriesDao(otherContext));
+        finder = new Finder(otherContext);
         DatabaseManager databaseManager = new DatabaseManager(otherContext);
         SQLiteDatabase database = databaseManager.getWritableDatabase();
         databaseManager.onUpgrade(database, 0, 1);
@@ -117,7 +115,7 @@ public class FinderTest extends AndroidTestCase {
     public void testFindSeriesNull() {
         try {
             finder.findSeries(null);
-            fail("That cannot  be there");
+            fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
         }
@@ -129,7 +127,7 @@ public class FinderTest extends AndroidTestCase {
     public void testFindSeriesEmpty() {
         try {
             finder.findSeries("");
-            fail("That cannot  be there");
+            fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
         }
@@ -235,7 +233,7 @@ public class FinderTest extends AndroidTestCase {
     public void testFindSeriesDetailsNull() throws IOException {
         try {
             finder.findSeriesDetails(null);
-            fail("That cannot  be there");
+            fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
         }

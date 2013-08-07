@@ -97,11 +97,12 @@ public class SeriesDao extends AbstractDao {
         sqlBuilder.append("S." + Series.COLUMN_RUN_TIME + ", ");
         sqlBuilder.append("S." + Series.COLUMN_START_DATE + ", ");
         sqlBuilder.append("S." + Series.COLUMN_TITLE + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_TV_RAGE_ID + " ");
+        sqlBuilder.append("S." + Series.COLUMN_TV_RAGE_ID + ", ");
+        sqlBuilder.append("S." + Series.COLUMN_STATUS + " ");
         sqlBuilder.append("FROM ");
         sqlBuilder.append(Series.TABLE_NAME + " S ");
         sqlBuilder.append("WHERE ");
-        sqlBuilder.append("S." + Series.COLUMN_TITLE + " LIKE '%" + "%'");
+        sqlBuilder.append("S." + Series.COLUMN_TITLE + " LIKE '%" + title + "%'");
         Cursor cursor = getDatabase().rawQuery(sqlBuilder.toString(), null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -120,12 +121,10 @@ public class SeriesDao extends AbstractDao {
         List<Series> series = new ArrayList<Series>();
         Cursor cursor = getDatabase().query(Series.TABLE_NAME, Series.ALL_COLUMNS,
                 Series.COLUMN_STATUS + " = '" + Series.STATUS_ACTIVE + "'", null, null, null, null);
-        if (cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                series.add(retrieveSeries(cursor));
-            }
-            cursor.close();
+        while (cursor.moveToNext()) {
+            series.add(retrieveSeries(cursor));
         }
+        cursor.close();
         return series;
     }
 

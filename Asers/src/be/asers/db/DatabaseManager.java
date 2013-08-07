@@ -10,14 +10,14 @@ import be.asers.model.Series;
 
 /**
  * Database manager for create/upgrade database.
- *
+ * 
  * @author chesteric31
  */
 public class DatabaseManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "asers.db";
     private static final int DATABASE_VERSION = 1;
-    
+
     /**
      * Constructor.
      * 
@@ -26,6 +26,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public DatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     /**
      * {@inheritDoc}
      */
@@ -33,7 +34,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(Series.CREATE_TABLE);
         database.execSQL(Season.CREATE_TABLE);
-        database.execSQL(Episode.CREATE_TABLE);        
+        database.execSQL(Episode.CREATE_TABLE);
     }
 
     /**
