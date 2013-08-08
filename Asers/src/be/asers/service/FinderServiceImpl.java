@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Log;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
@@ -98,6 +99,7 @@ public class FinderServiceImpl implements FinderService {
      * @return the found {@link SeriesBean}, null, if none found
      */
     private SeriesBean findInInternet(String title) {
+        Log.d(FinderServiceImpl.class.getSimpleName(), "Start findInInternet");
         String content;
         try {
             URL url = new URL(ALL_SERIES_URL);
@@ -108,6 +110,8 @@ public class FinderServiceImpl implements FinderService {
                 // if (token.matches("(.*)" + title + "(.*)")) {
                 if (token.equalsIgnoreCase(title)) {
                     SeriesBean bean = buildSeries(tokens, i, token);
+                    bean.setStatus(Series.STATUS_ACTIVE);
+                    Log.d(FinderServiceImpl.class.getSimpleName(), "End findInInternet");
                     return addSeries(bean);
                 }
                 i++;

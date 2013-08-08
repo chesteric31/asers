@@ -53,10 +53,10 @@ public class SeriesDao extends AbstractDao {
     private Series retrieveSeries(Cursor cursor) {
         if (cursor.getCount() > 0) {
             Series series = new Series();
-            series.setId(cursor.getLong(0));
-            series.setTitle(cursor.getString(1));
-            series.setTvRageId(cursor.getInt(2));
-            series.setNetwork(cursor.getString(3));
+            series.setId(cursor.getLong(cursor.getColumnIndexOrThrow(Series.COLUMN_ID)));
+            series.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_TITLE)));
+            series.setTvRageId(cursor.getInt(cursor.getColumnIndexOrThrow(Series.COLUMN_TV_RAGE_ID)));
+            series.setNetwork(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_NETWORK)));
             String startDateTime = cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_START_DATE));
             String endDateTime = cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_END_DATE));
             SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
@@ -70,10 +70,10 @@ public class SeriesDao extends AbstractDao {
                 // TODO Auto-generated catch block
                 throw new RuntimeException(e);
             }
-            series.setEpisodesNumber(cursor.getInt(6));
-            series.setRunTime(cursor.getInt(7));
-            series.setCountry(cursor.getString(8));
-            series.setStatus(cursor.getString(9));
+            series.setEpisodesNumber(cursor.getInt(cursor.getColumnIndexOrThrow(Series.COLUMN_EPISODES_NUMBER)));
+            series.setRunTime(cursor.getInt(cursor.getColumnIndexOrThrow(Series.COLUMN_RUN_TIME)));
+            series.setCountry(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_COUNTRY)));
+            series.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_STATUS)));
             return series;
         } else {
             return null;
