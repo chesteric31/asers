@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -30,7 +31,7 @@ import be.asers.model.Series;
  * 
  * @author chesteric31
  */
-public class Finder {
+public class FinderServiceImpl implements FinderService {
 
     private static final String END_DATA_DELIMITER = "</pre>";
     private static final String NOT_SPECIAL_EPISODE = "n";
@@ -54,16 +55,15 @@ public class Finder {
      * 
      * @param context the {@link Context} to set
      */
-    public Finder(Context context) {
+    public FinderServiceImpl(Context context) {
         this.context = context;
         this.seriesDao = new SeriesDao(this.context);
     }
     
     /**
-     * Finds the series where the status has active.
-     * 
-     * @return the found {@link Series}s with active status
+     * {@inheritDoc}
      */
+    @Override
     public List<SeriesBean> findMySeries() {
         List<Series> series = seriesDao.findActiveSeries();
         List<SeriesBean> beans = new ArrayList<SeriesBean>();
@@ -76,11 +76,9 @@ public class Finder {
     }
 
     /**
-     * Finds the series following the title criteria.
-     * 
-     * @param title the title to use
-     * @return the found {@link Series} entity
+     * {@inheritDoc}
      */
+    @Override
     public SeriesBean findSeries(String title) {
         if (title == null || title.isEmpty()) {
             throw new IllegalArgumentException("The series title cannot be empty!");
@@ -103,7 +101,7 @@ public class Finder {
         String content;
         try {
             URL url = new URL(ALL_SERIES_URL);
-            content = retrieveBasicUrlContent(url);
+            content = new UrlRetrieverTask(this.context).execute(url).get();
             String[] tokens = content.split(COMMA);
             int i = 0;
             for (String token : tokens) {
@@ -118,16 +116,18 @@ public class Finder {
             throw new RuntimeException(e);
         } catch (ParseException e) {
             throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
     /**
-     * Creates a new {@link Series} from a {@link SeriesBean}.
-     * 
-     * @param series the {@link SeriesBean} to use
-     * @return the created new {@link SeriesBean}
+     * {@inheritDoc}
      */
+    @Override
     public SeriesBean addSeries(SeriesBean series) {
         ContentValues values = new ContentValues();
         values.put(Series.COLUMN_COUNTRY, series.getCountry());
@@ -215,29 +215,6 @@ public class Finder {
     }
 
     /**
-     * Retrieves a basic URL content from an {@link URL} object.
-     * 
-     * @param url the URL to use
-     * @return the String basic URL content
-     * @throws IOException if an error occurred
-     */
-    public String retrieveBasicUrlContent(URL url) throws IOException {
-        if (url == null) {
-            throw new IllegalArgumentException("The url cannot be empty!");
-        }
-        BufferedReader reader = retrieveReaderFromUrl(url);
-        StringBuilder stringBuilder = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
-            stringBuilder.append(line);
-            stringBuilder.append(NEW_LINE);
-        }
-        reader.close();
-        return stringBuilder.toString();
-    }
-
-    /**
      * Retrieves a {@link BufferedReader} from an URL object.
      * 
      * @param url the URL to use
@@ -265,12 +242,9 @@ public class Finder {
     }
 
     /**
-     * Finds the {@link SeriesBean} details following the title criteria.
-     * 
-     * @param title the title to use
-     * @return the found {@link SeriesBean}
-     * @throws IOException if an error occurred
+     * {@inheritDoc}
      */
+    @Override
     public SeriesBean findSeriesDetails(String title) throws IOException {
         SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
@@ -404,5 +378,12 @@ public class Finder {
         return episode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeriesDao getSeriesDao() {
+        return seriesDao;
+    }
 
 }

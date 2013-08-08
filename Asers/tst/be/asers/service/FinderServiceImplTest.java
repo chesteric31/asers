@@ -1,32 +1,28 @@
 package be.asers.service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
-import be.asers.db.DatabaseManager;
 import be.asers.model.Series;
 
 /**
- * Test class for Finder. 
+ * Test class for {@link FinderService}. 
  *
  * @author chesteric31
  */
-public class FinderTest extends AndroidTestCase {
+public class FinderServiceImplTest extends AndroidTestCase {
 
-    private Finder finder;
+    private FinderService finder;
     
     /**
      * {@inheritDoc}
@@ -47,14 +43,12 @@ public class FinderTest extends AndroidTestCase {
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
-        finder = new Finder(otherContext);
-        DatabaseManager databaseManager = new DatabaseManager(otherContext);
-        SQLiteDatabase database = databaseManager.getWritableDatabase();
-        databaseManager.onUpgrade(database, 0, 1);
+        finder = new FinderServiceImpl(otherContext);
+        finder.getSeriesDao().deleteTable();
     }
     
     /**
-     * Test method for {@link be.asers.service.Finder#findSeries(java.lang.String)}.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}.
      */
     public void testFindSeries() {
         String title = "friends";
@@ -79,7 +73,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findMySeries()}.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findMySeries()}.
      */
     public void testFindMySeries() {
         List<SeriesBean> series = finder.findMySeries();
@@ -87,7 +81,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#addSeries(SeriesBean)}.
+     * Test method for {@link be.asers.service.FinderServiceImpl#addSeries(SeriesBean)}.
      */
     public void testAddSeries() {
         SeriesBean series = new SeriesBean();
@@ -110,7 +104,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findSeries(java.lang.String)} with null.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with null.
      */
     public void testFindSeriesNull() {
         try {
@@ -122,7 +116,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findSeries(java.lang.String)} with empty.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with empty.
      */
     public void testFindSeriesEmpty() {
         try {
@@ -134,7 +128,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findSeries(java.lang.String)} with unknown series.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with unknown series.
      */
     public void testFindSeriesNotFoundSeries() {
         assertNull(finder.findSeries("xyzxyz"));
@@ -156,49 +150,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for
-     * {@link be.asers.service.Finder#retrieveBasicUrlContent(java.net.URL)}.
-     * 
-     * @throws IOException if an error occurred
-     */
-    public void testRetrieveBasicUrlContent() throws IOException {
-        URL url = new URL("http://epguides.com/Friends/");
-        String content = finder.retrieveBasicUrlContent(url);
-        assertTrue(content != null);
-    }
-
-    /**
-     * Test method for
-     * {@link be.asers.service.Finder#retrieveBasicUrlContent(java.net.URL)} with null.
-     * 
-     * @throws IOException if an error occurred
-     */
-    public void testRetrieveBasicUrlContentNull() throws IOException {
-        try {
-            finder.retrieveBasicUrlContent(null);
-            fail("That cannot  be there");
-        } catch (IllegalArgumentException e) {
-            System.out.println("That's ok!");
-        }
-    }
-
-    /**
-     * Test method for
-     * {@link be.asers.service.Finder#retrieveBasicUrlContent(java.net.URL)} with empty.
-     * 
-     * @throws IOException if an error occurred
-     */
-    public void testRetrieveBasicUrlContentEmpty() throws IOException {
-        try {
-            finder.retrieveBasicUrlContent(new URL(""));
-            fail("That cannot  be there");
-        } catch (MalformedURLException e) {
-            System.out.println("That's ok!");
-        }
-    }
-
-    /**
-     * Test method for {@link be.asers.service.Finder#findSeriesDetails(java.lang.String)}.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)}.
      * 
      * @throws IOException if an error occurred
      */
@@ -226,7 +178,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findSeriesDetails(java.lang.String)} with null.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)} with null.
      * 
      * @throws IOException if an error occurred
      */
@@ -240,7 +192,7 @@ public class FinderTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.Finder#findSeriesDetails(java.lang.String)} with empty.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)} with empty.
      * 
      * @throws IOException if an error occurred
      */

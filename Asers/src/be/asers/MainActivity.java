@@ -7,22 +7,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 import be.asers.bean.SeriesBean;
-import be.asers.service.Finder;
 
 /**
  * First activity of the project.
- *
+ * 
  * @author chesteric31
  */
 public class MainActivity extends Activity {
 
     protected static final int ADD_SERIES_REQUEST = 0;
-    private Finder finder = null;
 
     /**
      * {@inheritDoc}
@@ -30,7 +29,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        finder = new Finder(this);
         setContentView(R.layout.activity_main);
         fillSpinnerData();
         addListenerOnAddSeriesButon();
@@ -42,7 +40,7 @@ public class MainActivity extends Activity {
     private void addListenerOnAddSeriesButon() {
         Button addSeriesButton = (Button) findViewById(R.id.add_series_button);
         addSeriesButton.setOnClickListener(new View.OnClickListener() {
-            
+
             @Override
             public void onClick(View view) {
                 Intent addSeriesActivity = new Intent(MainActivity.this, AddSeriesActivity.class);
@@ -50,7 +48,7 @@ public class MainActivity extends Activity {
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -69,10 +67,23 @@ public class MainActivity extends Activity {
      * Fills the spinner with my series with the data found in database.
      */
     private void fillSpinnerData() {
-        Spinner mySeriesSpinner = (Spinner) findViewById(R.id.my_series_spinner);
-        List<SeriesBean> mySeries = finder.findMySeries();
-        ArrayAdapter<SeriesBean> dataAdapter = new ArrayAdapter<SeriesBean>(this,
-            android.R.layout.simple_spinner_item, mySeries);
+        final Spinner mySeriesSpinner = (Spinner) findViewById(R.id.my_series_spinner);
+        mySeriesSpinner.setOnLongClickListener(new AdapterView.OnLongClickListener() {
+
+            public boolean onLongClick(View view) {
+                if (mySeriesSpinner.getSelectedItem() != null) {
+                    Toast.makeText(MainActivity.this, mySeriesSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Nothing is selected", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+        AsersApplication application = (AsersApplication) getApplication();
+        List<SeriesBean> mySeries = application.getFinderService().findMySeries();
+        ArrayAdapter<SeriesBean> dataAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_spinner_item,
+                mySeries);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySeriesSpinner.setAdapter(dataAdapter);
     }
@@ -86,5 +97,5 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+    
 }

@@ -127,5 +127,14 @@ public class SeriesDao extends AbstractDao {
         cursor.close();
         return series;
     }
+    
+    /**
+     * Deletes all rows of the table.
+     * 
+     * @return the number of deleted rows
+     */
+    public int deleteTable() {
+        return getDatabase().delete(Series.TABLE_NAME, null, null);
+    }
 
 }
