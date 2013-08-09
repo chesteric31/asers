@@ -1,5 +1,6 @@
 package be.asers.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,14 +12,14 @@ import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 
 /**
- * Test class for {@link UrlRetrieverTask}. 
- *
+ * Test class for {@link UrlReaderTask}.
+ * 
  * @author chesteric31
  */
-public class UrlRetrieverTaskTest extends AndroidTestCase {
+public class UrlReaderTaskTest extends AndroidTestCase {
 
-    private UrlRetrieverTask task;
-    
+    private UrlReaderTask task;
+
     /**
      * {@inheritDoc}
      * 
@@ -38,28 +39,26 @@ public class UrlRetrieverTaskTest extends AndroidTestCase {
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
-        task = new UrlRetrieverTask(otherContext);
+        task = new UrlReaderTask(otherContext);
     }
-    
+
     /**
-     * Test method for
-     * {@link be.asers.service.FinderServiceImpl#retrieveBasicUrlContent(java.net.URL)}.
+     * Test method for doInBackground.
      * 
-     * @throws IOException if an error occurred
+     * @throws IOException an {@link IOException} if an error occurred
      */
-    public void testRetrieveBasicUrlContent() throws IOException {
+    public void testDoInBackground() throws IOException {
         URL url = new URL("http://epguides.com/Friends/");
-        String content = task.doInBackground(url);
+        BufferedReader content = task.doInBackground(url);
         assertTrue(content != null);
     }
 
     /**
-     * Test method for
-     * {@link be.asers.service.UrlRetrieverTask#retrieveBasicUrlContent(java.net.URL)} with empty.
+     * Test method for doInBackground with empty.
      * 
-     * @throws IOException if an error occurred
+     * @throws IOException an {@link IOException} if an error occurred
      */
-    public void testRetrieveBasicUrlContentEmpty() throws IOException {
+    public void testDoInBackgroundEmpty() throws IOException {
         try {
             task.doInBackground(new URL(""));
             fail("That cannot  be there");

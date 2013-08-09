@@ -1,5 +1,7 @@
 package be.asers;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -29,6 +31,8 @@ public class AddSeriesActivity extends Activity implements TextWatcher {
         setContentView(R.layout.activity_add_series);
         addSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_series_auto_complete);
         addSeriesAutoComplete.addTextChangedListener(this);
+        AsersApplication application = (AsersApplication) getApplication();
+        List<SeriesBean> series = application.getFinderService().findAllSeries();
         arrayAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_dropdown_item_1line);
         arrayAdapter.setNotifyOnChange(true);
         addSeriesAutoComplete.setAdapter(arrayAdapter);

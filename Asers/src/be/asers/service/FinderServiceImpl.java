@@ -2,10 +2,7 @@ package be.asers.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,10 +13,6 @@ import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Base64;
-import android.util.Log;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
@@ -60,7 +53,7 @@ public class FinderServiceImpl implements FinderService {
         this.context = context;
         this.seriesDao = new SeriesDao(this.context);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -70,7 +63,7 @@ public class FinderServiceImpl implements FinderService {
         List<SeriesBean> beans = new ArrayList<SeriesBean>();
         if (!series.isEmpty()) {
             for (Series serie : series) {
-                beans.add(mapSeries(serie));        
+                beans.add(mapSeries(serie));
             }
         }
         return beans;
@@ -99,18 +92,17 @@ public class FinderServiceImpl implements FinderService {
      * @return the found {@link SeriesBean}, null, if none found
      */
     private SeriesBean findInInternet(String title) {
-        Log.d(FinderServiceImpl.class.getSimpleName(), "Start findInInternet");
         String content;
         try {
             URL url = new URL(ALL_SERIES_URL);
-            content = new UrlRetrieverTask(this.context).execute(url).get();
+            BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
+            content = new ReaderStringTask().execute(bufferedReader).get();
             String[] tokens = content.split(COMMA);
             int i = 0;
             for (String token : tokens) {
                 // if (token.matches("(.*)" + title + "(.*)")) {
                 if (token.equalsIgnoreCase(title)) {
                     SeriesBean bean = buildSeries(tokens, i, token);
-                    Log.d(FinderServiceImpl.class.getSimpleName(), "End findInInternet");
                     return addSeries(bean);
                 }
                 i++;
@@ -218,56 +210,36 @@ public class FinderServiceImpl implements FinderService {
     }
 
     /**
-     * Retrieves a {@link BufferedReader} from an URL object.
-     * 
-     * @param url the URL to use
-     * @return the {@link BufferedReader} URL content
-     * @throws IOException if an error occurred
-     */
-    private BufferedReader retrieveReaderFromUrl(URL url) throws IOException {
-        URLConnection connection = url.openConnection();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
-        boolean isProxy = preferences.getBoolean("isProxy", false);
-        if (isProxy) {
-            boolean isProxyAuthentication = preferences.getBoolean("isProxyAuthentication", false);
-            if (isProxyAuthentication) {
-                String user = preferences.getString("proxyUser", "");
-                String password = preferences.getString("proxyPassword", "");
-                String userPassword = user + ":" + password;
-                String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
-                connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
-            }
-        }
-        InputStream inputStream = connection.getInputStream();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader reader = new BufferedReader(inputStreamReader);
-        return reader;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public SeriesBean findSeriesDetails(String title) throws IOException {
         SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
-        BufferedReader reader = retrieveReaderFromUrl(url);
-        String line = null;
-        boolean skipFurtherLines = false;
-        int i = 0;
-        SeasonBean lastSeason = new SeasonBean();
-        lastSeason.setSeries(series);
-        lastSeason.setNumber(0);
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
-            if (i < HEADER_NUMBER_LINES) {
-                i++;
-                continue;
+        BufferedReader reader;
+        try {
+            reader = new UrlReaderTask(this.context).execute(url).get();
+            String line = null;
+            boolean skipFurtherLines = false;
+            int i = 0;
+            SeasonBean lastSeason = new SeasonBean();
+            lastSeason.setSeries(series);
+            lastSeason.setNumber(0);
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (i < HEADER_NUMBER_LINES) {
+                    i++;
+                    continue;
+                }
+                if (line.startsWith(END_DATA_DELIMITER)) {
+                    skipFurtherLines = true;
+                }
+                lastSeason = processEpisodes(series, line, skipFurtherLines, lastSeason);
             }
-            if (line.startsWith(END_DATA_DELIMITER)) {
-                skipFurtherLines = true;
-            }
-            lastSeason = processEpisodes(series, line, skipFurtherLines, lastSeason);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
         return series;
     }
@@ -379,6 +351,16 @@ public class FinderServiceImpl implements FinderService {
         }
         episode.setTvRageLink(strings[7]);
         return episode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SeriesBean> findAllSeries() {
+        // TODO Auto-generated method stub
+//        throw new UnsupportedOperationException();
+        return null;
     }
 
     /**
