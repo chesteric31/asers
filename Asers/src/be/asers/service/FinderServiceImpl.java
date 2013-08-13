@@ -2,6 +2,7 @@ package be.asers.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -27,10 +28,10 @@ import be.asers.model.Series;
  */
 public class FinderServiceImpl implements FinderService {
 
+    private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     private static final String END_DATA_DELIMITER = "</pre>";
     private static final String NOT_SPECIAL_EPISODE = "n";
     private static final String FIRST_COLUMN_TITLE = "number";
-    private static final String NEW_LINE = "\n";
     private static final String COMMA = ",";
     private static final String MIN = "min";
     private static final String EPS = "eps";
@@ -92,24 +93,22 @@ public class FinderServiceImpl implements FinderService {
      * @return the found {@link SeriesBean}, null, if none found
      */
     private SeriesBean findInInternet(String title) {
-        String content;
+        List<String> contents;
         try {
             URL url = new URL(ALL_SERIES_URL);
             BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
-            content = new ReaderStringTask().execute(bufferedReader).get();
-            String[] tokens = content.split(COMMA);
-            int i = 0;
-            for (String token : tokens) {
-                // if (token.matches("(.*)" + title + "(.*)")) {
-                if (token.equalsIgnoreCase(title)) {
-                    SeriesBean bean = buildSeries(tokens, i, token);
-                    return addSeries(bean);
+            contents = new ReaderStringTask().execute(bufferedReader).get();
+            for (String content : contents) {
+                String[] tokens = content.split(COMMA);
+                for (String token : tokens) {
+                    // if (token.matches("(.*)" + title + "(.*)")) {
+                    if (token.equalsIgnoreCase(title)) {
+                        SeriesBean bean = buildSeries(tokens);
+                        return addSeries(bean);
+                    }
                 }
-                i++;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -167,46 +166,164 @@ public class FinderServiceImpl implements FinderService {
      * Builds a {@link SeriesBean} from the tokens.
      * 
      * @param tokens the tokens to use
-     * @param i the counter to use
-     * @param token the token to use
      * @return the built {@link SeriesBean}
-     * @throws ParseException if the parse failed
      */
-    private SeriesBean buildSeries(String[] tokens, int i, String token) throws ParseException {
+    private SeriesBean buildSeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
-        series.setTitle(token);
-        int j = i + 1;
-        series.setTvRageId(Integer.valueOf(tokens[j]));
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
+        series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
+        int j = 2;
+        buildTvRageId(tokens[j], series);
         j++;
-        Date startDate = simpleDateFormat.parse(tokens[j]);
-        series.setStartDate(startDate);
+        j = processStartEndDates(tokens, series, j);
         j++;
-        Date endDate = simpleDateFormat.parse(tokens[j]);
-        series.setEndDate(endDate);
+        buildEpisodeNumbers(tokens[j], series);
         j++;
-        String episodesNumber = tokens[j];
-        episodesNumber = episodesNumber.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
-        episodesNumber = episodesNumber.replaceAll(EPS, EMPTY_STRING);
-        episodesNumber = episodesNumber.trim();
-        series.setEpisodesNumber(Integer.valueOf(episodesNumber));
+        buildRuntime(tokens[j], series);
         j++;
-        String runTime = tokens[j];
-        runTime = runTime.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
-        runTime = runTime.replaceAll(MIN, EMPTY_STRING);
-        runTime = runTime.trim();
-        series.setRunTime(Integer.valueOf(runTime));
+        buildNetwork(tokens[j], series);
         j++;
-        String network = tokens[j];
-        network = network.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
-        network = network.trim();
-        series.setNetwork(network);
-        j++;
-        String country = tokens[j];
-        int indexOf = country.indexOf(NEW_LINE);
-        country = country.substring(0, indexOf);
-        series.setCountry(country);
+        buildCountry(tokens[j], series);
         return series;
+    }
+
+    /**
+     * Builds the tv rage id.
+     * 
+     * @param token the token with data
+     * @param series the {@link SeriesBean} to update 
+     */
+    private void buildTvRageId(String token, SeriesBean series) {
+        if (isNumeric(token)) {
+            series.setTvRageId(Integer.valueOf(token));
+        }
+    }
+
+    /**
+     * Builds the country.
+     * 
+     * @param token the token with data
+     * @param series the {@link SeriesBean} to update 
+     */
+    private void buildCountry(String token, SeriesBean series) {
+        series.setCountry(token);
+    }
+
+    /**
+     * Builds the network.
+     * 
+     * @param token the token with data
+     * @param series the {@link SeriesBean} to update 
+     */
+    private void buildNetwork(String token, SeriesBean series) {
+        token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
+        token = token.trim();
+        series.setNetwork(token);
+    }
+
+    /**
+     * Builds the runtime.
+     * 
+     * @param token the token with data
+     * @param series the {@link SeriesBean} to update 
+     */
+    private void buildRuntime(String token, SeriesBean series) {
+        token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
+        token = token.replaceAll(MIN, EMPTY_STRING);
+        token = token.trim();
+        if (isNumeric(token)) {
+            series.setRunTime(Integer.valueOf(token));
+        }
+    }
+
+    /**
+     * Builds the episode numbers.
+     * 
+     * @param token the token with data
+     * @param series the {@link SeriesBean} to update 
+     */
+    private void buildEpisodeNumbers(String token, SeriesBean series) {
+        token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
+        token = token.replaceAll(EPS, EMPTY_STRING);
+        token = token.replaceAll("\\?", EMPTY_STRING);
+        token = token.trim();
+        if (isNumeric(token)) {
+            series.setEpisodesNumber(Integer.valueOf(token));
+        }
+    }
+
+    /**
+     * Builds the start/end dates.
+     * 
+     * @param tokens the tokens with data
+     * @param series the {@link SeriesBean} to update
+     * @param j the counter to use
+     * @return the updated counter j  
+     */
+    private int processStartEndDates(String[] tokens, SeriesBean series, int j) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
+        Date startDate;
+        SimpleDateFormat simpleDateFormatOptional = new SimpleDateFormat(Series.DATE_PATTERN_OPTIONAL, Locale.US);
+        if (!EMPTY_STRING.equals(tokens[j])) {
+            tokens[j] = tokens[j].replaceAll("\\?", EMPTY_STRING);
+            if (!EMPTY_STRING.equals(tokens[j])) {
+                try {
+                    startDate = simpleDateFormat.parse(tokens[j]);
+                } catch (ParseException e) {
+                    try {
+                        startDate = simpleDateFormatOptional.parse(tokens[j]);
+                    } catch (ParseException e1) {
+                        throw new RuntimeException(e1);
+                    }
+                }
+                series.setStartDate(startDate);
+            }
+        }
+        j++;
+        if (!Series.NO_KNOWN_END_DATE.equals(tokens[j]) && !EMPTY_STRING.equals(tokens[j])) {
+            tokens[j] = tokens[j].replaceAll("\\?", EMPTY_STRING);
+            tokens[j] = tokens[j].replaceAll("see NOTES", EMPTY_STRING);
+            if (!EMPTY_STRING.equals(tokens[j])) {
+                Date endDate;
+                try {
+                    if (tokens[j].contains("Mat")) {
+                        tokens[j] = tokens[j].replace("Mat", "Mar");
+                    }
+                    if (tokens[j].contains("Sept")) {
+                        tokens[j] = tokens[j].replace("Sept", "Sep");
+                    }
+                    if (tokens[j].contains("___")) {
+                        tokens[j] = tokens[j].replace("___", EMPTY_STRING);
+                    }
+                    endDate = simpleDateFormat.parse(tokens[j]);
+                } catch (ParseException e) {
+                    try {
+                        endDate = simpleDateFormatOptional.parse(tokens[j]);
+                    } catch (ParseException e1) {
+                        throw new RuntimeException(e1);
+                    }
+                }
+                series.setEndDate(endDate);
+            }
+        }
+        return j;
+    }
+
+    /**
+     * Checks if a String is numeric.
+     * 
+     * @param string the String to check
+     * @return true if the all the character of the String is digit, false otherwise
+     */
+    private boolean isNumeric(String string) {
+        if (string == null || string.isEmpty()) {
+            return false;
+        }
+        for (int i = 0; i < string.length(); i++) {
+            if (!Character.isDigit(string.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -358,9 +475,34 @@ public class FinderServiceImpl implements FinderService {
      */
     @Override
     public List<SeriesBean> findAllSeries() {
-        // TODO Auto-generated method stub
-//        throw new UnsupportedOperationException();
-        return null;
+        List<SeriesBean> series = new ArrayList<SeriesBean>();
+        List<String> contents;
+        URL url;
+        try {
+            url = new URL(ALL_SERIES_URL);
+            BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
+            contents = new ReaderStringTask().execute(bufferedReader).get();
+            for (String content : contents) {
+                if (content.length() > 0) {
+                    String[] tokens = new String[9];
+                    String[] splits = content.split(CSV_DELIMITER);
+                    int i = 0;
+                    for (String split : splits) {
+                        tokens[i] = split;
+                        i++;
+                    }
+                    SeriesBean bean = buildSeries(tokens);
+                    series.add(bean);
+                }
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+        return series;
     }
 
     /**

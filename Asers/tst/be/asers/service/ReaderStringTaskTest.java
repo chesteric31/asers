@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -41,8 +42,8 @@ public class ReaderStringTaskTest extends AndroidTestCase {
     public void testDoInBackground() throws IOException {
         URL url = new URL("http://epguides.com/Friends/");
         BufferedReader bufferedReader = createReaderFromUrl(url);
-        String string = task.doInBackground(bufferedReader);
-        assertTrue(string != null);
+        List<String> strings = task.doInBackground(bufferedReader);
+        assertFalse(strings.isEmpty());
     }
 
     /**

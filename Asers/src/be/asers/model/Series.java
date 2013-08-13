@@ -32,6 +32,8 @@ public class Series extends AbstractIdentity {
             COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_START_DATE, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_STATUS };
 
     public static final String DATE_PATTERN = "MMM yyyy";
+    public static final String DATE_PATTERN_OPTIONAL = "yyyy";
+    public static final String NO_KNOWN_END_DATE = "___ ____";
 
     public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_INACTIVE = "INACTIVE";

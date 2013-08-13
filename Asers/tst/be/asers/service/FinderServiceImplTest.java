@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -53,7 +54,8 @@ public class FinderServiceImplTest extends AndroidTestCase {
     public void testFindSeries() {
         String title = "friends";
         SeriesBean series = finder.findSeries(title);
-        assertTrue(title.equalsIgnoreCase(series.getTitle()));
+//        assertTrue(title.equalsIgnoreCase(series.getTitle()));
+        assertTrue(series.getTitle().toLowerCase(Locale.US).contains(title));
         // "Friends (1994)",Friends,3616,Sep 1994,May
         // 2004,"239 eps","30 min","NBC",US
         assertTrue(series.getTvRageId() == 3616);
