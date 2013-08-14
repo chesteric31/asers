@@ -37,6 +37,14 @@ public interface FinderService {
     SeriesBean addSeries(SeriesBean series);
 
     /**
+     * Creates a new {@link SeriesBean} from a {@link SeriesBean} in my favorites.
+     * 
+     * @param series the {@link SeriesBean} to add as favorite
+     * @return the created new {@link SeriesBean}
+     */
+    SeriesBean addMySeries(SeriesBean series);
+
+    /**
      * Finds the {@link SeriesBean} details following the title criteria.
      * 
      * @param title the title to use

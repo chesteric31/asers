@@ -14,11 +14,8 @@ import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.content.Context;
-import be.asers.bean.EpisodeBean;
-import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
-import be.asers.model.Episode;
 import be.asers.model.Series;
 
 /**
@@ -29,15 +26,10 @@ import be.asers.model.Series;
 public class FinderServiceImpl implements FinderService {
 
     private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    private static final String END_DATA_DELIMITER = "</pre>";
-    private static final String NOT_SPECIAL_EPISODE = "n";
-    private static final String FIRST_COLUMN_TITLE = "number";
-    private static final String COMMA = ",";
     private static final String MIN = "min";
     private static final String EPS = "eps";
     private static final String DOUBLE_QUOTES = "\"";
     private static final String EMPTY_STRING = "";
-    private static final int HEADER_NUMBER_LINES = 7;
     private static final String EPGUIDES_URL = "http://epguides.com/";
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
@@ -99,7 +91,7 @@ public class FinderServiceImpl implements FinderService {
             BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
             contents = new ReaderStringTask().execute(bufferedReader).get();
             for (String content : contents) {
-                String[] tokens = content.split(COMMA);
+                String[] tokens = content.split(",");
                 for (String token : tokens) {
                     // if (token.matches("(.*)" + title + "(.*)")) {
                     if (token.equalsIgnoreCase(title)) {
@@ -126,7 +118,11 @@ public class FinderServiceImpl implements FinderService {
         ContentValues values = new ContentValues();
         values.put(Series.COLUMN_COUNTRY, series.getCountry());
         SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
-        values.put(Series.COLUMN_END_DATE, dateFormat.format(series.getEndDate()));
+        if (series.getEndDate() != null) {
+            values.put(Series.COLUMN_END_DATE, dateFormat.format(series.getEndDate()));
+        } else {
+            values.put(Series.COLUMN_END_DATE, "");
+        }
         values.put(Series.COLUMN_EPISODES_NUMBER, series.getEpisodesNumber());
         values.put(Series.COLUMN_NETWORK, series.getNetwork());
         values.put(Series.COLUMN_RUN_TIME, series.getRunTime());
@@ -336,138 +332,13 @@ public class FinderServiceImpl implements FinderService {
         BufferedReader reader;
         try {
             reader = new UrlReaderTask(this.context).execute(url).get();
-            String line = null;
-            boolean skipFurtherLines = false;
-            int i = 0;
-            SeasonBean lastSeason = new SeasonBean();
-            lastSeason.setSeries(series);
-            lastSeason.setNumber(0);
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (i < HEADER_NUMBER_LINES) {
-                    i++;
-                    continue;
-                }
-                if (line.startsWith(END_DATA_DELIMITER)) {
-                    skipFurtherLines = true;
-                }
-                lastSeason = processEpisodes(series, line, skipFurtherLines, lastSeason);
-            }
+            new ReaderSeasonTask(series).execute(reader).get();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
         return series;
-    }
-
-    /**
-     * Process the episodes.
-     * 
-     * @param series the {@link SeriesBean} to use
-     * @param line the line to process
-     * @param skipNextLines if we must skip the next lines
-     * @param lastSeason the last {@link SeasonBean} processed
-     * @return the {@link SeasonBean} entity
-     */
-    private SeasonBean processEpisodes(SeriesBean series, String line, boolean skipNextLines, SeasonBean lastSeason) {
-        if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
-            String[] strings = line.split(COMMA);
-            EpisodeBean episode = buildEpisode(strings);
-            Integer seasonNumber = Integer.valueOf(strings[1]);
-            if (Boolean.TRUE.equals(episode.getSpecial())) {
-                specialEpisodeProcess(series, episode, seasonNumber);
-            } else {
-                if (lastSeason.getNumber() != seasonNumber) {
-                    lastSeason = buildSeason(series, seasonNumber);
-                }
-                List<EpisodeBean> episodes = lastSeason.getEpisodes();
-                if (episodes == null) {
-                    episodes = new ArrayList<EpisodeBean>();
-                }
-                episodes.add(episode);
-                lastSeason.setEpisodes(episodes);
-                episode.setSeason(lastSeason);
-            }
-        }
-        return lastSeason;
-    }
-
-    /**
-     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the
-     * {@link SeasonBean} number.
-     * 
-     * @param series the {@link SeriesBean} to use
-     * @param seasonNumber the {@link SeasonBean} number to use
-     * @return the build {@link SeasonBean}
-     */
-    private SeasonBean buildSeason(SeriesBean series, Integer seasonNumber) {
-        SeasonBean lastSeason;
-        List<SeasonBean> seasons = series.getSeasons();
-        if (seasons == null) {
-            seasons = new ArrayList<SeasonBean>();
-        }
-        lastSeason = new SeasonBean();
-        lastSeason.setNumber(seasonNumber);
-        lastSeason.setSeries(series);
-        seasons.add(lastSeason);
-        series.setSeasons(seasons);
-        return lastSeason;
-    }
-
-    /**
-     * Special {@link EpisodeBean} process.
-     * 
-     * @param series the {@link SeriesBean} to use
-     * @param episode the {@link EpisodeBean} to process
-     * @param seasonNumber the {@link SeasonBean} number to use
-     */
-    private void specialEpisodeProcess(SeriesBean series, EpisodeBean episode, Integer seasonNumber) {
-        List<SeasonBean> seasons = series.getSeasons();
-        for (SeasonBean season : seasons) {
-            if (seasonNumber.equals(season.getNumber())) {
-                episode.setSeason(season);
-                season.getEpisodes().add(episode);
-            }
-        }
-    }
-
-    /**
-     * Builds the {@link EpisodeBean} from the String array.
-     * 
-     * @param strings the String array contained all the {@link EpisodeBean}
-     *            informations
-     * @return the built {@link EpisodeBean}
-     */
-    private EpisodeBean buildEpisode(String[] strings) {
-        EpisodeBean episode = new EpisodeBean();
-        if (!strings[0].isEmpty()) {
-            episode.setNumber(Integer.valueOf(strings[0]));
-        }
-        if (!strings[2].isEmpty()) {
-            episode.setEpisode(Integer.valueOf(strings[2]));
-        }
-        if (!strings[3].isEmpty()) {
-            episode.setProductionCode(strings[3]);
-        }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US);
-        try {
-            String date = strings[4];
-            date = date.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
-            Date airDate = simpleDateFormat.parse(date);
-            episode.setAirDate(airDate);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        episode.setTitle(strings[5]);
-        boolean notSpecial = NOT_SPECIAL_EPISODE.equals(strings[6]);
-        if (notSpecial) {
-            episode.setSpecial(Boolean.FALSE);
-        } else {
-            episode.setSpecial(Boolean.TRUE);
-        }
-        episode.setTvRageLink(strings[7]);
-        return episode;
     }
 
     /**
@@ -504,6 +375,21 @@ public class FinderServiceImpl implements FinderService {
         }
         return series;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeriesBean addMySeries(SeriesBean series) {
+        try {
+            series = findSeriesDetails(series.getTitle());
+            series.setStatus(Series.STATUS_ACTIVE);
+            return addSeries(series);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * {@inheritDoc}

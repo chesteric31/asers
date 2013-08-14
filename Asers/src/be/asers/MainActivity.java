@@ -22,6 +22,7 @@ import be.asers.bean.SeriesBean;
 public class MainActivity extends Activity {
 
     protected static final int ADD_SERIES_REQUEST = 0;
+    private Spinner mySeriesSpinner;
 
     /**
      * {@inheritDoc}
@@ -30,7 +31,20 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fillSpinnerData();
+        mySeriesSpinner = (Spinner) findViewById(R.id.my_series_spinner);
+        mySeriesSpinner.setOnLongClickListener(new AdapterView.OnLongClickListener() {
+
+            public boolean onLongClick(View view) {
+                if (mySeriesSpinner.getSelectedItem() != null) {
+                    Toast.makeText(MainActivity.this, mySeriesSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT)
+                            .show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Nothing is selected", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+        fillSpinnerData(mySeriesSpinner);
         addListenerOnAddSeriesButon();
     }
 
@@ -55,31 +69,18 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_SERIES_REQUEST) {
-            // On vérifie aussi que l'opération s'est bien déroulée
             if (resultCode == RESULT_CANCELED) {
-                // On affiche le bouton qui a été choisi
-                Toast.makeText(this, "blbla", Toast.LENGTH_SHORT).show();
+                fillSpinnerData(mySeriesSpinner);
             }
         }
     }
 
     /**
      * Fills the spinner with my series with the data found in database.
+     * 
+     * @param mySeriesSpinner the spinner to use
      */
-    private void fillSpinnerData() {
-        final Spinner mySeriesSpinner = (Spinner) findViewById(R.id.my_series_spinner);
-        mySeriesSpinner.setOnLongClickListener(new AdapterView.OnLongClickListener() {
-
-            public boolean onLongClick(View view) {
-                if (mySeriesSpinner.getSelectedItem() != null) {
-                    Toast.makeText(MainActivity.this, mySeriesSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Nothing is selected", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
+    private void fillSpinnerData(Spinner mySeriesSpinner) {
         AsersApplication application = (AsersApplication) getApplication();
         List<SeriesBean> mySeries = application.getFinderService().findMySeries();
         ArrayAdapter<SeriesBean> dataAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_spinner_item,
@@ -97,5 +98,5 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-    
+
 }
