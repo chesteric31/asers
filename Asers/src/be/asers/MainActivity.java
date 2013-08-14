@@ -7,11 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import be.asers.bean.SeriesBean;
 
 /**
@@ -22,7 +21,7 @@ import be.asers.bean.SeriesBean;
 public class MainActivity extends Activity {
 
     protected static final int ADD_SERIES_REQUEST = 0;
-    private Spinner mySeriesSpinner;
+    private TableLayout mySeriesTable;
 
     /**
      * {@inheritDoc}
@@ -31,20 +30,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mySeriesSpinner = (Spinner) findViewById(R.id.my_series_spinner);
-        mySeriesSpinner.setOnLongClickListener(new AdapterView.OnLongClickListener() {
-
-            public boolean onLongClick(View view) {
-                if (mySeriesSpinner.getSelectedItem() != null) {
-                    Toast.makeText(MainActivity.this, mySeriesSpinner.getSelectedItem().toString(), Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Nothing is selected", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            }
-        });
-        fillSpinnerData(mySeriesSpinner);
+        mySeriesTable = (TableLayout) findViewById(R.id.my_series_table);
+        fillTableData(mySeriesTable);
         addListenerOnAddSeriesButon();
     }
 
@@ -70,7 +57,7 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_SERIES_REQUEST) {
             if (resultCode == RESULT_CANCELED) {
-                fillSpinnerData(mySeriesSpinner);
+                 fillTableData(mySeriesTable);
             }
         }
     }
@@ -78,15 +65,20 @@ public class MainActivity extends Activity {
     /**
      * Fills the spinner with my series with the data found in database.
      * 
-     * @param mySeriesSpinner the spinner to use
+     * @param mySeriesTable the spinner to use
      */
-    private void fillSpinnerData(Spinner mySeriesSpinner) {
+    private void fillTableData(TableLayout mySeriesTable) {
         AsersApplication application = (AsersApplication) getApplication();
         List<SeriesBean> mySeries = application.getFinderService().findMySeries();
-        ArrayAdapter<SeriesBean> dataAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_spinner_item,
-                mySeries);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mySeriesSpinner.setAdapter(dataAdapter);
+        TextView textView = null;
+        TableRow tableRow = null;
+        for (SeriesBean series : mySeries) {
+            textView = new TextView(this);
+            textView.setText(series.toString());
+            tableRow = new TableRow(this);
+            tableRow.addView(textView);
+            mySeriesTable.addView(tableRow);
+        }
     }
 
     /**
