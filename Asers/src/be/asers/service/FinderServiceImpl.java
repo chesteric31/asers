@@ -2,8 +2,11 @@ package be.asers.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +17,9 @@ import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Base64;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
 import be.asers.model.Series;
@@ -159,12 +165,9 @@ public class FinderServiceImpl implements FinderService {
     }
 
     /**
-     * Builds a {@link SeriesBean} from the tokens.
-     * 
-     * @param tokens the tokens to use
-     * @return the built {@link SeriesBean}
+     * {@inheritDoc}
      */
-    private SeriesBean buildSeries(String[] tokens) {
+    public SeriesBean buildSeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
         int j = 2;
@@ -389,7 +392,59 @@ public class FinderServiceImpl implements FinderService {
             throw new RuntimeException(e);
         }
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
+    public BufferedReader createReader() {
+        URLConnection connection;
+        BufferedReader reader;
+        try {
+            URL url = new URL(ALL_SERIES_URL);
+            connection = url.openConnection();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+            boolean isProxy = preferences.getBoolean("isProxy", false);
+            if (isProxy) {
+                boolean isProxyAuthentication = preferences.getBoolean("isProxyAuthentication", false);
+                if (isProxyAuthentication) {
+                    String user = preferences.getString("proxyUser", "");
+                    String password = preferences.getString("proxyPassword", "");
+                    String userPassword = user + ":" + password;
+                    String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
+                    connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
+                }
+            }
+            InputStream inputStream = connection.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            reader = new BufferedReader(inputStreamReader);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return reader;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> createStringsContent(BufferedReader bufferedReader) {
+        List<String> strings = new ArrayList<String>();
+        try {
+            String line = null;
+            boolean firstLineToSkip = true;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (firstLineToSkip) {
+                    firstLineToSkip = false;
+                } else {
+                    line = line.trim();
+                    strings.add(line);
+                }
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return strings;
+    }
 
     /**
      * {@inheritDoc}

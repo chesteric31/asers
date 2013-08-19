@@ -1,5 +1,6 @@
 package be.asers.service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public interface FinderService {
     SeriesBean addSeries(SeriesBean series);
 
     /**
-     * Creates a new {@link SeriesBean} from a {@link SeriesBean} in my favorites.
+     * Creates a new {@link SeriesBean} from a {@link SeriesBean} in my
+     * favorites.
      * 
      * @param series the {@link SeriesBean} to add as favorite
      * @return the created new {@link SeriesBean}
@@ -64,5 +66,29 @@ public interface FinderService {
      * @return all available {@link SeriesBean}
      */
     List<SeriesBean> findAllSeries();
+
+    /**
+     * Creates a {@link BufferedReader} from the URL:
+     * "http://epguides.com/common/allshows.txt".
+     * 
+     * @return the created {@link BufferedReader}
+     */
+    BufferedReader createReader();
+
+    /**
+     * Creates a list of Strings from an {@link BufferedReader}.
+     * 
+     * @param bufferedReader the {@link BufferedReader} to use
+     * @return the created list of Strings
+     */
+    List<String> createStringsContent(BufferedReader bufferedReader);
+
+    /**
+     * Builds a {@link SeriesBean} from the tokens.
+     * 
+     * @param tokens the tokens to use
+     * @return the built {@link SeriesBean}
+     */
+    SeriesBean buildSeries(String[] tokens);
 
 }

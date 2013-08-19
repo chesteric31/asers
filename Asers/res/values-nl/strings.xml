@@ -11,5 +11,8 @@
     <string name="delete_series_button">Verwijdering van Series</string>
     <string name="title_activity_add_series">Toevoeging van Series</string>
 	<string name="add_series_title">Series te vinden</string>
+	<string name="add_series_loading">Lading...</string>
+	<string name="add_series_loading_done">Lading af</string>
+	<string name="add_series_selected">Selectie: </string>
     
 </resources>

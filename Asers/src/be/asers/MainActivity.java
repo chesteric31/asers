@@ -1,9 +1,11 @@
 package be.asers;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -57,7 +59,7 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_SERIES_REQUEST) {
             if (resultCode == RESULT_CANCELED) {
-                 fillTableData(mySeriesTable);
+                fillTableData(mySeriesTable);
             }
         }
     }
@@ -68,16 +70,22 @@ public class MainActivity extends Activity {
      * @param mySeriesTable the spinner to use
      */
     private void fillTableData(TableLayout mySeriesTable) {
-        AsersApplication application = (AsersApplication) getApplication();
-        List<SeriesBean> mySeries = application.getFinderService().findMySeries();
-        TextView textView = null;
-        TableRow tableRow = null;
-        for (SeriesBean series : mySeries) {
-            textView = new TextView(this);
-            textView.setText(series.toString());
-            tableRow = new TableRow(this);
-            tableRow.addView(textView);
-            mySeriesTable.addView(tableRow);
+        List<SeriesBean> mySeries;
+        try {
+            mySeries = new MySeriesFinderTask().execute().get();
+            TextView textView = null;
+            TableRow tableRow = null;
+            for (SeriesBean series : mySeries) {
+                textView = new TextView(this);
+                textView.setText(series.toString());
+                tableRow = new TableRow(this);
+                tableRow.addView(textView);
+                mySeriesTable.addView(tableRow);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -89,6 +97,23 @@ public class MainActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    /**
+     * Asynchronous task to find my {@link SeriesBean}.
+     * 
+     * @author chesteric31
+     */
+    private class MySeriesFinderTask extends AsyncTask<Void, Void, List<SeriesBean>> {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected List<SeriesBean> doInBackground(Void... params) {
+            AsersApplication asersApplication = (AsersApplication) getApplication();
+            return asersApplication.getFinderService().findMySeries();
+        }
     }
 
 }

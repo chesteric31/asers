@@ -11,5 +11,8 @@
     <string name="delete_series_button">Suppression de Séries</string>
     <string name="title_activity_add_series">Ajout de Séries</string>
     <string name="add_series_title">Séries à chercher</string>
+    <string name="add_series_loading">Chargement#82030;</string>
+    <string name="add_series_loading_done">Chargement terminé</string>
+    <string name="add_series_selected">Sélection : </string>
 
 </resources>
