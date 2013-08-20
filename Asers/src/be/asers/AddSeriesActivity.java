@@ -74,7 +74,7 @@ public class AddSeriesActivity extends Activity {
      * 
      * @param progress the progress to use
      */
-    void updateProgress(int progress) {
+    private void updateProgress(int progress) {
         getProgressDialog().setProgress(progress);
     }
 
@@ -93,13 +93,6 @@ public class AddSeriesActivity extends Activity {
      */
     public ProgressDialog getProgressDialog() {
         return progressDialog;
-    }
-
-    /**
-     * @param progressDialog the progressDialog to set
-     */
-    public void setProgressDialog(ProgressDialog progressDialog) {
-        this.progressDialog = progressDialog;
     }
 
     /**
@@ -129,7 +122,7 @@ public class AddSeriesActivity extends Activity {
      * 
      * @author chesteric31
      */
-    public interface OnCompleteTaskListener {
+    private interface OnCompleteTaskListener {
 
         /**
          * Method called on complete.
