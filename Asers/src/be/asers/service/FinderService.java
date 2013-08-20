@@ -61,13 +61,6 @@ public interface FinderService {
     SeriesDao getSeriesDao();
 
     /**
-     * Finds all available series.
-     * 
-     * @return all available {@link SeriesBean}
-     */
-    List<SeriesBean> findAllSeries();
-
-    /**
      * Creates a {@link BufferedReader} from the URL:
      * "http://epguides.com/common/allshows.txt".
      * 

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -336,41 +335,6 @@ public class FinderServiceImpl implements FinderService {
         try {
             reader = new UrlReaderTask(this.context).execute(url).get();
             new ReaderSeasonTask(series).execute(reader).get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-        return series;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<SeriesBean> findAllSeries() {
-        List<SeriesBean> series = new ArrayList<SeriesBean>();
-        List<String> contents;
-        URL url;
-        try {
-            url = new URL(ALL_SERIES_URL);
-            BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
-            contents = new ReaderStringTask().execute(bufferedReader).get();
-            for (String content : contents) {
-                if (content.length() > 0) {
-                    String[] tokens = new String[9];
-                    String[] splits = content.split(CSV_DELIMITER);
-                    int i = 0;
-                    for (String split : splits) {
-                        tokens[i] = split;
-                        i++;
-                    }
-                    SeriesBean bean = buildSeries(tokens);
-                    series.add(bean);
-                }
-            }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
