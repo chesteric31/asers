@@ -29,7 +29,7 @@ public class Episode extends AbstractIdentity {
             + Season.COLUMN_ID + "));";
 
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
-            COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_SEASON };
+            COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_TO_SEE, COLUMN_SEASON };
 
     public static final String DATE_PATTERN = "dd/MMM/yy";
 
