@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,6 +38,9 @@ public class AddSeriesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Thread.setDefaultUncaughtExceptionHandler(new AsersUncaughtExceptionHandler(this));
+
         setContentView(R.layout.activity_add_series);
         buildProgressDialog();
         addSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_series_auto_complete);
@@ -196,7 +200,11 @@ public class AddSeriesActivity extends Activity {
                 addSeriesActivity.getProgressDialog().setMax(contents.size());
             }
             int total = 0;
+            Log.d(AddSeriesActivity.class.getSimpleName(), "START LOOP");
             for (String content : contents) {
+                if (total == 50) {
+                    break;
+                }
                 if (content.length() > 0) {
                     total++;
                     String[] tokens = new String[9];
@@ -211,6 +219,7 @@ public class AddSeriesActivity extends Activity {
                     publishProgress(total);
                 }
             }
+            Log.d(AddSeriesActivity.class.getSimpleName(), "END LOOP");
             return series;
         }
 
@@ -224,6 +233,7 @@ public class AddSeriesActivity extends Activity {
                 addSeriesActivity.updateProgress(values[0]);
             }
         }
+        
     }
 
 }

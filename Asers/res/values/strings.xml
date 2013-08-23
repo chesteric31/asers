@@ -14,5 +14,7 @@
     <string name="add_series_loading">Loading...</string>
     <string name="add_series_loading_done">Loading done</string>
     <string name="add_series_selected">Selection: </string>
+    <string name="title_activity_bug_report">BugReportActivity</string>
+    <string name="ok_button">OK</string>
 
 </resources>

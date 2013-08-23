@@ -36,6 +36,10 @@
             android:configChanges="orientation"
             android:label="@string/title_activity_add_series"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="be.asers.BugReportActivity"
+            android:label="@string/title_activity_bug_report" >
+        </activity>
     </application>
 
     <instrumentation

@@ -1,8 +1,8 @@
 package be.asers;
 
+import android.app.Application;
 import be.asers.service.FinderService;
 import be.asers.service.FinderServiceImpl;
-import android.app.Application;
 
 /**
  * Asers application.
@@ -28,5 +28,5 @@ public class AsersApplication extends Application {
     public FinderService getFinderService() {
         return finderService;
     }
-    
+
 }
