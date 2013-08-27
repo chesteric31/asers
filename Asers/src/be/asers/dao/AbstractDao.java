@@ -11,7 +11,7 @@ import be.asers.db.DatabaseManager;
  * 
  * @author chesteric31
  */
-public abstract class AbstractDao {
+abstract class AbstractDao {
 
     private DatabaseManager databaseManager;
     private SQLiteDatabase database;
@@ -21,12 +21,11 @@ public abstract class AbstractDao {
      * 
      * @param context the {@link Context} to use
      */
-    public AbstractDao(Context context) {
+    AbstractDao(Context context) {
         databaseManager = new DatabaseManager(context);
         try {
             open();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(e);
         }
     }
@@ -43,7 +42,7 @@ public abstract class AbstractDao {
     /**
      * Closes the database.
      */
-    public void close() {
+    void close() {
         databaseManager.close();
     }
 

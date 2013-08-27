@@ -1,4 +1,4 @@
-package be.asers;
+package be.asers.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
+import be.asers.R;
 
 /**
  * Bug report activity to show all uncaught errors.
@@ -14,7 +15,7 @@ import android.widget.TextView;
  */
 public class BugReportActivity extends Activity {
 
-    static final String STACKTRACE = "asers.stacktrace";
+    public static final String STACKTRACE = "asers.stacktrace";
 
     /**
      * {@inheritDoc}

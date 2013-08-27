@@ -1,4 +1,4 @@
-package be.asers;
+package be.asers.activity;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -13,16 +13,18 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import be.asers.AsersApplication;
+import be.asers.R;
 import be.asers.bean.SeriesBean;
 
 /**
- * First activity of the project.
+ * Main activity of the project.
  * 
  * @author chesteric31
  */
-public class MainActivity extends Activity {
+class MainActivity extends Activity {
 
-    protected static final int ADD_SERIES_REQUEST = 0;
+    private static final int ADD_SERIES_REQUEST = 0;
     private TableLayout mySeriesTable;
 
     /**

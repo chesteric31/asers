@@ -2,6 +2,7 @@ package be.asers;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
+import be.asers.activity.BugReportActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;

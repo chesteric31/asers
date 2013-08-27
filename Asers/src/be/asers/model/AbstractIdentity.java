@@ -5,7 +5,7 @@ package be.asers.model;
  *
  * @author chesteric31
  */
-public abstract class AbstractIdentity {
+abstract class AbstractIdentity {
 
     public static final String COLUMN_ID = "_ID";
     private Long id;

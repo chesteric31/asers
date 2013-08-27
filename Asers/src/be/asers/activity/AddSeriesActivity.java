@@ -1,4 +1,4 @@
-package be.asers;
+package be.asers.activity;
 
 import java.io.BufferedReader;
 import java.lang.ref.WeakReference;
@@ -17,6 +17,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
+import be.asers.AsersApplication;
+import be.asers.AsersUncaughtExceptionHandler;
+import be.asers.R;
 import be.asers.bean.SeriesBean;
 import be.asers.service.FinderService;
 
@@ -25,7 +28,7 @@ import be.asers.service.FinderService;
  * 
  * @author chesteric31
  */
-public class AddSeriesActivity extends Activity {
+class AddSeriesActivity extends Activity {
 
     private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     private ArrayAdapter<SeriesBean> arrayAdapter;
@@ -202,9 +205,9 @@ public class AddSeriesActivity extends Activity {
             int total = 0;
             Log.d(AddSeriesActivity.class.getSimpleName(), "START LOOP");
             for (String content : contents) {
-                if (total == 50) {
-                    break;
-                }
+//                if (total == 50) {
+//                    break;
+//                }
                 if (content.length() > 0) {
                     total++;
                     String[] tokens = new String[9];

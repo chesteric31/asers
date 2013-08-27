@@ -169,18 +169,18 @@ public class FinderServiceImpl implements FinderService {
     public SeriesBean buildSeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
-        int j = 2;
-        buildTvRageId(tokens[j], series);
-        j++;
-        j = processStartEndDates(tokens, series, j);
-        j++;
-        buildEpisodeNumbers(tokens[j], series);
-        j++;
-        buildRuntime(tokens[j], series);
-        j++;
-        buildNetwork(tokens[j], series);
-        j++;
-        buildCountry(tokens[j], series);
+//        int j = 2;
+//        buildTvRageId(tokens[j], series);
+//        j++;
+//        j = processStartEndDates(tokens, series, j);
+//        j++;
+//        buildEpisodeNumbers(tokens[j], series);
+//        j++;
+//        buildRuntime(tokens[j], series);
+//        j++;
+//        buildNetwork(tokens[j], series);
+//        j++;
+//        buildCountry(tokens[j], series);
         return series;
     }
 
@@ -188,7 +188,7 @@ public class FinderServiceImpl implements FinderService {
      * Builds the tv rage id.
      * 
      * @param token the token with data
-     * @param series the {@link SeriesBean} to update 
+     * @param series the {@link SeriesBean} to update
      */
     private void buildTvRageId(String token, SeriesBean series) {
         if (isNumeric(token)) {
@@ -200,7 +200,7 @@ public class FinderServiceImpl implements FinderService {
      * Builds the country.
      * 
      * @param token the token with data
-     * @param series the {@link SeriesBean} to update 
+     * @param series the {@link SeriesBean} to update
      */
     private void buildCountry(String token, SeriesBean series) {
         series.setCountry(token);
@@ -210,7 +210,7 @@ public class FinderServiceImpl implements FinderService {
      * Builds the network.
      * 
      * @param token the token with data
-     * @param series the {@link SeriesBean} to update 
+     * @param series the {@link SeriesBean} to update
      */
     private void buildNetwork(String token, SeriesBean series) {
         token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
@@ -222,7 +222,7 @@ public class FinderServiceImpl implements FinderService {
      * Builds the runtime.
      * 
      * @param token the token with data
-     * @param series the {@link SeriesBean} to update 
+     * @param series the {@link SeriesBean} to update
      */
     private void buildRuntime(String token, SeriesBean series) {
         token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
@@ -237,7 +237,7 @@ public class FinderServiceImpl implements FinderService {
      * Builds the episode numbers.
      * 
      * @param token the token with data
-     * @param series the {@link SeriesBean} to update 
+     * @param series the {@link SeriesBean} to update
      */
     private void buildEpisodeNumbers(String token, SeriesBean series) {
         token = token.replaceAll(DOUBLE_QUOTES, EMPTY_STRING);
@@ -255,7 +255,7 @@ public class FinderServiceImpl implements FinderService {
      * @param tokens the tokens with data
      * @param series the {@link SeriesBean} to update
      * @param j the counter to use
-     * @return the updated counter j  
+     * @return the updated counter j
      */
     private int processStartEndDates(String[] tokens, SeriesBean series, int j) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
@@ -310,7 +310,8 @@ public class FinderServiceImpl implements FinderService {
      * Checks if a String is numeric.
      * 
      * @param string the String to check
-     * @return true if the all the character of the String is digit, false otherwise
+     * @return true if the all the character of the String is digit, false
+     *         otherwise
      */
     private boolean isNumeric(String string) {
         if (string == null || string.isEmpty()) {
@@ -356,13 +357,13 @@ public class FinderServiceImpl implements FinderService {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public BufferedReader createReader() {
         URLConnection connection;
-        BufferedReader reader;
+        BufferedReader reader = null;
         try {
             URL url = new URL(ALL_SERIES_URL);
             connection = url.openConnection();
@@ -386,7 +387,7 @@ public class FinderServiceImpl implements FinderService {
         }
         return reader;
     }
-    
+
     /**
      * {@inheritDoc}
      */
