@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import be.asers.model.Episode;
@@ -20,27 +21,6 @@ import be.asers.model.Series;
  */
 public class EpisodeDao extends AbstractDao {
 
-    // public Episode createEpisode(String comment) {
-    // ContentValues values = new ContentValues();
-    // values.put(MySQLiteHelper.COLUMN_COMMENT, comment);
-    // long insertId = database.insert(MySQLiteHelper.TABLE_COMMENTS, null,
-    // values);
-    // Cursor cursor = database.query(MySQLiteHelper.TABLE_COMMENTS,
-    // allColumns, MySQLiteHelper.COLUMN_ID + " = " + insertId, null,
-    // null, null, null);
-    // cursor.moveToFirst();
-    // Comment newComment = cursorToEpisode(cursor);
-    // cursor.close();
-    // return newComment;
-    // }
-
-    // public void deleteComment(Comment comment) {
-    // long id = comment.getId();
-    // System.out.println("Comment deleted with id: " + id);
-    // database.delete(MySQLiteHelper.TABLE_COMMENTS, MySQLiteHelper.COLUMN_ID
-    // + " = " + id, null);
-    // }
-
     /**
      * Constructor.
      * 
@@ -48,6 +28,22 @@ public class EpisodeDao extends AbstractDao {
      */
     public EpisodeDao(Context context) {
         super(context);
+    }
+
+    /**
+     * Creates a new {@link Episode} from {@link ContentValues}.
+     * 
+     * @param values the {@link ContentValues} to persist
+     * @return the created {@link Episode} in database
+     */
+    public Episode add(ContentValues values) {
+        long insertId = getDatabase().insert(Episode.TABLE_NAME, null, values);
+        Cursor cursor = getDatabase().query(Episode.TABLE_NAME, Episode.ALL_COLUMNS,
+                Episode.COLUMN_ID + " = " + insertId, null, null, null, null);
+        cursor.moveToFirst();
+        Episode newEpisode = retrieveEpisode(cursor);
+        cursor.close();
+        return newEpisode;
     }
 
     /**

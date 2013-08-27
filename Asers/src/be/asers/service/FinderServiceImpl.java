@@ -21,8 +21,11 @@ import android.util.Base64;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
+import be.asers.dao.EpisodeDao;
+import be.asers.dao.SeasonDao;
 import be.asers.dao.SeriesDao;
 import be.asers.model.Episode;
+import be.asers.model.Season;
 import be.asers.model.Series;
 
 /**
@@ -42,6 +45,8 @@ public class FinderServiceImpl implements FinderService {
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
     private Context context;
     private SeriesDao seriesDao;
+    private SeasonDao seasonDao;
+    private EpisodeDao episodeDao;
 
     /**
      * Constructor.
@@ -51,6 +56,8 @@ public class FinderServiceImpl implements FinderService {
     public FinderServiceImpl(Context context) {
         this.context = context;
         this.seriesDao = new SeriesDao(this.context);
+        this.seasonDao = new SeasonDao(this.context);
+        this.episodeDao = new EpisodeDao(this.context);
     }
 
     /**
@@ -124,8 +131,36 @@ public class FinderServiceImpl implements FinderService {
         values.put(Series.COLUMN_TITLE, series.getTitle());
         values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
         values.put(Series.COLUMN_STATUS, series.getStatus());
-        Series model = seriesDao.add(values);
-        return mapSeries(model);
+        Series addedSeries = seriesDao.add(values);
+        List<SeasonBean> seasons = series.getSeasons();
+        for (SeasonBean season : seasons) {
+            ContentValues seasonValues = new ContentValues();
+            seasonValues.put(Season.COLUMN_NUMBER, season.getNumber());
+            seasonValues.put(Season.COLUMN_SERIES, addedSeries.getId());
+            Season addedSeason = seasonDao.add(seasonValues);
+            addedSeason.setSeries(addedSeries);
+            List<EpisodeBean> episodes = season.getEpisodes();
+            for (EpisodeBean episode : episodes) {
+                ContentValues episodeValues = new ContentValues();
+                Date airDate = episode.getAirDate();
+                if (airDate != null) {
+                    episodeValues.put(Episode.COLUMN_AIR_DATE, dateFormat.format(airDate));
+                } else {
+                    episodeValues.put(Episode.COLUMN_AIR_DATE, "");
+                }
+                episodeValues.put(Episode.COLUMN_EPISODE, episode.getEpisode());
+                episodeValues.put(Episode.COLUMN_NUMBER, episode.getNumber());
+                episodeValues.put(Episode.COLUMN_PRODUCTION_CODE, episode.getProductionCode());
+                episodeValues.put(Episode.COLUMN_SEASON, addedSeason.getId());
+                episodeValues.put(Episode.COLUMN_SPECIAL, episode.getSpecial());
+                episodeValues.put(Episode.COLUMN_TITLE, episode.getTitle());
+                episodeValues.put(Episode.COLUMN_TO_SEE, true);
+                episodeValues.put(Episode.COLUMN_TV_RAGE_LINK, episode.getTvRageLink());
+                Episode addedEpisode = episodeDao.add(episodeValues);
+                addedEpisode.setSeason(addedSeason);
+            }
+        }
+        return mapSeries(addedSeries);
     }
 
     /**
@@ -328,7 +363,7 @@ public class FinderServiceImpl implements FinderService {
     private static final int HEADER_NUMBER_LINES = 7;
     private static final String FIRST_COLUMN_TITLE = "number";
     private static final String NOT_SPECIAL_EPISODE = "n";
-    
+
     /**
      * {@inheritDoc}
      */
@@ -337,13 +372,13 @@ public class FinderServiceImpl implements FinderService {
         SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = createReader(url);
-//        try {
-//            new ReaderSeasonTask(series).execute(reader).get();
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException(e);
-//        } catch (ExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
+        // try {
+        // new ReaderSeasonTask(series).execute(reader).get();
+        // } catch (InterruptedException e) {
+        // throw new RuntimeException(e);
+        // } catch (ExecutionException e) {
+        // throw new RuntimeException(e);
+        // }
         String line = null;
         boolean skipFurtherLines = false;
         int i = 0;

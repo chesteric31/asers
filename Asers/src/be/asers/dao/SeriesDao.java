@@ -67,7 +67,6 @@ public class SeriesDao extends AbstractDao {
                 Date endDate = dateFormat.parse(endDateTime);
                 series.setEndDate(endDate);
             } catch (ParseException e) {
-                // TODO Auto-generated catch block
                 throw new RuntimeException(e);
             }
             series.setEpisodesNumber(cursor.getInt(cursor.getColumnIndexOrThrow(Series.COLUMN_EPISODES_NUMBER)));

@@ -4,11 +4,11 @@ import java.util.List;
 
 /**
  * Season entity.
- *
+ * 
  * @author chesteric31
  */
 public class Season extends AbstractIdentity {
-    
+
     public static final String TABLE_NAME = "SEASON";
 
     public static final String COLUMN_NUMBER = "NUMBER";
@@ -19,10 +19,12 @@ public class Season extends AbstractIdentity {
             + " INTEGER, FOREIGN KEY (" + COLUMN_SERIES + ") REFERENCES " + Series.TABLE_NAME + "("
             + AbstractIdentity.COLUMN_ID + "));";
 
+    public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_NUMBER, COLUMN_SERIES };
+
     private int number;
     private Series series;
     private List<Episode> episodes;
-    
+
     /**
      * @return the number
      */
