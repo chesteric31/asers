@@ -2,10 +2,9 @@ package be.asers;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 
-import be.asers.activity.BugReportActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
+import be.asers.activity.BugReportActivity;
 
 /**
  * Exception Handler for {@link UncaughtExceptionHandler}.
@@ -32,11 +31,13 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable exception) {
+        exception.printStackTrace();
         Intent intent = new Intent(context, BugReportActivity.class);
-        intent.putExtra(BugReportActivity.STACKTRACE, exception.getCause().getLocalizedMessage());
+        StackTraceElement stackTraceElement = exception.getCause().getStackTrace()[0];
+        intent.putExtra(BugReportActivity.STACKTRACE, stackTraceElement.toString());
         context.startActivity(intent);
 
-        Process.killProcess(Process.myPid());
+//        Process.killProcess(Process.myPid());
 //        System.exit(10);
         defaultHandler.uncaughtException(thread, exception);
     }

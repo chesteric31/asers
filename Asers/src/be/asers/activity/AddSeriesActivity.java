@@ -70,7 +70,7 @@ public class AddSeriesActivity extends Activity {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(e.getCause());
                 }
             }
         });
@@ -205,9 +205,9 @@ public class AddSeriesActivity extends Activity {
             int total = 0;
             Log.d(AddSeriesActivity.class.getSimpleName(), "START LOOP");
             for (String content : contents) {
-//                if (total == 50) {
-//                    break;
-//                }
+                if (total == 50) {
+                    break;
+                }
                 if (content.length() > 0) {
                     total++;
                     String[] tokens = new String[9];

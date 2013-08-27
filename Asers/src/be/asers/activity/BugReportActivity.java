@@ -31,7 +31,7 @@ public class BugReportActivity extends Activity {
         report.setLongClickable(false);
 
         final String versionName = getVersionName();
-        report.append("ASERS " + versionName + " has been crached, sorry.");
+        report.append("ASERS " + versionName + " has been crached, sorry.\n");
         report.append(stackTrace);
 
         findViewById(R.id.ok_button).setOnClickListener(new View.OnClickListener() {
