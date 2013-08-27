@@ -28,7 +28,7 @@ import be.asers.service.FinderService;
  * 
  * @author chesteric31
  */
-class AddSeriesActivity extends Activity {
+public class AddSeriesActivity extends Activity {
 
     private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
     private ArrayAdapter<SeriesBean> arrayAdapter;
@@ -196,7 +196,7 @@ class AddSeriesActivity extends Activity {
         protected List<SeriesBean> doInBackground(Void... params) {
             List<SeriesBean> series = new ArrayList<SeriesBean>();
             FinderService finderService = ((AsersApplication) getApplication()).getFinderService();
-            BufferedReader bufferedReader = finderService.createReader();
+            BufferedReader bufferedReader = finderService.createReader(null);
             List<String> contents = finderService.createStringsContent(bufferedReader);
             AddSeriesActivity addSeriesActivity = activity.get();
             if (addSeriesActivity != null) {
@@ -217,7 +217,7 @@ class AddSeriesActivity extends Activity {
                         tokens[i] = split;
                         i++;
                     }
-                    SeriesBean bean = finderService.buildSeries(tokens);
+                    SeriesBean bean = finderService.buildSkinnySeries(tokens);
                     series.add(bean);
                     publishProgress(total);
                 }

@@ -2,6 +2,7 @@ package be.asers.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import be.asers.bean.SeriesBean;
@@ -64,9 +65,10 @@ public interface FinderService {
      * Creates a {@link BufferedReader} from the URL:
      * "http://epguides.com/common/allshows.txt".
      * 
+     * @param url the URL to use, or if null: "http://epguides.com/common/allshows.txt" 
      * @return the created {@link BufferedReader}
      */
-    BufferedReader createReader();
+    BufferedReader createReader(URL url);
 
     /**
      * Creates a list of Strings from an {@link BufferedReader}.
@@ -83,5 +85,13 @@ public interface FinderService {
      * @return the built {@link SeriesBean}
      */
     SeriesBean buildSeries(String[] tokens);
+
+    /**
+     * Builds a "skinny" {@link SeriesBean} from the tokens only with title.
+     * 
+     * @param tokens the tokens to use
+     * @return the built skinny {@link SeriesBean}
+     */
+    SeriesBean buildSkinnySeries(String[] tokens);
 
 }

@@ -22,7 +22,7 @@ import be.asers.bean.SeriesBean;
  * 
  * @author chesteric31
  */
-class MainActivity extends Activity {
+public class MainActivity extends Activity {
 
     private static final int ADD_SERIES_REQUEST = 0;
     private TableLayout mySeriesTable;

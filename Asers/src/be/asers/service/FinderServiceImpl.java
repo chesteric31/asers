@@ -39,7 +39,6 @@ public class FinderServiceImpl implements FinderService {
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
     private Context context;
-
     private SeriesDao seriesDao;
 
     /**
@@ -77,7 +76,7 @@ public class FinderServiceImpl implements FinderService {
         }
         Series series = seriesDao.findByTitle(title);
         if (series == null) {
-            return findInInternet(title);
+            return findOnEpguides(title);
         } else {
             return mapSeries(series);
         }
@@ -89,28 +88,16 @@ public class FinderServiceImpl implements FinderService {
      * @param title the title for the series to find
      * @return the found {@link SeriesBean}, null, if none found
      */
-    private SeriesBean findInInternet(String title) {
-        List<String> contents;
-        try {
-            URL url = new URL(ALL_SERIES_URL);
-            BufferedReader bufferedReader = new UrlReaderTask(this.context).execute(url).get();
-            contents = new ReaderStringTask().execute(bufferedReader).get();
-            for (String content : contents) {
-                String[] tokens = content.split(",");
-                for (String token : tokens) {
-                    // if (token.matches("(.*)" + title + "(.*)")) {
-                    if (token.equalsIgnoreCase(title)) {
-                        SeriesBean bean = buildSeries(tokens);
-                        return addSeries(bean);
-                    }
-                }
+    private SeriesBean findOnEpguides(String title) {
+        BufferedReader bufferedReader = createReader(null);
+        List<String> contents = createStringsContent(bufferedReader);
+        for (String content : contents) {
+            String[] tokens = content.split(CSV_DELIMITER);
+            if (tokens[0].equals(title)) {
+                // if (token.matches("(.*)" + title + "(.*)")) {
+                SeriesBean bean = buildSeries(tokens);
+                return addSeries(bean);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
         }
         return null;
     }
@@ -169,18 +156,28 @@ public class FinderServiceImpl implements FinderService {
     public SeriesBean buildSeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
-//        int j = 2;
-//        buildTvRageId(tokens[j], series);
-//        j++;
-//        j = processStartEndDates(tokens, series, j);
-//        j++;
-//        buildEpisodeNumbers(tokens[j], series);
-//        j++;
-//        buildRuntime(tokens[j], series);
-//        j++;
-//        buildNetwork(tokens[j], series);
-//        j++;
-//        buildCountry(tokens[j], series);
+        int j = 2;
+        buildTvRageId(tokens[j], series);
+        j++;
+        j = processStartEndDates(tokens, series, j);
+        j++;
+        buildEpisodeNumbers(tokens[j], series);
+        j++;
+        buildRuntime(tokens[j], series);
+        j++;
+        buildNetwork(tokens[j], series);
+        j++;
+        buildCountry(tokens[j], series);
+        return series;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SeriesBean buildSkinnySeries(String[] tokens) {
+        SeriesBean series = new SeriesBean();
+        series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
         return series;
     }
 
@@ -332,9 +329,8 @@ public class FinderServiceImpl implements FinderService {
     public SeriesBean findSeriesDetails(String title) throws IOException {
         SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
-        BufferedReader reader;
+        BufferedReader reader = createReader(url);
         try {
-            reader = new UrlReaderTask(this.context).execute(url).get();
             new ReaderSeasonTask(series).execute(reader).get();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -361,11 +357,13 @@ public class FinderServiceImpl implements FinderService {
     /**
      * {@inheritDoc}
      */
-    public BufferedReader createReader() {
+    public BufferedReader createReader(URL url) {
         URLConnection connection;
         BufferedReader reader = null;
         try {
-            URL url = new URL(ALL_SERIES_URL);
+            if (url == null) {
+                url = new URL(ALL_SERIES_URL);
+            }
             connection = url.openConnection();
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
             boolean isProxy = preferences.getBoolean("isProxy", false);
