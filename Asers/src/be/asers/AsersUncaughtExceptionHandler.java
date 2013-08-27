@@ -33,12 +33,13 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable exception) {
         exception.printStackTrace();
         Intent intent = new Intent(context, BugReportActivity.class);
-        StackTraceElement stackTraceElement = exception.getCause().getStackTrace()[0];
-        intent.putExtra(BugReportActivity.STACKTRACE, stackTraceElement.toString());
+        Throwable cause = exception.getCause();
+        StackTraceElement stackTraceElement = cause.getStackTrace()[0];
+        intent.putExtra(BugReportActivity.STACKTRACE, cause.toString() + "\n" + stackTraceElement.toString());
         context.startActivity(intent);
 
-//        Process.killProcess(Process.myPid());
-//        System.exit(10);
+        // Process.killProcess(Process.myPid());
+        // System.exit(10);
         defaultHandler.uncaughtException(thread, exception);
     }
 

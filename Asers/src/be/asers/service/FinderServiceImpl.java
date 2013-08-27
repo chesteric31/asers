@@ -12,15 +12,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import be.asers.bean.EpisodeBean;
+import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
+import be.asers.model.Episode;
 import be.asers.model.Series;
 
 /**
@@ -93,7 +95,7 @@ public class FinderServiceImpl implements FinderService {
         List<String> contents = createStringsContent(bufferedReader);
         for (String content : contents) {
             String[] tokens = content.split(CSV_DELIMITER);
-            if (tokens[0].equals(title)) {
+            if (tokens[0].equals("\"" + title + "\"")) {
                 // if (token.matches("(.*)" + title + "(.*)")) {
                 SeriesBean bean = buildSeries(tokens);
                 return addSeries(bean);
@@ -182,7 +184,7 @@ public class FinderServiceImpl implements FinderService {
     }
 
     /**
-     * Builds the tv rage id.
+     * Builds the TV rage id.
      * 
      * @param token the token with data
      * @param series the {@link SeriesBean} to update
@@ -322,6 +324,11 @@ public class FinderServiceImpl implements FinderService {
         return true;
     }
 
+    private static final String END_DATA_DELIMITER = "</pre>";
+    private static final int HEADER_NUMBER_LINES = 7;
+    private static final String FIRST_COLUMN_TITLE = "number";
+    private static final String NOT_SPECIAL_EPISODE = "n";
+    
     /**
      * {@inheritDoc}
      */
@@ -330,11 +337,32 @@ public class FinderServiceImpl implements FinderService {
         SeriesBean series = findSeries(title);
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = createReader(url);
+//        try {
+//            new ReaderSeasonTask(series).execute(reader).get();
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        } catch (ExecutionException e) {
+//            throw new RuntimeException(e);
+//        }
+        String line = null;
+        boolean skipFurtherLines = false;
+        int i = 0;
+        SeasonBean lastSeason = new SeasonBean();
+        lastSeason.setSeries(series);
+        lastSeason.setNumber(0);
         try {
-            new ReaderSeasonTask(series).execute(reader).get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (i < HEADER_NUMBER_LINES) {
+                    i++;
+                    continue;
+                }
+                if (line.startsWith(END_DATA_DELIMITER)) {
+                    skipFurtherLines = true;
+                }
+                lastSeason = processEpisodes(series, line, skipFurtherLines, lastSeason);
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return series;
@@ -415,6 +443,117 @@ public class FinderServiceImpl implements FinderService {
     @Override
     public SeriesDao getSeriesDao() {
         return seriesDao;
+    }
+
+    /**
+     * Process the episodes.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @param line the line to process
+     * @param skipNextLines if we must skip the next lines
+     * @param lastSeason the last {@link SeasonBean} processed
+     * @return the {@link SeasonBean} entity
+     */
+    private SeasonBean processEpisodes(SeriesBean series, String line, boolean skipNextLines, SeasonBean lastSeason) {
+        if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
+            String[] strings = line.split(CSV_DELIMITER);
+            EpisodeBean episode = buildEpisode(strings);
+            Integer seasonNumber = Integer.valueOf(strings[1]);
+            if (Boolean.TRUE.equals(episode.getSpecial())) {
+                specialEpisodeProcess(series, episode, seasonNumber);
+            } else {
+                if (lastSeason.getNumber() != seasonNumber) {
+                    lastSeason = buildSeason(series, seasonNumber);
+                }
+                List<EpisodeBean> episodes = lastSeason.getEpisodes();
+                if (episodes == null) {
+                    episodes = new ArrayList<EpisodeBean>();
+                }
+                episodes.add(episode);
+                lastSeason.setEpisodes(episodes);
+                episode.setSeason(lastSeason);
+            }
+        }
+        return lastSeason;
+    }
+
+    /**
+     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the
+     * {@link SeasonBean} number.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @param seasonNumber the {@link SeasonBean} number to use
+     * @return the build {@link SeasonBean}
+     */
+    private SeasonBean buildSeason(SeriesBean series, Integer seasonNumber) {
+        SeasonBean lastSeason;
+        List<SeasonBean> seasons = series.getSeasons();
+        if (seasons == null) {
+            seasons = new ArrayList<SeasonBean>();
+        }
+        lastSeason = new SeasonBean();
+        lastSeason.setNumber(seasonNumber);
+        lastSeason.setSeries(series);
+        seasons.add(lastSeason);
+        series.setSeasons(seasons);
+        return lastSeason;
+    }
+
+    /**
+     * Special {@link EpisodeBean} process.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @param episode the {@link EpisodeBean} to process
+     * @param seasonNumber the {@link SeasonBean} number to use
+     */
+    private void specialEpisodeProcess(SeriesBean series, EpisodeBean episode, Integer seasonNumber) {
+        List<SeasonBean> seasons = series.getSeasons();
+        for (SeasonBean season : seasons) {
+            if (seasonNumber.equals(season.getNumber())) {
+                episode.setSeason(season);
+                season.getEpisodes().add(episode);
+            }
+        }
+    }
+
+    /**
+     * Builds the {@link EpisodeBean} from the String array.
+     * 
+     * @param strings the String array contained all the {@link EpisodeBean}
+     *            informations
+     * @return the built {@link EpisodeBean}
+     */
+    private EpisodeBean buildEpisode(String[] strings) {
+        EpisodeBean episode = new EpisodeBean();
+        if (!strings[0].isEmpty()) {
+            episode.setNumber(Integer.valueOf(strings[0]));
+        }
+        if (!strings[2].isEmpty()) {
+            episode.setEpisode(Integer.valueOf(strings[2]));
+        }
+        if (!strings[3].isEmpty()) {
+            episode.setProductionCode(strings[3]);
+        }
+        String date = strings[4];
+        if (!"UNAIRED".equals(date)) {
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US);
+                date = date.replaceAll("\"", "");
+                Date airDate = simpleDateFormat.parse(date);
+                episode.setAirDate(airDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        episode.setTitle(strings[5]);
+        boolean notSpecial = NOT_SPECIAL_EPISODE.equals(strings[6]);
+        if (notSpecial) {
+            episode.setSpecial(Boolean.FALSE);
+        } else {
+            episode.setSpecial(Boolean.TRUE);
+        }
+        episode.setTvRageLink(strings[7]);
+        return episode;
     }
 
 }
