@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author chesteric31
  */
-public class SeriesBean {
+public class SeriesBean extends AbstractIdentityBean {
 
     private String title;
     private int tvRageId;

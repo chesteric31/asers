@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author chesteric31
  */
-public class SeasonBean {
+public class SeasonBean extends AbstractIdentityBean {
     
     private int number;
     private SeriesBean series;

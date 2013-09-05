@@ -43,6 +43,7 @@ public class FinderServiceImpl implements FinderService {
     private static final String EPGUIDES_URL = "http://epguides.com/";
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
     private Context context;
     private SeriesDao seriesDao;
     private SeasonDao seasonDao;
@@ -116,9 +117,79 @@ public class FinderServiceImpl implements FinderService {
      */
     @Override
     public SeriesBean addSeries(SeriesBean series) {
+        ContentValues values = mapSeriesContentValues(series);
+        if (series.getId() != null) {
+            seriesDao.update(values, series.getId());
+            return series;
+        } else {
+            Series addedSeries = seriesDao.add(values);
+            List<SeasonBean> seasons = series.getSeasons();
+            for (SeasonBean season : seasons) {
+                ContentValues seasonValues = mapSeasonContentValues(addedSeries, season);
+                Season addedSeason = seasonDao.add(seasonValues);
+                addedSeason.setSeries(addedSeries);
+                List<EpisodeBean> episodes = season.getEpisodes();
+                for (EpisodeBean episode : episodes) {
+                    ContentValues episodeValues = mapEpisodeContentValues(addedSeason, episode);
+                    Episode addedEpisode = episodeDao.add(episodeValues);
+                    addedEpisode.setSeason(addedSeason);
+                }
+            }
+            return mapSeries(addedSeries);
+        }
+        
+    }
+
+    /**
+     * Maps a {@link EpisodeBean} to a {@link ContentValues}.
+     * 
+     * @param addedSeason the {@link Season} to use
+     * @param episode the {@link EpisodeBean} to map
+     * @return the mapped {@link ContentValues}
+     */
+    private ContentValues mapEpisodeContentValues(Season addedSeason, EpisodeBean episode) {
+        ContentValues episodeValues = new ContentValues();
+        Date airDate = episode.getAirDate();
+        if (airDate != null) {
+            episodeValues.put(Episode.COLUMN_AIR_DATE, dateFormat.format(airDate));
+        } else {
+            episodeValues.put(Episode.COLUMN_AIR_DATE, "");
+        }
+        episodeValues.put(Episode.COLUMN_EPISODE, episode.getEpisode());
+        episodeValues.put(Episode.COLUMN_NUMBER, episode.getNumber());
+        episodeValues.put(Episode.COLUMN_PRODUCTION_CODE, episode.getProductionCode());
+        episodeValues.put(Episode.COLUMN_SEASON, addedSeason.getId());
+        episodeValues.put(Episode.COLUMN_SPECIAL, episode.getSpecial());
+        episodeValues.put(Episode.COLUMN_TITLE, episode.getTitle());
+        episodeValues.put(Episode.COLUMN_TO_SEE, true);
+        episodeValues.put(Episode.COLUMN_TV_RAGE_LINK, episode.getTvRageLink());
+        return episodeValues;
+    }
+
+    /**
+     * Maps a {@link SeasonBean} to a {@link ContentValues}.
+     * 
+     * @param addedSeries the {@link Series} to use
+     * @param season the {@link SeasonBean} to map
+     * @return the mapped {@link ContentValues}
+     */
+    private ContentValues mapSeasonContentValues(Series addedSeries, SeasonBean season) {
+        ContentValues seasonValues = new ContentValues();
+        seasonValues.put(Season.COLUMN_NUMBER, season.getNumber());
+        seasonValues.put(Season.COLUMN_SERIES, addedSeries.getId());
+        return seasonValues;
+    }
+
+    /**
+     * Maps a {@link SeriesBean} to a {@link ContentValues}.
+     * 
+     * @param series the {@link SeriesBean} to map
+     * @return the mapped {@link ContentValues}
+     */
+    private ContentValues mapSeriesContentValues(SeriesBean series) {
         ContentValues values = new ContentValues();
+        values.put(Series.COLUMN_ID, series.getId());
         values.put(Series.COLUMN_COUNTRY, series.getCountry());
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
         if (series.getEndDate() != null) {
             values.put(Series.COLUMN_END_DATE, dateFormat.format(series.getEndDate()));
         } else {
@@ -131,36 +202,7 @@ public class FinderServiceImpl implements FinderService {
         values.put(Series.COLUMN_TITLE, series.getTitle());
         values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
         values.put(Series.COLUMN_STATUS, series.getStatus());
-        Series addedSeries = seriesDao.add(values);
-        List<SeasonBean> seasons = series.getSeasons();
-        for (SeasonBean season : seasons) {
-            ContentValues seasonValues = new ContentValues();
-            seasonValues.put(Season.COLUMN_NUMBER, season.getNumber());
-            seasonValues.put(Season.COLUMN_SERIES, addedSeries.getId());
-            Season addedSeason = seasonDao.add(seasonValues);
-            addedSeason.setSeries(addedSeries);
-            List<EpisodeBean> episodes = season.getEpisodes();
-            for (EpisodeBean episode : episodes) {
-                ContentValues episodeValues = new ContentValues();
-                Date airDate = episode.getAirDate();
-                if (airDate != null) {
-                    episodeValues.put(Episode.COLUMN_AIR_DATE, dateFormat.format(airDate));
-                } else {
-                    episodeValues.put(Episode.COLUMN_AIR_DATE, "");
-                }
-                episodeValues.put(Episode.COLUMN_EPISODE, episode.getEpisode());
-                episodeValues.put(Episode.COLUMN_NUMBER, episode.getNumber());
-                episodeValues.put(Episode.COLUMN_PRODUCTION_CODE, episode.getProductionCode());
-                episodeValues.put(Episode.COLUMN_SEASON, addedSeason.getId());
-                episodeValues.put(Episode.COLUMN_SPECIAL, episode.getSpecial());
-                episodeValues.put(Episode.COLUMN_TITLE, episode.getTitle());
-                episodeValues.put(Episode.COLUMN_TO_SEE, true);
-                episodeValues.put(Episode.COLUMN_TV_RAGE_LINK, episode.getTvRageLink());
-                Episode addedEpisode = episodeDao.add(episodeValues);
-                addedEpisode.setSeason(addedSeason);
-            }
-        }
-        return mapSeries(addedSeries);
+        return values;
     }
 
     /**
@@ -172,6 +214,7 @@ public class FinderServiceImpl implements FinderService {
     private SeriesBean mapSeries(Series model) {
         if (model != null) {
             SeriesBean bean = new SeriesBean();
+            bean.setId(model.getId());
             bean.setCountry(model.getCountry());
             bean.setEndDate(model.getEndDate());
             bean.setEpisodesNumber(model.getEpisodesNumber());
@@ -415,6 +458,16 @@ public class FinderServiceImpl implements FinderService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteMySeries(SeriesBean series) {
+        series.setStatus(Series.STATUS_INACTIVE);
+        ContentValues contentValues = mapSeriesContentValues(series);
+        seriesDao.update(contentValues, series.getId());
     }
 
     /**

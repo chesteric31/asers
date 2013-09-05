@@ -16,5 +16,10 @@
     <string name="add_series_selected">Selection: </string>
     <string name="title_activity_bug_report">BugReportActivity</string>
     <string name="ok_button">OK</string>
+    <string name="title_activity_delete_series">DeleteSeriesActivity</string>
+    <string name="delete_series_title">Series to delete</string>
+    <string name="delete_series_confirmation">Are you sure to delete this series?</string>
+    <string name="delete_series_confirmation_yes">Yes</string>
+    <string name="delete_series_confirmation_no">No</string>
 
 </resources>

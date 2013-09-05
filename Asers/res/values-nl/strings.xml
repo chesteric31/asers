@@ -15,5 +15,9 @@
 	<string name="add_series_loading_done">Lading af</string>
 	<string name="add_series_selected">Selectie: </string>
 	<string name="ok_button">OK</string>
+	<string name="delete_series_title">Series te verwijderen</string>
+	<string name="delete_series_confirmation">Bent u zeker dat u deze series verwijderen?</string>
+	<string name="delete_series_confirmation_yes">Ja</string>
+    <string name="delete_series_confirmation_no">Nee</string>
     
 </resources>

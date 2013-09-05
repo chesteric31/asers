@@ -94,4 +94,11 @@ public interface FinderService {
      */
     SeriesBean buildSkinnySeries(String[] tokens);
 
+    /**
+     * Deletes a {@link SeriesBean} from our favorites, i.e.: set to INACTIVE.
+     * 
+     * @param series the {@link SeriesBean} to set to INACTIVE
+     */
+    void deleteMySeries(SeriesBean series);
+
 }

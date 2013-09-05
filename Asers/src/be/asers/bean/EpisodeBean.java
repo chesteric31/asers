@@ -7,7 +7,7 @@ import java.util.Date;
  *
  * @author chesteric31
  */
-public class EpisodeBean {
+public class EpisodeBean extends AbstractIdentityBean {
 
     private Integer number;
     private Integer episode;

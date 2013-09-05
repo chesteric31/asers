@@ -15,5 +15,9 @@
     <string name="add_series_loading_done">Chargement terminé</string>
     <string name="add_series_selected">Sélection : </string>
     <string name="ok_button">OK</string>
+    <string name="delete_series_title">Séries à supprimer</string>
+    <string name="delete_series_confirmation">Êtes-vous sûr de vouloir supprimer cette série ?</string>
+    <string name="delete_series_confirmation_yes">Oui</string>
+    <string name="delete_series_confirmation_no">Non</string>
 
 </resources>

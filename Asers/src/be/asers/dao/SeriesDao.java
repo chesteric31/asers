@@ -43,7 +43,7 @@ public class SeriesDao extends AbstractDao {
         cursor.close();
         return newSeries;
     }
-    
+
     /**
      * Creates an {@link Series} from the {@link Cursor}.
      * 
@@ -87,22 +87,22 @@ public class SeriesDao extends AbstractDao {
      */
     public Series findByTitle(String title) {
         Series series = null;
-        StringBuilder sqlBuilder = new StringBuilder("SELECT ");
-        sqlBuilder.append("S." + Series.COLUMN_ID + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_COUNTRY + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_END_DATE + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_EPISODES_NUMBER + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_NETWORK + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_RUN_TIME + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_START_DATE + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_TITLE + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_TV_RAGE_ID + ", ");
-        sqlBuilder.append("S." + Series.COLUMN_STATUS + " ");
-        sqlBuilder.append("FROM ");
-        sqlBuilder.append(Series.TABLE_NAME + " S ");
-        sqlBuilder.append("WHERE ");
-        sqlBuilder.append("S." + Series.COLUMN_TITLE + " LIKE '%" + title + "%'");
-        Cursor cursor = getDatabase().rawQuery(sqlBuilder.toString(), null);
+        StringBuilder builder = new StringBuilder("SELECT ");
+        builder.append("S." + Series.COLUMN_ID + ", ");
+        builder.append("S." + Series.COLUMN_COUNTRY + ", ");
+        builder.append("S." + Series.COLUMN_END_DATE + ", ");
+        builder.append("S." + Series.COLUMN_EPISODES_NUMBER + ", ");
+        builder.append("S." + Series.COLUMN_NETWORK + ", ");
+        builder.append("S." + Series.COLUMN_RUN_TIME + ", ");
+        builder.append("S." + Series.COLUMN_START_DATE + ", ");
+        builder.append("S." + Series.COLUMN_TITLE + ", ");
+        builder.append("S." + Series.COLUMN_TV_RAGE_ID + ", ");
+        builder.append("S." + Series.COLUMN_STATUS + " ");
+        builder.append("FROM ");
+        builder.append(Series.TABLE_NAME + " S ");
+        builder.append("WHERE ");
+        builder.append("S." + Series.COLUMN_TITLE + " LIKE '%" + title + "%'");
+        Cursor cursor = getDatabase().rawQuery(builder.toString(), null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             series = retrieveSeries(cursor);
@@ -126,7 +126,7 @@ public class SeriesDao extends AbstractDao {
         cursor.close();
         return series;
     }
-    
+
     /**
      * Deletes all rows of the table.
      * 
@@ -134,6 +134,16 @@ public class SeriesDao extends AbstractDao {
      */
     public int deleteTable() {
         return getDatabase().delete(Series.TABLE_NAME, null, null);
+    }
+
+    /**
+     * Updates the {@link Series}.
+     * 
+     * @param contentValues the {@link ContentValues} to use
+     * @param id the id of the series to update
+     */
+    public void update(ContentValues contentValues, Long id) {
+        getDatabase().update(Series.TABLE_NAME, contentValues, "_id=" + id, null);
     }
 
 }

@@ -14,6 +14,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import be.asers.AsersApplication;
+import be.asers.DeleteSeriesActivity;
 import be.asers.R;
 import be.asers.bean.SeriesBean;
 
@@ -24,7 +25,7 @@ import be.asers.bean.SeriesBean;
  */
 public class MainActivity extends Activity {
 
-    private static final int ADD_SERIES_REQUEST = 0;
+    private static final int REQUEST_CODE = 0;
     private TableLayout mySeriesTable;
 
     /**
@@ -49,7 +50,16 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent addSeriesActivity = new Intent(MainActivity.this, AddSeriesActivity.class);
-                startActivityForResult(addSeriesActivity, ADD_SERIES_REQUEST);
+                startActivityForResult(addSeriesActivity, REQUEST_CODE);
+            }
+        });
+        Button deleteSeriesButton = (Button) findViewById(R.id.delete_series_button);
+        deleteSeriesButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent deleteSeriesActivity = new Intent(MainActivity.this, DeleteSeriesActivity.class);
+                startActivityForResult(deleteSeriesActivity, REQUEST_CODE);
             }
         });
     }
@@ -59,7 +69,7 @@ public class MainActivity extends Activity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ADD_SERIES_REQUEST) {
+        if (requestCode == REQUEST_CODE) {
             if (resultCode == RESULT_CANCELED) {
                 fillTableData(mySeriesTable);
             }
@@ -77,12 +87,22 @@ public class MainActivity extends Activity {
             mySeries = new MySeriesFinderTask().execute().get();
             TextView textView = null;
             TableRow tableRow = null;
-            for (SeriesBean series : mySeries) {
-                textView = new TextView(this);
-                textView.setText(series.toString());
-                tableRow = new TableRow(this);
-                tableRow.addView(textView);
-                mySeriesTable.addView(tableRow);
+            if (!mySeries.isEmpty()) {
+                for (SeriesBean series : mySeries) {
+                    textView = new TextView(this);
+                    textView.setText(series.toString());
+                    tableRow = new TableRow(this);
+                    tableRow.addView(textView);
+                    mySeriesTable.addView(tableRow);
+                }
+            } else {
+                for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
+                    if (i > 0) {
+                        // don't remove text view
+                        TableRow row = (TableRow) mySeriesTable.getChildAt(i);
+                        mySeriesTable.removeView(row);
+                    }
+                }
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

@@ -41,9 +41,7 @@ public class AddSeriesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Thread.setDefaultUncaughtExceptionHandler(new AsersUncaughtExceptionHandler(this));
-
         setContentView(R.layout.activity_add_series);
         buildProgressDialog();
         addSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_series_auto_complete);
@@ -122,21 +120,6 @@ public class AddSeriesActivity extends Activity {
             asersApplication.getFinderService().addMySeries(params[0]);
             return null;
         }
-    }
-
-    /**
-     * Interface to signal that the task is completed.
-     * 
-     * @author chesteric31
-     */
-    private interface OnCompleteTaskListener {
-
-        /**
-         * Method called on complete.
-         * 
-         * @param result the result: list of {@link SeriesBean}
-         */
-        void onComplete(List<SeriesBean> result);
     }
 
     /**
@@ -236,7 +219,6 @@ public class AddSeriesActivity extends Activity {
                 addSeriesActivity.updateProgress(values[0]);
             }
         }
-        
     }
 
 }
