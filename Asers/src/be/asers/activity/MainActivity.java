@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -96,8 +97,10 @@ public class MainActivity extends Activity {
                 if (!mySeries.isEmpty()) {
                     for (SeriesBean series : mySeries) {
                         textView = new TextView(MainActivity.this);
+                        textView.setTextColor(getResources().getColor(R.color.series_color));
                         textView.setText(series.toString());
                         tableRow = new TableRow(MainActivity.this);
+                        tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
                         tableRow.addView(textView);
                         mySeriesTable.addView(tableRow);
                     }
