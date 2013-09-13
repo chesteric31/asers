@@ -88,6 +88,8 @@ public class MainActivity extends Activity {
              */
             @Override
             public void onComplete(List<SeriesBean> result) {
+                mySeries.clear();
+                clear(mySeriesTable);
                 mySeries.addAll(result);
                 TextView textView = null;
                 TableRow tableRow = null;
@@ -100,12 +102,16 @@ public class MainActivity extends Activity {
                         mySeriesTable.addView(tableRow);
                     }
                 } else {
-                    for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
-                        if (i > 0) {
-                            // don't remove text view
-                            TableRow row = (TableRow) mySeriesTable.getChildAt(i);
-                            mySeriesTable.removeView(row);
-                        }
+                    clear(mySeriesTable);
+                }
+            }
+
+            private void clear(final TableLayout mySeriesTable) {
+                for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
+                    if (i > 0) {
+                        // don't remove text view
+                        TableRow row = (TableRow) mySeriesTable.getChildAt(i);
+                        mySeriesTable.removeView(row);
                     }
                 }
             }
