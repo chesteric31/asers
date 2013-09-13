@@ -46,7 +46,7 @@ public class AddSeriesActivity extends Activity {
         buildProgressDialog();
         addSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_series_auto_complete);
         final List<SeriesBean> series = new ArrayList<SeriesBean>();
-        new FindAllSeriesTask(AddSeriesActivity.this, new OnCompleteTaskListener() {
+        new FindAllSeriesTask(AddSeriesActivity.this, new OnCompleteTaskListener<List<SeriesBean>>() {
 
             @Override
             public void onComplete(List<SeriesBean> result) {
@@ -127,10 +127,9 @@ public class AddSeriesActivity extends Activity {
      * 
      * @author chesteric31
      */
-    private class FindAllSeriesTask extends AsyncTask<Void, Integer, List<SeriesBean>> {
+    private class FindAllSeriesTask extends AbstractOnCompleteAsyncTask<Void, Integer, List<SeriesBean>> {
 
         private WeakReference<AddSeriesActivity> activity = null;
-        private final OnCompleteTaskListener onCompleteTaskListener;
 
         /**
          * Constructor.
@@ -138,9 +137,10 @@ public class AddSeriesActivity extends Activity {
          * @param addSeriesActivity the {@link AddSeriesActivity} to use
          * @param taskListener the {@link OnCompleteTaskListener} to use
          */
-        public FindAllSeriesTask(AddSeriesActivity addSeriesActivity, OnCompleteTaskListener taskListener) {
+        public FindAllSeriesTask(AddSeriesActivity addSeriesActivity,
+                OnCompleteTaskListener<List<SeriesBean>> taskListener) {
+            super(taskListener);
             activity = new WeakReference<AddSeriesActivity>(addSeriesActivity);
-            onCompleteTaskListener = taskListener;
         }
 
         /**
@@ -168,7 +168,7 @@ public class AddSeriesActivity extends Activity {
                 if (dialog != null && dialog.isShowing()) {
                     dialog.dismiss();
                 }
-                onCompleteTaskListener.onComplete(result);
+                super.onPostExecute(result);
             }
         }
 

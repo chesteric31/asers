@@ -41,7 +41,7 @@
             android:label="@string/title_activity_bug_report" >
         </activity>
         <activity
-            android:name="be.asers.DeleteSeriesActivity"
+            android:name="be.asers.activity.DeleteSeriesActivity"
             android:label="@string/title_activity_delete_series" >
         </activity>
     </application>

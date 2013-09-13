@@ -1,20 +1,17 @@
 package be.asers.activity;
 
-import java.util.List;
-
-import be.asers.bean.SeriesBean;
-
 /**
  * Interface to signal that the task is completed.
  * 
+ * @param <Result> the result type
  * @author chesteric31
  */
-public interface OnCompleteTaskListener {
+public interface OnCompleteTaskListener<Result> {
 
     /**
      * Method called on complete.
      * 
-     * @param result the result: list of {@link SeriesBean}
+     * @param result the result
      */
-    void onComplete(List<SeriesBean> result);
+    void onComplete(Result result);
 }

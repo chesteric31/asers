@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import be.asers.AsersApplication;
-import be.asers.DeleteSeriesActivity;
 import be.asers.R;
 import be.asers.bean.SeriesBean;
 
@@ -81,9 +79,9 @@ public class MainActivity extends Activity {
      * 
      * @param mySeriesTable the spinner to use
      */
-    private void fillTableData(TableLayout mySeriesTable) {
+    private void fillTableData(final TableLayout mySeriesTable) {
         final List<SeriesBean> mySeries = new ArrayList<SeriesBean>();
-        new MySeriesFinderTask(new OnCompleteTaskListener() {
+        new MySeriesFinderTask(new OnCompleteTaskListener<List<SeriesBean>>() {
             
             /**
              * {@inheritDoc}
@@ -91,27 +89,27 @@ public class MainActivity extends Activity {
             @Override
             public void onComplete(List<SeriesBean> result) {
                 mySeries.addAll(result);
-            }
-        }).execute();
-        TextView textView = null;
-        TableRow tableRow = null;
-        if (!mySeries.isEmpty()) {
-            for (SeriesBean series : mySeries) {
-                textView = new TextView(this);
-                textView.setText(series.toString());
-                tableRow = new TableRow(this);
-                tableRow.addView(textView);
-                mySeriesTable.addView(tableRow);
-            }
-        } else {
-            for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
-                if (i > 0) {
-                    // don't remove text view
-                    TableRow row = (TableRow) mySeriesTable.getChildAt(i);
-                    mySeriesTable.removeView(row);
+                TextView textView = null;
+                TableRow tableRow = null;
+                if (!mySeries.isEmpty()) {
+                    for (SeriesBean series : mySeries) {
+                        textView = new TextView(MainActivity.this);
+                        textView.setText(series.toString());
+                        tableRow = new TableRow(MainActivity.this);
+                        tableRow.addView(textView);
+                        mySeriesTable.addView(tableRow);
+                    }
+                } else {
+                    for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
+                        if (i > 0) {
+                            // don't remove text view
+                            TableRow row = (TableRow) mySeriesTable.getChildAt(i);
+                            mySeriesTable.removeView(row);
+                        }
+                    }
                 }
             }
-        }
+        }).execute();
     }
 
     /**
@@ -129,9 +127,7 @@ public class MainActivity extends Activity {
      * 
      * @author chesteric31
      */
-    private class MySeriesFinderTask extends AsyncTask<Void, Void, List<SeriesBean>> {
-
-        private OnCompleteTaskListener onCompleteTaskListener;
+    private class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<SeriesBean>> {
 
         /**
          * Constructor.
@@ -139,8 +135,8 @@ public class MainActivity extends Activity {
          * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
          *            use
          */
-        public MySeriesFinderTask(OnCompleteTaskListener onCompleteTaskListener) {
-            this.onCompleteTaskListener = onCompleteTaskListener;
+        public MySeriesFinderTask(OnCompleteTaskListener<List<SeriesBean>> onCompleteTaskListener) {
+            super(onCompleteTaskListener);
         }
 
         /**
@@ -150,14 +146,6 @@ public class MainActivity extends Activity {
         protected List<SeriesBean> doInBackground(Void... params) {
             AsersApplication asersApplication = (AsersApplication) getApplication();
             return asersApplication.getFinderService().findMySeries();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void onPostExecute(List<SeriesBean> result) {
-            onCompleteTaskListener.onComplete(result);
         }
     }
 

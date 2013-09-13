@@ -1,4 +1,4 @@
-package be.asers;
+package be.asers.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
-import be.asers.activity.OnCompleteTaskListener;
+import be.asers.AsersApplication;
+import be.asers.AsersUncaughtExceptionHandler;
+import be.asers.R;
 import be.asers.bean.SeriesBean;
 import be.asers.service.FinderService;
 
 /**
  * Activity to delete new series i.e.: set to INACTIVE
- * 
  * 
  * @author chesteric31
  */
@@ -42,7 +43,7 @@ public class DeleteSeriesActivity extends Activity {
         setContentView(R.layout.activity_delete_series);
         deleteSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.delete_series_auto_complete);
         final List<SeriesBean> series = new ArrayList<SeriesBean>();
-        new FindActiveSeriesTask(new OnCompleteTaskListener() {
+        new FindActiveSeriesTask(new OnCompleteTaskListener<List<SeriesBean>>() {
 
             @Override
             public void onComplete(List<SeriesBean> result) {
@@ -96,7 +97,7 @@ public class DeleteSeriesActivity extends Activity {
             }
         });
     }
-    
+
     /**
      * Asynchronous task to set INACTIVE a {@link SeriesBean}.
      * 
@@ -133,9 +134,7 @@ public class DeleteSeriesActivity extends Activity {
      * 
      * @author chesteric31
      */
-    private class FindActiveSeriesTask extends AsyncTask<Void, Void, List<SeriesBean>> {
-
-        private OnCompleteTaskListener onCompleteTaskListener;
+    private class FindActiveSeriesTask extends AbstractOnCompleteAsyncTask<Void, Void, List<SeriesBean>> {
 
         /**
          * Constructor.
@@ -143,8 +142,8 @@ public class DeleteSeriesActivity extends Activity {
          * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
          *            use
          */
-        public FindActiveSeriesTask(OnCompleteTaskListener onCompleteTaskListener) {
-            this.onCompleteTaskListener = onCompleteTaskListener;
+        public FindActiveSeriesTask(OnCompleteTaskListener<List<SeriesBean>> onCompleteTaskListener) {
+            super(onCompleteTaskListener);
         }
 
         /**
@@ -154,14 +153,6 @@ public class DeleteSeriesActivity extends Activity {
         protected List<SeriesBean> doInBackground(Void... params) {
             FinderService finderService = ((AsersApplication) getApplication()).getFinderService();
             return finderService.findMySeries();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void onPostExecute(List<SeriesBean> result) {
-            onCompleteTaskListener.onComplete(result);
         }
     }
 
