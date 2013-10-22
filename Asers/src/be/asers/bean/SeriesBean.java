@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Series bean.
- *
+ * 
  * @author chesteric31
  */
 public class SeriesBean extends AbstractIdentityBean {
@@ -146,7 +146,7 @@ public class SeriesBean extends AbstractIdentityBean {
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
     /**
      * @return the status
      */
@@ -167,7 +167,7 @@ public class SeriesBean extends AbstractIdentityBean {
     @Override
     public String toString() {
         if (title != null) {
-            return title;
+            return title + " / " + network;
         } else {
             return "";
         }
@@ -303,5 +303,5 @@ public class SeriesBean extends AbstractIdentityBean {
         }
         return true;
     }
-    
+
 }

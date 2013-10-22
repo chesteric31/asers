@@ -87,7 +87,7 @@ public interface FinderService {
     SeriesBean buildSeries(String[] tokens);
 
     /**
-     * Builds a "skinny" {@link SeriesBean} from the tokens only with title.
+     * Builds a "skinny" {@link SeriesBean} from the tokens only with title and network.
      * 
      * @param tokens the tokens to use
      * @return the built skinny {@link SeriesBean}

@@ -258,6 +258,7 @@ public class FinderServiceImpl implements FinderService {
     public SeriesBean buildSkinnySeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
+        series.setNetwork(tokens[7].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
         return series;
     }
 

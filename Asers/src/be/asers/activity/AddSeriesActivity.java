@@ -186,7 +186,6 @@ public class AddSeriesActivity extends Activity {
                 addSeriesActivity.getProgressDialog().setMax(contents.size());
             }
             int total = 0;
-            Log.d(AddSeriesActivity.class.getSimpleName(), "START LOOP");
             for (String content : contents) {
                 if (total == 50) {
                     break;
@@ -205,7 +204,6 @@ public class AddSeriesActivity extends Activity {
                     publishProgress(total);
                 }
             }
-            Log.d(AddSeriesActivity.class.getSimpleName(), "END LOOP");
             return series;
         }
 
