@@ -13,7 +13,7 @@ import be.asers.activity.BugReportActivity;
  */
 public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
-    private Thread.UncaughtExceptionHandler defaultHandler;
+    // private Thread.UncaughtExceptionHandler defaultHandler;
     private Context context;
 
     /**
@@ -22,7 +22,7 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
      * @param context the {@link Context}
      */
     public AsersUncaughtExceptionHandler(Context context) {
-        this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        // this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         this.context = context;
     }
 
@@ -40,7 +40,7 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
         // Process.killProcess(Process.myPid());
         // System.exit(10);
-        defaultHandler.uncaughtException(thread, exception);
+        // defaultHandler.uncaughtException(thread, exception);
     }
 
 }

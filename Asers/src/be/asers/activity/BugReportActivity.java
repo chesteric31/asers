@@ -1,6 +1,7 @@
 package be.asers.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -36,6 +37,8 @@ public class BugReportActivity extends Activity {
 
         findViewById(R.id.ok_button).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                Intent mainActivity = new Intent(BugReportActivity.this, MainActivity.class);
+                startActivityIfNeeded(mainActivity, 0);
                 finish();
             }
         });
