@@ -71,7 +71,7 @@ public class EpisodeDao extends AbstractDao {
         sqlBuilder.append(Series.TABLE_NAME + " S, ");
         sqlBuilder.append(Season.TABLE_NAME + " SE ");
         sqlBuilder.append("WHERE ");
-        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = S." + Season.COLUMN_ID + " ");
+        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = SE." + Season.COLUMN_ID + " ");
         sqlBuilder.append("AND ");
         sqlBuilder.append("S." + Series.COLUMN_ID + " = SE." + Season.COLUMN_SERIES);
         Cursor cursor = getDatabase().rawQuery(sqlBuilder.toString(), null);
@@ -111,7 +111,6 @@ public class EpisodeDao extends AbstractDao {
         episode.setTitle(cursor.getString(5));
         episode.setSpecial(Boolean.parseBoolean(cursor.getString(6)));
         episode.setTvRageLink(cursor.getString(7));
-        // episode.setSeason(season)
         return episode;
     }
 }
