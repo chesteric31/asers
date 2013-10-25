@@ -62,10 +62,14 @@ public class SeriesDao extends AbstractDao {
             SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
             Date startDate;
             try {
-                startDate = dateFormat.parse(startDateTime);
-                series.setStartDate(startDate);
-                Date endDate = dateFormat.parse(endDateTime);
-                series.setEndDate(endDate);
+                if (startDateTime != null && !startDateTime.equals("")) {
+                    startDate = dateFormat.parse(startDateTime);
+                    series.setStartDate(startDate);
+                }
+                if (endDateTime != null && !endDateTime.equals("")) {
+                    Date endDate = dateFormat.parse(endDateTime);
+                    series.setEndDate(endDate);
+                }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
