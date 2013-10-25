@@ -5,7 +5,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="hello_world">Hello world!</string>
     <string name="my_series_label">MES SÉRIES</string>
-    <string name="management_series_label">GESTION DES SÉRIES</string>
+    <string name="series_management_label">GESTION DES SÉRIES</string>
     <string name="add_series_button">Ajout</string>
     <string name="modify_series_button">Modification</string>
     <string name="delete_series_button">Suppression</string>

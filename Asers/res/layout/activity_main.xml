@@ -1,58 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.app.FragmentTabHost
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    android:orientation="vertical"
-    tools:context=".MainActivity" >
+    android:layout_height="match_parent">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <TableLayout
-            android:id="@+id/my_series_table"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="@string/my_series_label"
-                android:textColor="@color/text_color"
-                android:textSize="@dimen/header" />
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="0"/>
 
-        </TableLayout>
-    </ScrollView>
+        <FrameLayout
+            android:id="@+id/realtabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:text="@string/management_series_label"
-        android:textColor="@color/text_color"
-        android:textSize="@dimen/header" />
-
-    <Button
-        android:id="@+id/add_series_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="@string/add_series_button" />
-
-    <Button
-        android:id="@+id/modify_series_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="@string/modify_series_button" />
-
-    <Button
-        android:id="@+id/delete_series_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:text="@string/delete_series_button" />
-
-</LinearLayout>
+    </LinearLayout>
+</android.support.v4.app.FragmentTabHost>

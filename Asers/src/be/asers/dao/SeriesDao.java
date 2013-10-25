@@ -18,7 +18,7 @@ import be.asers.model.Series;
  * @author chesteric31
  */
 public class SeriesDao extends AbstractDao {
-
+    
     /**
      * Constructor.
      * 

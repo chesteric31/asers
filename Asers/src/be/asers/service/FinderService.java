@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
 
@@ -100,5 +101,13 @@ public interface FinderService {
      * @param series the {@link SeriesBean} to set to INACTIVE
      */
     void deleteMySeries(SeriesBean series);
+    
+    /**
+     * Finds air date of episode after today.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @return the found air date of episode after today
+     */
+    EpisodeBean findAirDateNextEpisode(SeriesBean series);
 
 }

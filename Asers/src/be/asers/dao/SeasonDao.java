@@ -1,5 +1,8 @@
 package be.asers.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +10,7 @@ import be.asers.model.Season;
 
 /**
  * Data Access Object for Episode entity.
- *
+ * 
  * @author chesteric31
  */
 public class SeasonDao extends AbstractDao {
@@ -52,6 +55,29 @@ public class SeasonDao extends AbstractDao {
         } else {
             return null;
         }
+    }
+
+    public List<Season> findBySerieId(Long id) {
+        List<Season> seasons = new ArrayList<Season>();
+        StringBuilder builder = new StringBuilder("SELECT ");
+        builder.append("S." + Season.COLUMN_ID + ", ");
+        builder.append("S." + Season.COLUMN_NUMBER + ", ");
+        builder.append("S." + Season.COLUMN_SERIES + " ");
+        builder.append("FROM ");
+        builder.append(Season.TABLE_NAME + " S ");
+        builder.append("WHERE ");
+        builder.append("S." + Season.COLUMN_SERIES + " = " + id);
+        Cursor cursor = getDatabase().rawQuery(builder.toString(), null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                seasons.add(retrieveSeason(cursor));
+                cursor.moveToNext();
+            }
+            // Make sure to close the cursor
+            cursor.close();
+        }
+        return seasons;
     }
 
 }

@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -106,7 +109,12 @@ public class FinderServiceImpl implements FinderService {
             if (tokens[0].equals("\"" + title + "\"")) {
                 // if (token.matches("(.*)" + title + "(.*)")) {
                 SeriesBean bean = buildSeries(tokens);
-                return addSeries(bean);
+                try {
+                    bean = buildDetails(bean);
+                    return addSeries(bean);
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         return null;
@@ -153,7 +161,8 @@ public class FinderServiceImpl implements FinderService {
         ContentValues episodeValues = new ContentValues();
         Date airDate = episode.getAirDate();
         if (airDate != null) {
-            episodeValues.put(Episode.COLUMN_AIR_DATE, dateFormat.format(airDate));
+            episodeValues.put(Episode.COLUMN_AIR_DATE,
+                    new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US).format(airDate));
         } else {
             episodeValues.put(Episode.COLUMN_AIR_DATE, "");
         }
@@ -210,26 +219,60 @@ public class FinderServiceImpl implements FinderService {
     /**
      * Translates a {@link Series} model to a {@link SeriesBean}.
      * 
-     * @param model the {@link Series} to map
+     * @param series the {@link Series} to map
      * @return the mapped {@link SeriesBean}
      */
-    private SeriesBean mapSeries(Series model) {
-        if (model != null) {
+    private SeriesBean mapSeries(Series series) {
+        if (series != null) {
             SeriesBean bean = new SeriesBean();
-            bean.setId(model.getId());
-            bean.setCountry(model.getCountry());
-            bean.setEndDate(model.getEndDate());
-            bean.setEpisodesNumber(model.getEpisodesNumber());
-            bean.setNetwork(model.getNetwork());
-            bean.setRunTime(model.getRunTime());
-            bean.setStartDate(model.getStartDate());
-            bean.setTitle(model.getTitle());
-            bean.setTvRageId(model.getTvRageId());
-            bean.setStatus(model.getStatus());
+            bean.setId(series.getId());
+            bean.setCountry(series.getCountry());
+            bean.setEndDate(series.getEndDate());
+            bean.setEpisodesNumber(series.getEpisodesNumber());
+            bean.setNetwork(series.getNetwork());
+            bean.setRunTime(series.getRunTime());
+            bean.setStartDate(series.getStartDate());
+            bean.setTitle(series.getTitle());
+            bean.setTvRageId(series.getTvRageId());
+            bean.setStatus(series.getStatus());
+            List<Season> seasons = seasonDao.findBySerieId(series.getId());
+            List<SeasonBean> seasonBeans = new ArrayList<SeasonBean>();
+            if (seasons != null && !seasons.isEmpty()) {
+                for (Season season : seasons) {
+                    SeasonBean seasonBean = new SeasonBean();
+                    seasonBean.setId(season.getId());
+                    seasonBean.setNumber(season.getNumber());
+                    List<Episode> episodes = episodeDao.findAllForSeriesSeason(series, season);
+                    List<EpisodeBean> episodesBeans = new ArrayList<EpisodeBean>();
+                    if (episodes != null && !episodes.isEmpty()) {
+                        for (Episode episode : episodes) {
+                            EpisodeBean episodeBean = mapEpisode(seasonBean, episode);
+                            episodesBeans.add(episodeBean);
+                        }
+                    }
+                    seasonBean.setEpisodes(episodesBeans);
+                    seasonBeans.add(seasonBean);
+                }
+            }
+            bean.setSeasons(seasonBeans);
             return bean;
         } else {
             return null;
         }
+    }
+
+    private EpisodeBean mapEpisode(SeasonBean seasonBean, Episode episode) {
+        EpisodeBean episodeBean = new EpisodeBean();
+        episodeBean.setAirDate(episode.getAirDate());
+        episodeBean.setEpisode(episode.getEpisode());
+        episodeBean.setId(episode.getId());
+        episodeBean.setNumber(episode.getNumber());
+        episodeBean.setProductionCode(episode.getProductionCode());
+        episodeBean.setSeason(seasonBean);
+        episodeBean.setSpecial(episode.getSpecial());
+        episodeBean.setTitle(episode.getTitle());
+        episodeBean.setTvRageLink(episode.getTvRageLink());
+        return episodeBean;
     }
 
     /**
@@ -415,16 +458,12 @@ public class FinderServiceImpl implements FinderService {
      */
     @Override
     public SeriesBean findSeriesDetails(String title) throws IOException {
-        SeriesBean series = findSeries(title);
+        return findSeries(title);
+    }
+
+    private SeriesBean buildDetails(SeriesBean series) throws MalformedURLException {
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = createReader(url);
-        // try {
-        // new ReaderSeasonTask(series).execute(reader).get();
-        // } catch (InterruptedException e) {
-        // throw new RuntimeException(e);
-        // } catch (ExecutionException e) {
-        // throw new RuntimeException(e);
-        // }
         String line = null;
         boolean skipFurtherLines = false;
         int i = 0;
@@ -645,6 +684,38 @@ public class FinderServiceImpl implements FinderService {
         }
         episode.setTvRageLink(strings[7]);
         return episode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public EpisodeBean findAirDateNextEpisode(SeriesBean series) {
+        List<SeasonBean> seasons = series.getSeasons();
+        if (seasons != null && !seasons.isEmpty()) {
+            for (SeasonBean season : seasons) {
+                List<EpisodeBean> episodes = season.getEpisodes();
+                if (episodes != null && !episodes.isEmpty()) {
+                    for (EpisodeBean episode : episodes) {
+                        Calendar calendar = new GregorianCalendar();
+                        calendar.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
+                        calendar.set(Calendar.MINUTE, 0);
+                        calendar.set(Calendar.SECOND, 0);
+                        Date today = calendar.getTime();
+                        Date airDate = episode.getAirDate();
+                        if (airDate != null && airDate.after(today)) {
+                            EpisodeBean bean = new EpisodeBean();
+                            bean.setAirDate(airDate);
+                            SeasonBean seasonBean = new SeasonBean();
+                            seasonBean.setSeries(series);
+                            bean.setSeason(seasonBean);
+                            return bean;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

@@ -186,7 +186,7 @@ public class AddSeriesActivity extends Activity {
             }
             int total = 0;
             for (String content : contents) {
-                if (total == 50) {
+                if (total == 250) {
                     break;
                 }
                 if (content.length() > 0) {

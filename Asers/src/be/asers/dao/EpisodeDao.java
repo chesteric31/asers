@@ -65,14 +65,15 @@ public class EpisodeDao extends AbstractDao {
         sqlBuilder.append("E." + Episode.COLUMN_TITLE + ", ");
         sqlBuilder.append("E." + Episode.COLUMN_SPECIAL + ", ");
         sqlBuilder.append("E." + Episode.COLUMN_TV_RAGE_LINK + ", ");
-        sqlBuilder.append("E." + Episode.COLUMN_SEASON);
+        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " ");
         sqlBuilder.append("FROM ");
         sqlBuilder.append(Episode.TABLE_NAME + " E, ");
         sqlBuilder.append(Series.TABLE_NAME + " S, ");
-        sqlBuilder.append(Season.TABLE_NAME + "SE ");
+        sqlBuilder.append(Season.TABLE_NAME + " SE ");
         sqlBuilder.append("WHERE ");
-        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = S." + Season.COLUMN_ID);
-        sqlBuilder.append("S." + Season.COLUMN_SERIES + " = SE." + Series.COLUMN_ID);
+        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = S." + Season.COLUMN_ID + " ");
+        sqlBuilder.append("AND ");
+        sqlBuilder.append("S." + Series.COLUMN_ID + " = SE." + Season.COLUMN_SERIES);
         Cursor cursor = getDatabase().rawQuery(sqlBuilder.toString(), null);
 
         cursor.moveToFirst();

@@ -43,7 +43,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
-        RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
+        RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "");
         finder = new FinderServiceImpl(otherContext);
         finder.getSeriesDao().deleteTable();
     }
