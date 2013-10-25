@@ -87,6 +87,7 @@ public class SeriesDao extends AbstractDao {
      */
     public Series findByTitle(String title) {
         Series series = null;
+        title = title.replaceAll("'", "''");
         StringBuilder builder = new StringBuilder("SELECT ");
         builder.append("S." + Series.COLUMN_ID + ", ");
         builder.append("S." + Series.COLUMN_COUNTRY + ", ");
