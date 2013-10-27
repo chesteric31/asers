@@ -1,5 +1,6 @@
 package be.asers.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +74,13 @@ public class Season extends AbstractIdentity {
     @Override
     public String toString() {
         return String.valueOf(number);
+    }
+    
+    public void addEpisode(Episode episode) {
+        if (episodes == null) {
+            episodes = new ArrayList<Episode>();
+        }
+        episodes.add(episode);
     }
 
 }

@@ -12,7 +12,6 @@ import android.content.Context;
 import android.database.Cursor;
 import be.asers.model.Episode;
 import be.asers.model.Season;
-import be.asers.model.Series;
 
 /**
  * Data Access Object for {@link Episode} entity.
@@ -47,13 +46,12 @@ public class EpisodeDao extends AbstractDao {
     }
 
     /**
-     * Finds all the episodes for a {@link Series} and a {@link Season}.
+     * Finds all the episodes for a {@link Season}.
      * 
-     * @param series the {@link Series} to use
      * @param season the {@link Season} to use
-     * @return all the {@link Episode} for a {@link Series} and a {@link Season}
+     * @return all the {@link Episode} for a {@link Season}
      */
-    public List<Episode> findAllForSeriesSeason(Series series, Season season) {
+    public List<Episode> findAllForSeason(Season season) {
         List<Episode> episodes = new ArrayList<Episode>();
 
         StringBuilder sqlBuilder = new StringBuilder("SELECT ");
@@ -67,13 +65,9 @@ public class EpisodeDao extends AbstractDao {
         sqlBuilder.append("E." + Episode.COLUMN_TV_RAGE_LINK + ", ");
         sqlBuilder.append("E." + Episode.COLUMN_SEASON + " ");
         sqlBuilder.append("FROM ");
-        sqlBuilder.append(Episode.TABLE_NAME + " E, ");
-        sqlBuilder.append(Series.TABLE_NAME + " S, ");
-        sqlBuilder.append(Season.TABLE_NAME + " SE ");
+        sqlBuilder.append(Episode.TABLE_NAME + " E ");
         sqlBuilder.append("WHERE ");
-        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = SE." + Season.COLUMN_ID + " ");
-        sqlBuilder.append("AND ");
-        sqlBuilder.append("S." + Series.COLUMN_ID + " = SE." + Season.COLUMN_SERIES);
+        sqlBuilder.append("E." + Episode.COLUMN_SEASON + " = " + season.getId());
         Cursor cursor = getDatabase().rawQuery(sqlBuilder.toString(), null);
 
         cursor.moveToFirst();

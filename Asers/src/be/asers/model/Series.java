@@ -1,5 +1,6 @@
 package be.asers.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -195,6 +196,13 @@ public class Series extends AbstractIdentity {
     @Override
     public String toString() {
         return title;
+    }
+    
+    public void addSeason(Season season) {
+        if (seasons == null) {
+            seasons = new ArrayList<Season>();
+        }
+        seasons.add(season);
     }
 
 }

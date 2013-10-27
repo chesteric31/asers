@@ -142,9 +142,9 @@ public class FinderServiceImpl implements FinderService {
                         ContentValues episodeValues = mapEpisodeContentValues(addedSeason, episode);
                         Episode addedEpisode = episodeDao.add(episodeValues);
                         addedEpisode.setSeason(addedSeason);
-                        addedSeason.getEpisodes().add(addedEpisode);
+                        addedSeason.addEpisode(addedEpisode);
                     }
-                    addedSeries.getSeasons().add(addedSeason);
+                    addedSeries.addSeason(addedSeason);
                 }
             }
             return mapSeries(addedSeries);
@@ -244,7 +244,7 @@ public class FinderServiceImpl implements FinderService {
                     SeasonBean seasonBean = new SeasonBean();
                     seasonBean.setId(season.getId());
                     seasonBean.setNumber(season.getNumber());
-                    List<Episode> episodes = episodeDao.findAllForSeriesSeason(series, season);
+                    List<Episode> episodes = episodeDao.findAllForSeason(season);
                     List<EpisodeBean> episodesBeans = new ArrayList<EpisodeBean>();
                     if (episodes != null && !episodes.isEmpty()) {
                         for (Episode episode : episodes) {
