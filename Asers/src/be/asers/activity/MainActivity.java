@@ -32,8 +32,9 @@ public class MainActivity extends FragmentActivity {
         CharSequence mySeriesTitle = getResources().getText(R.string.my_series_label);
         TabSpec mySeriesTabSpec = tabHost.newTabSpec("my_series");
         tabHost.addTab(mySeriesTabSpec.setIndicator(mySeriesTitle), MySeriesFragment.class, null);
+        CharSequence nextEpisodesTitle = getResources().getText(R.string.next_episodes_label);
         TabSpec nextEpisodesTabSpec = tabHost.newTabSpec("next_episodes");
-        tabHost.addTab(nextEpisodesTabSpec.setIndicator("next_episodes"), NextEpisodesFragment.class, null);
+        tabHost.addTab(nextEpisodesTabSpec.setIndicator(nextEpisodesTitle), NextEpisodesFragment.class, null);
         CharSequence seriesManagementTitle = getResources().getText(R.string.series_management_label);
         TabSpec seriesManagementTabSpec = tabHost.newTabSpec("series_management");
         tabHost.addTab(seriesManagementTabSpec.setIndicator(seriesManagementTitle), SeriesManagementFragment.class,
