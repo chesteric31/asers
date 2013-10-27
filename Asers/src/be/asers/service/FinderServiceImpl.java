@@ -142,7 +142,9 @@ public class FinderServiceImpl implements FinderService {
                         ContentValues episodeValues = mapEpisodeContentValues(addedSeason, episode);
                         Episode addedEpisode = episodeDao.add(episodeValues);
                         addedEpisode.setSeason(addedSeason);
+                        addedSeason.getEpisodes().add(addedEpisode);
                     }
+                    addedSeries.getSeasons().add(addedSeason);
                 }
             }
             return mapSeries(addedSeries);
