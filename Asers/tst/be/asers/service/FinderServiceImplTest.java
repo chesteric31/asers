@@ -43,7 +43,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
         editor.commit();
-        RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "");
+        RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
         finder = new FinderServiceImpl(otherContext);
         finder.getSeriesDao().deleteTable();
     }
@@ -102,7 +102,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         series.setTitle("My Serie");
         series.setTvRageId(0);
         SeriesBean addedSeries = finder.addSeries(series);
-        assertTrue(series.equals(addedSeries));
+        assertTrue(addedSeries.getId() == 1L);
     }
 
     /**
