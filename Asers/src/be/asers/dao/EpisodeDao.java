@@ -94,10 +94,12 @@ public class EpisodeDao extends AbstractDao {
         episode.setEpisode(cursor.getInt(2));
         episode.setProductionCode(cursor.getString(3));
         String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(Episode.COLUMN_AIR_DATE));
-        Date airDate;
+        Date airDate = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US);
         try {
-            airDate = dateFormat.parse(dateTime);
+            if (!"".equals(dateTime)) {
+                airDate = dateFormat.parse(dateTime);
+            }
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

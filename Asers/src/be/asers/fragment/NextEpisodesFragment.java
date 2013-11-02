@@ -24,7 +24,7 @@ import be.asers.service.FinderService;
 /**
  * 
  * 
- *
+ * 
  * @author chesteric31
  */
 public class NextEpisodesFragment extends Fragment {
@@ -100,14 +100,16 @@ public class NextEpisodesFragment extends Fragment {
                 TextView textView = null;
                 TableRow tableRow = null;
                 if (!nextEpisodes.isEmpty()) {
-                    for (EpisodeBean episodes : nextEpisodes) {
+                    for (EpisodeBean episode : nextEpisodes) {
                         textView = new TextView(getActivity());
-                        Date airDate = episodes.getAirDate();
-                        String title = episodes.getSeason().getSeries().getTitle();
-                        textView.setText(title + " : " + airDate);
-                        tableRow = new TableRow(getActivity());
-                        tableRow.addView(textView);
-                        nextEpisodesTable.addView(tableRow);
+                        if (episode != null) {
+                            Date airDate = episode.getAirDate();
+                            String title = episode.getSeason().getSeries().getTitle();
+                            textView.setText(title + " : " + airDate);
+                            tableRow = new TableRow(getActivity());
+                            tableRow.addView(textView);
+                            nextEpisodesTable.addView(tableRow);
+                        }
                     }
                 } else {
                     clear(nextEpisodesTable);

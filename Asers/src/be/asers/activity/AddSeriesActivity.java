@@ -186,9 +186,9 @@ public class AddSeriesActivity extends Activity {
             }
             int total = 0;
             for (String content : contents) {
-                if (total == 350) {
-                    break;
-                }
+//                if (total == 350) {
+//                    break;
+//                }
                 if (content.length() > 0) {
                     total++;
                     String[] tokens = new String[9];

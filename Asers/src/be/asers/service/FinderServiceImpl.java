@@ -111,7 +111,8 @@ public class FinderServiceImpl implements FinderService {
                 SeriesBean bean = buildSeries(tokens);
                 try {
                     bean = buildDetails(bean);
-                    return addSeries(bean);
+                    addSeries(bean);
+                    return bean;
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
@@ -124,11 +125,10 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public SeriesBean addSeries(SeriesBean series) {
+    public void addSeries(SeriesBean series) {
         ContentValues values = mapSeriesContentValues(series);
         if (series.getId() != null) {
             seriesDao.update(values, series.getId());
-            return series;
         } else {
             Series addedSeries = seriesDao.add(values);
             List<SeasonBean> seasons = series.getSeasons();
@@ -147,9 +147,7 @@ public class FinderServiceImpl implements FinderService {
                     addedSeries.addSeason(addedSeason);
                 }
             }
-            return mapSeries(addedSeries);
         }
-        
     }
 
     /**
@@ -455,14 +453,6 @@ public class FinderServiceImpl implements FinderService {
     private static final String FIRST_COLUMN_TITLE = "number";
     private static final String NOT_SPECIAL_EPISODE = "n";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SeriesBean findSeriesDetails(String title) throws IOException {
-        return findSeries(title);
-    }
-
     private SeriesBean buildDetails(SeriesBean series) throws MalformedURLException {
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = createReader(url);
@@ -494,14 +484,10 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public SeriesBean addMySeries(SeriesBean series) {
-        try {
-            series = findSeriesDetails(series.getTitle());
-            series.setStatus(Series.STATUS_ACTIVE);
-            return addSeries(series);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void addMySeries(SeriesBean series) {
+        series = findSeries(series.getTitle());
+        series.setStatus(Series.STATUS_ACTIVE);
+        addSeries(series);
     }
 
     /**
@@ -667,14 +653,16 @@ public class FinderServiceImpl implements FinderService {
             episode.setProductionCode(strings[3]);
         }
         String date = strings[4];
-        if (!"UNAIRED".equals(date)) {
+        String unaired = "UNAIRED";
+        unaired = "\"" + unaired + "\"";
+        if (!unaired.equals(date) && !"UNKNOWN".equals(date) && !"UNAIRED".equals(date)) {
             try {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_PATTERN, Locale.US);
                 date = date.replaceAll("\"", "");
                 Date airDate = simpleDateFormat.parse(date);
                 episode.setAirDate(airDate);
             } catch (ParseException e) {
-                throw new RuntimeException(e);
+//                throw new RuntimeException(e);
             }
         }
         episode.setTitle(strings[5]);
@@ -700,7 +688,8 @@ public class FinderServiceImpl implements FinderService {
                 if (episodes != null && !episodes.isEmpty()) {
                     for (EpisodeBean episode : episodes) {
                         Calendar calendar = new GregorianCalendar();
-                        calendar.set(Calendar.HOUR_OF_DAY, 0); //anything 0 - 23
+                        calendar.set(Calendar.HOUR_OF_DAY, 0); // anything 0 -
+                                                               // 23
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         Date today = calendar.getTime();

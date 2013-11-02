@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,14 +16,14 @@ import be.asers.bean.SeriesBean;
 import be.asers.model.Series;
 
 /**
- * Test class for {@link FinderService}. 
- *
+ * Test class for {@link FinderService}.
+ * 
  * @author chesteric31
  */
 public class FinderServiceImplTest extends AndroidTestCase {
 
     private FinderService finder;
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -47,15 +46,16 @@ public class FinderServiceImplTest extends AndroidTestCase {
         finder = new FinderServiceImpl(otherContext);
         finder.getSeriesDao().deleteTable();
     }
-    
+
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}.
      */
     public void testFindSeries() {
-        String title = "friends";
+        String title = "Friends (1994)";
         SeriesBean series = finder.findSeries(title);
-//        assertTrue(title.equalsIgnoreCase(series.getTitle()));
-        assertTrue(series.getTitle().toLowerCase(Locale.US).contains(title));
+        // assertTrue(title.equalsIgnoreCase(series.getTitle()));
+        assertTrue(series.getTitle().contains(title));
         // "Friends (1994)",Friends,3616,Sep 1994,May
         // 2004,"239 eps","30 min","NBC",US
         assertTrue(series.getTvRageId() == 3616);
@@ -75,7 +75,8 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findMySeries()}.
+     * Test method for {@link be.asers.service.FinderServiceImpl#findMySeries()}
+     * .
      */
     public void testFindMySeries() {
         List<SeriesBean> series = finder.findMySeries();
@@ -83,7 +84,8 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#addSeries(SeriesBean)}.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#addSeries(SeriesBean)}.
      */
     public void testAddSeries() {
         SeriesBean series = new SeriesBean();
@@ -99,14 +101,18 @@ public class FinderServiceImplTest extends AndroidTestCase {
         series.setRunTime(30);
         series.setStartDate(time);
         series.setStatus(Series.STATUS_ACTIVE);
-        series.setTitle("My Serie");
+        String title = "My Serie";
+        series.setTitle(title);
         series.setTvRageId(0);
-        SeriesBean addedSeries = finder.addSeries(series);
+        finder.addSeries(series);
+        SeriesBean addedSeries = finder.findSeries(title);
         assertTrue(addedSeries.getId() == 1L);
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with null.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * with null.
      */
     public void testFindSeriesNull() {
         try {
@@ -118,7 +124,9 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with empty.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * with empty.
      */
     public void testFindSeriesEmpty() {
         try {
@@ -130,15 +138,17 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)} with unknown series.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * with unknown series.
      */
     public void testFindSeriesNotFoundSeries() {
         assertNull(finder.findSeries("xyzxyz"));
     }
 
     /**
-     * Clears a calendar: set to minimum the date, 0 for hour, minute, second and
-     * millisecond.
+     * Clears a calendar: set to minimum the date, 0 for hour, minute, second
+     * and millisecond.
      * 
      * @param calendar the calendar to clear
      */
@@ -152,12 +162,14 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)}.
+     * Test method for
+     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * .
      * 
      * @throws IOException if an error occurred
      */
     public void testFindSeriesDetails() throws IOException {
-        SeriesBean series = finder.findSeriesDetails("Friends");
+        SeriesBean series = finder.findSeries("Friends (1994)");
         assertTrue(series != null);
         int episodesNumber = 0;
         List<SeasonBean> seasons = series.getSeasons();
@@ -166,7 +178,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
             episodesNumber += season.getEpisodes().size();
         }
         assertTrue(episodesNumber == series.getEpisodesNumber());
-        SeasonBean firstSeason = series.getSeasons().get(0);
+        SeasonBean firstSeason = seasons.get(0);
         assertTrue(series.equals(firstSeason.getSeries()));
         EpisodeBean firstEpisode = firstSeason.getEpisodes().get(0);
         assertTrue(series.equals(firstEpisode.getSeason().getSeries()));
@@ -179,31 +191,4 @@ public class FinderServiceImplTest extends AndroidTestCase {
         assertTrue(firstEpisode.getTvRageLink() != null);
     }
 
-    /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)} with null.
-     * 
-     * @throws IOException if an error occurred
-     */
-    public void testFindSeriesDetailsNull() throws IOException {
-        try {
-            finder.findSeriesDetails(null);
-            fail("That cannot be there");
-        } catch (IllegalArgumentException e) {
-            System.out.println("That's ok!");
-        }
-    }
-
-    /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findSeriesDetails(java.lang.String)} with empty.
-     * 
-     * @throws IOException if an error occurred
-     */
-    public void testFindSeriesDetailsEmpty() throws IOException {
-        try {
-            finder.findSeriesDetails("");
-            fail("That cannot be there");
-        } catch (IllegalArgumentException e) {
-            System.out.println("That's ok!");
-        }
-    }
 }
