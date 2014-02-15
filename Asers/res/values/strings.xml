@@ -22,7 +22,5 @@
     <string name="delete_series_confirmation">Are you sure to delete this series?</string>
     <string name="delete_series_confirmation_yes">Yes</string>
     <string name="delete_series_confirmation_no">No</string>
-    <string name="title_activity_fragment_tabs">FragmentTabs</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
