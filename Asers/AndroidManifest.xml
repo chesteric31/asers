@@ -44,15 +44,6 @@
             android:name="be.asers.activity.DeleteSeriesActivity"
             android:label="@string/title_activity_delete_series" >
         </activity>
-        <activity
-            android:name="be.asers.FragmentTabs"
-            android:label="@string/title_activity_fragment_tabs" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
     <instrumentation
