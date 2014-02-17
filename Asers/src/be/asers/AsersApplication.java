@@ -2,7 +2,7 @@ package be.asers;
 
 import android.app.Application;
 import be.asers.service.FinderService;
-import be.asers.service.FinderServiceImpl;
+import be.asers.service.impl.FinderServiceImpl;
 
 /**
  * Asers application.

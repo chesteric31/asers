@@ -1,4 +1,4 @@
-package be.asers.service;
+package be.asers.service.impl;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -14,6 +14,7 @@ import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
 import be.asers.model.Series;
+import be.asers.service.FinderService;
 
 /**
  * Test class for {@link FinderService}.
@@ -49,7 +50,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}.
+     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}.
      */
     public void testFindSeries() {
         String title = "Friends (1994)";
@@ -75,7 +76,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.FinderServiceImpl#findMySeries()}
+     * Test method for {@link be.asers.service.impl.FinderServiceImpl#findMySeries()}
      * .
      */
     public void testFindMySeries() {
@@ -85,7 +86,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#addSeries(SeriesBean)}.
+     * {@link be.asers.service.impl.FinderServiceImpl#addSeries(SeriesBean)}.
      */
     public void testAddSeries() {
         SeriesBean series = new SeriesBean();
@@ -111,7 +112,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
      * with null.
      */
     public void testFindSeriesNull() {
@@ -125,7 +126,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
      * with empty.
      */
     public void testFindSeriesEmpty() {
@@ -139,7 +140,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
      * with unknown series.
      */
     public void testFindSeriesNotFoundSeries() {
@@ -163,7 +164,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
      * .
      * 
      * @throws IOException if an error occurred

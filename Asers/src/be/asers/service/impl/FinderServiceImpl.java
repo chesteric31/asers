@@ -1,4 +1,4 @@
-package be.asers.service;
+package be.asers.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +30,7 @@ import be.asers.dao.SeriesDao;
 import be.asers.model.Episode;
 import be.asers.model.Season;
 import be.asers.model.Series;
+import be.asers.service.FinderService;
 
 /**
  * {@link Series} Finder service.

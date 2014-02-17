@@ -1,4 +1,4 @@
-package be.asers.service;
+package be.asers.task;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class ReaderStringTaskTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.UrlReaderTask#retrieveBasicUrlContent(java.net.URL)}
+     * {@link be.asers.task.UrlReaderTask#retrieveBasicUrlContent(java.net.URL)}
      * with empty.
      * 
      * @throws IOException if an error occurred
