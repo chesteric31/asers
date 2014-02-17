@@ -677,7 +677,7 @@ public class FinderServiceImpl implements FinderService {
                 episode.setAirDate(airDate);
             } catch (ParseException e) {
                 System.err.println(e.getLocalizedMessage());
-//                throw new RuntimeException(e);
+                // throw new RuntimeException(e);
             }
         }
         episode.setTitle(strings[5]);

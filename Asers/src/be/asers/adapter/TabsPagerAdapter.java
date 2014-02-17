@@ -31,13 +31,13 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (index) {
         case 0:
-            fragment = new MySeriesFragment();
+            fragment = MySeriesFragment.getInstance();
             break;
         case 1:
-            fragment = new NextEpisodesFragment();
+            fragment = NextEpisodesFragment.getInstance();
             break;
         case 2:
-            fragment = new SeriesManagementFragment();
+            fragment = SeriesManagementFragment.getInstance();
             break;
         default:
             break;

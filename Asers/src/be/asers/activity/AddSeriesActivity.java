@@ -188,9 +188,10 @@ public class AddSeriesActivity extends Activity {
             int total = 0;
 //            long startTime = System.currentTimeMillis();
             for (int i = 0; i < size; i++) {
-                if (total == 1000) {
-                    break;
-                }
+                //TODO
+//                if (total == 1000) {
+//                    break;
+//                }
                 String content = contents.get(i);
                 if (content.length() > 0) {
                     total++;
