@@ -57,6 +57,12 @@ public class SeasonDao extends AbstractDao {
         }
     }
 
+    /**
+     * Finds season by Serie id.
+     * 
+     * @param id the Serie id
+     * @return the found seasons, empty list if none found
+     */
     public List<Season> findBySerieId(Long id) {
         List<Season> seasons = new ArrayList<Season>();
         StringBuilder builder = new StringBuilder("SELECT ");
