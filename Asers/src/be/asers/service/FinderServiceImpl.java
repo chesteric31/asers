@@ -261,6 +261,13 @@ public class FinderServiceImpl implements FinderService {
         }
     }
 
+    /**
+     * Maps a {@link EpisodeBean} from {@link SeasonBean} and {@link Episode}.
+     * 
+     * @param seasonBean the {@link SeasonBean} to use
+     * @param episode the {@link Episode} to map
+     * @return the mapped {@link EpisodeBean}
+     */
     private EpisodeBean mapEpisode(SeasonBean seasonBean, Episode episode) {
         EpisodeBean episodeBean = new EpisodeBean();
         episodeBean.setAirDate(episode.getAirDate());
@@ -453,6 +460,13 @@ public class FinderServiceImpl implements FinderService {
     private static final String FIRST_COLUMN_TITLE = "number";
     private static final String NOT_SPECIAL_EPISODE = "n";
 
+    /**
+     * Builds a {@link SeriesBean} with episodes from {@link SeriesBean}.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @return the built {@link SeriesBean}
+     * @throws MalformedURLException if an error occurred
+     */
     private SeriesBean buildDetails(SeriesBean series) throws MalformedURLException {
         URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
         BufferedReader reader = createReader(url);
@@ -662,6 +676,7 @@ public class FinderServiceImpl implements FinderService {
                 Date airDate = simpleDateFormat.parse(date);
                 episode.setAirDate(airDate);
             } catch (ParseException e) {
+                System.err.println(e.getLocalizedMessage());
 //                throw new RuntimeException(e);
             }
         }
@@ -688,8 +703,7 @@ public class FinderServiceImpl implements FinderService {
                 if (episodes != null && !episodes.isEmpty()) {
                     for (EpisodeBean episode : episodes) {
                         Calendar calendar = new GregorianCalendar();
-                        calendar.set(Calendar.HOUR_OF_DAY, 0); // anything 0 -
-                                                               // 23
+                        calendar.set(Calendar.HOUR_OF_DAY, 0);
                         calendar.set(Calendar.MINUTE, 0);
                         calendar.set(Calendar.SECOND, 0);
                         Date today = calendar.getTime();
