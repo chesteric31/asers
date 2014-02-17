@@ -181,28 +181,33 @@ public class AddSeriesActivity extends Activity {
             BufferedReader bufferedReader = finderService.createReader(null);
             List<String> contents = finderService.createStringsContent(bufferedReader);
             AddSeriesActivity addSeriesActivity = activity.get();
+            int size = contents.size();
             if (addSeriesActivity != null) {
-                addSeriesActivity.getProgressDialog().setMax(contents.size());
+                addSeriesActivity.getProgressDialog().setMax(size);
             }
             int total = 0;
-            for (String content : contents) {
-//                if (total == 350) {
-//                    break;
-//                }
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < size; i++) {
+                if (total == 1000) {
+                    break;
+                }
+                String content = contents.get(i);
                 if (content.length() > 0) {
                     total++;
                     String[] tokens = new String[9];
                     String[] splits = content.split(CSV_DELIMITER);
-                    int i = 0;
-                    for (String split : splits) {
-                        tokens[i] = split;
-                        i++;
+                    int length = splits.length;
+                    for (int j = 0; j < length; j++) {
+                        tokens[j] = splits[j];
                     }
                     SeriesBean bean = finderService.buildSkinnySeries(tokens);
                     series.add(bean);
                     publishProgress(total);
                 }
             }
+            long seconds = (System.currentTimeMillis() - startTime) / 1000;
+            String display = String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+            System.out.println("DURATION: " + display);
             return series;
         }
 
