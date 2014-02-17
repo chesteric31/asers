@@ -198,6 +198,11 @@ public class Series extends AbstractIdentity {
         return title;
     }
     
+    /**
+     * Adds the season to the current series.
+     * 
+     * @param season the season to add
+     */
     public void addSeason(Season season) {
         if (seasons == null) {
             seasons = new ArrayList<Season>();

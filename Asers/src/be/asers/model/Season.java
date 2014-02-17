@@ -76,6 +76,11 @@ public class Season extends AbstractIdentity {
         return String.valueOf(number);
     }
     
+    /**
+     * Adds episode to the current season.
+     * 
+     * @param episode the episode to add
+     */
     public void addEpisode(Episode episode) {
         if (episodes == null) {
             episodes = new ArrayList<Episode>();
