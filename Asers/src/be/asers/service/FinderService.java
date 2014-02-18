@@ -34,8 +34,9 @@ public interface FinderService {
      * Creates a new {@link SeriesBean} from a {@link SeriesBean}.
      * 
      * @param series the {@link SeriesBean} to use
+     * @return the added SeriesBean 
      */
-    void addSeries(SeriesBean series);
+    SeriesBean addSeries(SeriesBean series);
 
     /**
      * Creates a new {@link SeriesBean} from a {@link SeriesBean} in my

@@ -112,8 +112,7 @@ public class FinderServiceImpl implements FinderService {
                 SeriesBean bean = buildSeries(tokens);
                 try {
                     bean = buildDetails(bean);
-                    addSeries(bean);
-                    return bean;
+                    return addSeries(bean);
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }
@@ -126,7 +125,8 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public void addSeries(SeriesBean series) {
+    public SeriesBean addSeries(SeriesBean series) {
+        SeriesBean updatedSeries = series;
         ContentValues values = mapSeriesContentValues(series);
         if (series.getId() != null) {
             seriesDao.update(values, series.getId());
@@ -147,8 +147,10 @@ public class FinderServiceImpl implements FinderService {
                     }
                     addedSeries.addSeason(addedSeason);
                 }
+                updatedSeries = mapSeries(addedSeries);
             }
         }
+        return updatedSeries;
     }
 
     /**
@@ -252,6 +254,7 @@ public class FinderServiceImpl implements FinderService {
                         }
                     }
                     seasonBean.setEpisodes(episodesBeans);
+                    seasonBean.setSeries(bean);
                     seasonBeans.add(seasonBean);
                 }
             }
