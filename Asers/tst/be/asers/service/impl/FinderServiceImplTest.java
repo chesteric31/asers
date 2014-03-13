@@ -258,4 +258,38 @@ public class FinderServiceImplTest extends AndroidTestCase {
         assertTrue(tommorrow.equals(nextEpisode.getAirDate()));
     }
 
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#buildSeries(String[])}
+     * .
+     */
+    public void testBuildSeries() {
+        String[] tokens = {"The Mentalist", "Mentalist", "18967", "Sep 2008", "___ ____", "126+ eps", "60 min", "CBS",
+                "US" };
+        SeriesBean series = finder.buildSeries(tokens);
+        assertTrue("The Mentalist".equals(series.getTitle()));
+        assertTrue(60 == series.getRunTime());
+        assertTrue("US".equals(series.getCountry()));
+        assertTrue("CBS".equals(series.getNetwork()));
+        assertTrue(18967 == series.getTvRageId());
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, Calendar.SEPTEMBER, 1, 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date startDate = calendar.getTime();
+        assertTrue(startDate.equals(series.getStartDate()));
+    }
+
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#buildSkinnySeries(String[])}
+     * .
+     */
+    public void testBuildSkinnySeries() {
+        String[] tokens = {"The Mentalist", "Mentalist", "18967", "Sep 2008", "___ ____", "126+ eps", "60 min", "CBS",
+                "US" };
+        SeriesBean skinnySeries = finder.buildSkinnySeries(tokens);
+        assertTrue("The Mentalist".equals(skinnySeries.getTitle()));
+        assertTrue("CBS".equals(skinnySeries.getNetwork()));
+    }
+
 }
