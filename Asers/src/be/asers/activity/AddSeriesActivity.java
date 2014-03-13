@@ -186,12 +186,12 @@ public class AddSeriesActivity extends Activity {
                 addSeriesActivity.getProgressDialog().setMax(size);
             }
             int total = 0;
-//            long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             for (int i = 0; i < size; i++) {
                 //TODO
-//                if (total == 1000) {
-//                    break;
-//                }
+                if (total == 1000) {
+                    break;
+                }
                 String content = contents.get(i);
                 if (content.length() > 0) {
                     total++;
@@ -206,9 +206,9 @@ public class AddSeriesActivity extends Activity {
                     publishProgress(total);
                 }
             }
-//            long seconds = (System.currentTimeMillis() - startTime) / 1000;
-//            String display = String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
-//            System.out.println("DURATION: " + display);
+            long seconds = (System.currentTimeMillis() - startTime) / 1000;
+            String display = String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+            System.out.println("DURATION: " + display);
             return series;
         }
 
