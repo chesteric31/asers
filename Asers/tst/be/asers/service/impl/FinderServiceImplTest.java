@@ -191,5 +191,42 @@ public class FinderServiceImplTest extends AndroidTestCase {
         assertTrue(firstEpisode.getTitle() != null);
         assertTrue(firstEpisode.getTvRageLink() != null);
     }
+    
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#addMySeries(SeriesBean)}
+     * .
+     */
+    public void testAddMySeries() {
+        String title = "Friends (1994)";
+        List<SeriesBean> mySeries = addMySeries(title);
+        assertTrue(title.equals(mySeries.get(0).getTitle()));
+    }
+
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#deleteMySeries(SeriesBean)}
+     * .
+     */
+    public void testDeleteMySeries() {
+        String title = "Friends (1994)";
+        List<SeriesBean> mySeries = addMySeries(title);
+        finder.deleteMySeries(mySeries.get(0));
+        List<SeriesBean> myUpdatedSeries = finder.findMySeries();
+        assertTrue(myUpdatedSeries.isEmpty());
+    }
+
+    /**
+     * Adds my series by title.
+     * 
+     * @param title the title of series to add
+     * @return the found my series
+     */
+    private List<SeriesBean> addMySeries(String title) {
+        SeriesBean series = new SeriesBean();
+        series.setTitle(title);
+        finder.addMySeries(series);
+        return finder.findMySeries();
+    }
 
 }
