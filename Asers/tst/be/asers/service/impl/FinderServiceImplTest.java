@@ -1,8 +1,10 @@
 package be.asers.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
@@ -190,6 +192,70 @@ public class FinderServiceImplTest extends AndroidTestCase {
         assertTrue(firstEpisode.getEpisode() == 1);
         assertTrue(firstEpisode.getTitle() != null);
         assertTrue(firstEpisode.getTvRageLink() != null);
+    }
+    
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#addMySeries(SeriesBean)}
+     * .
+     */
+    public void testAddMySeries() {
+        String title = "Friends (1994)";
+        List<SeriesBean> mySeries = addMySeries(title);
+        assertTrue(title.equals(mySeries.get(0).getTitle()));
+    }
+
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#deleteMySeries(SeriesBean)}
+     * .
+     */
+    public void testDeleteMySeries() {
+        String title = "Friends (1994)";
+        List<SeriesBean> mySeries = addMySeries(title);
+        finder.deleteMySeries(mySeries.get(0));
+        List<SeriesBean> myUpdatedSeries = finder.findMySeries();
+        assertTrue(myUpdatedSeries.isEmpty());
+    }
+
+    /**
+     * Adds my series by title.
+     * 
+     * @param title the title of series to add
+     * @return the found my series
+     */
+    private List<SeriesBean> addMySeries(String title) {
+        SeriesBean series = new SeriesBean();
+        series.setTitle(title);
+        finder.addMySeries(series);
+        return finder.findMySeries();
+    }
+
+    /**
+     * Test method for
+     * {@link be.asers.service.impl.FinderServiceImpl#findAirDateNextEpisode(SeriesBean)}
+     * .
+     */
+    public void testFindAirDateNextEpisode() {
+        SeriesBean series = new SeriesBean();
+        List<SeasonBean> seasons = new ArrayList<SeasonBean>();
+        SeasonBean season = new SeasonBean();
+        List<EpisodeBean> episodes = new ArrayList<EpisodeBean>();
+        EpisodeBean episode = new EpisodeBean();
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.DATE, 1);
+        Date tommorrow = calendar.getTime();
+        Date airDate = tommorrow;
+        episode.setAirDate(airDate);
+        episodes.add(episode);
+        season.setEpisodes(episodes);
+        seasons.add(season);
+        series.setSeasons(seasons);
+        EpisodeBean nextEpisode = finder.findAirDateNextEpisode(series);
+        assertTrue(tommorrow.equals(nextEpisode.getAirDate()));
     }
 
 }
