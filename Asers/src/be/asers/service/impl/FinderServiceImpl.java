@@ -238,31 +238,43 @@ public class FinderServiceImpl implements FinderService {
             bean.setTitle(series.getTitle());
             bean.setTvRageId(series.getTvRageId());
             bean.setStatus(series.getStatus());
-            List<Season> seasons = seasonDao.findBySerieId(series.getId());
-            List<SeasonBean> seasonBeans = new ArrayList<SeasonBean>();
-            if (seasons != null && !seasons.isEmpty()) {
-                for (Season season : seasons) {
-                    SeasonBean seasonBean = new SeasonBean();
-                    seasonBean.setId(season.getId());
-                    seasonBean.setNumber(season.getNumber());
-                    List<Episode> episodes = episodeDao.findAllForSeason(season);
-                    List<EpisodeBean> episodesBeans = new ArrayList<EpisodeBean>();
-                    if (episodes != null && !episodes.isEmpty()) {
-                        for (Episode episode : episodes) {
-                            EpisodeBean episodeBean = mapEpisode(seasonBean, episode);
-                            episodesBeans.add(episodeBean);
-                        }
-                    }
-                    seasonBean.setEpisodes(episodesBeans);
-                    seasonBean.setSeries(bean);
-                    seasonBeans.add(seasonBean);
-                }
-            }
+            List<SeasonBean> seasonBeans = mapSeasons(series, bean);
             bean.setSeasons(seasonBeans);
             return bean;
         } else {
             return null;
         }
+    }
+
+    /**
+     * Maps {@link SeasonBean}s.
+     * 
+     * @param series the {@link Series} to use
+     * @param bean the {@link SeriesBean} to use
+     * @return the mapped {@link SeasonBean}s
+     */
+    private List<SeasonBean> mapSeasons(Series series, SeriesBean bean) {
+        List<Season> seasons = seasonDao.findBySerieId(series.getId());
+        List<SeasonBean> seasonBeans = new ArrayList<SeasonBean>();
+        if (seasons != null && !seasons.isEmpty()) {
+            for (Season season : seasons) {
+                SeasonBean seasonBean = new SeasonBean();
+                seasonBean.setId(season.getId());
+                seasonBean.setNumber(season.getNumber());
+                List<Episode> episodes = episodeDao.findAllForSeason(season);
+                List<EpisodeBean> episodesBeans = new ArrayList<EpisodeBean>();
+                if (episodes != null && !episodes.isEmpty()) {
+                    for (Episode episode : episodes) {
+                        EpisodeBean episodeBean = mapEpisode(seasonBean, episode);
+                        episodesBeans.add(episodeBean);
+                    }
+                }
+                seasonBean.setEpisodes(episodesBeans);
+                seasonBean.setSeries(bean);
+                seasonBeans.add(seasonBean);
+            }
+        }
+        return seasonBeans;
     }
 
     /**
