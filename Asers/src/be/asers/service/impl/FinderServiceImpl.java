@@ -303,7 +303,7 @@ public class FinderServiceImpl implements FinderService {
         j++;
         buildNetwork(tokens[j], series);
         j++;
-        buildCountry(tokens[j], series);
+        series.setCountry(tokens[j]);
         return series;
     }
 
@@ -328,16 +328,6 @@ public class FinderServiceImpl implements FinderService {
         if (isNumeric(token)) {
             series.setTvRageId(Integer.valueOf(token));
         }
-    }
-
-    /**
-     * Builds the country.
-     * 
-     * @param token the token with data
-     * @param series the {@link SeriesBean} to update
-     */
-    private void buildCountry(String token, SeriesBean series) {
-        series.setCountry(token);
     }
 
     /**
