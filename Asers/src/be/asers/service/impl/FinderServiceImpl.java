@@ -519,18 +519,7 @@ public class FinderServiceImpl implements FinderService {
                 url = new URL(ALL_SERIES_URL);
             }
             connection = url.openConnection();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
-            boolean isProxy = preferences.getBoolean("isProxy", false);
-            if (isProxy) {
-                boolean isProxyAuthentication = preferences.getBoolean("isProxyAuthentication", false);
-                if (isProxyAuthentication) {
-                    String user = preferences.getString("proxyUser", "");
-                    String password = preferences.getString("proxyPassword", "");
-                    String userPassword = user + ":" + password;
-                    String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
-                    connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
-                }
-            }
+            checkProxy(connection);
             InputStream inputStream = connection.getInputStream();
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
             reader = new BufferedReader(inputStreamReader);
@@ -538,6 +527,26 @@ public class FinderServiceImpl implements FinderService {
             throw new RuntimeException(e);
         }
         return reader;
+    }
+
+    /**
+     * Checks proxy preferences and in case of, use them.
+     * 
+     * @param connection the {@link URLConnection} to use
+     */
+    private void checkProxy(URLConnection connection) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        boolean isProxy = preferences.getBoolean("isProxy", false);
+        if (isProxy) {
+            boolean isProxyAuthentication = preferences.getBoolean("isProxyAuthentication", false);
+            if (isProxyAuthentication) {
+                String user = preferences.getString("proxyUser", "");
+                String password = preferences.getString("proxyPassword", "");
+                String userPassword = user + ":" + password;
+                String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
+                connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
+            }
+        }
     }
 
     /**
