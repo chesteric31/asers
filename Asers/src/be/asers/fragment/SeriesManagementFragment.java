@@ -12,7 +12,7 @@ import be.asers.activity.AddSeriesActivity;
 import be.asers.activity.DeleteSeriesActivity;
 
 /**
- * 
+ * Fragment for Series management.
  * 
  * @author chesteric31
  */

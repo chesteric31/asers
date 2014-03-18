@@ -42,17 +42,18 @@ public class DeleteSeriesActivity extends Activity {
         Thread.setDefaultUncaughtExceptionHandler(new AsersUncaughtExceptionHandler(this));
         setContentView(R.layout.activity_delete_series);
         deleteSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.delete_series_auto_complete);
-        final List<SeriesBean> series = new ArrayList<SeriesBean>();
-        new FindActiveSeriesTask(new OnCompleteTaskListener<List<SeriesBean>>() {
-
-            @Override
-            public void onComplete(List<SeriesBean> result) {
-                series.addAll(result);
-            }
-        }).execute();
-        arrayAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_dropdown_item_1line, series);
+        buildArrayAdapter();
         deleteSeriesAutoComplete.setAdapter(arrayAdapter);
-        deleteSeriesAutoComplete.setOnItemClickListener(new OnItemClickListener() {
+        deleteSeriesAutoComplete.setOnItemClickListener(buildOnItemClickListener());
+    }
+
+    /**
+     * Builds {@link OnItemClickListener}.
+     * 
+     * @return the built {@link OnItemClickListener}
+     */
+    private OnItemClickListener buildOnItemClickListener() {
+        return new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -95,7 +96,22 @@ public class DeleteSeriesActivity extends Activity {
                 AlertDialog alert = builder.create();
                 return alert;
             }
-        });
+        };
+    }
+
+    /**
+     * Builds {@link ArrayAdapter}.
+     */
+    private void buildArrayAdapter() {
+        final List<SeriesBean> series = new ArrayList<SeriesBean>();
+        new FindActiveSeriesTask(new OnCompleteTaskListener<List<SeriesBean>>() {
+
+            @Override
+            public void onComplete(List<SeriesBean> result) {
+                series.addAll(result);
+            }
+        }).execute();
+        arrayAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_dropdown_item_1line, series);
     }
 
     /**

@@ -20,8 +20,7 @@ import be.asers.activity.OnCompleteTaskListener;
 import be.asers.bean.SeriesBean;
 
 /**
- * 
- * 
+ * Fragment for My Series.
  * 
  * @author chesteric31
  */

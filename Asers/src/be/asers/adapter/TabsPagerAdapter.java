@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 /**
- * 
+ * {@link FragmentPagerAdapter} with tabs.
  * 
  * @author chesteric31
  */

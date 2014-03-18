@@ -21,8 +21,7 @@ import be.asers.bean.SeriesBean;
 import be.asers.service.FinderService;
 
 /**
- * 
- * 
+ * Fragment for Next Episodes.
  * 
  * @author chesteric31
  */
