@@ -13,7 +13,6 @@ import be.asers.activity.BugReportActivity;
  */
 public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
-    // private Thread.UncaughtExceptionHandler defaultHandler;
     private Context context;
 
     /**
@@ -22,7 +21,6 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
      * @param context the {@link Context}
      */
     public AsersUncaughtExceptionHandler(Context context) {
-        // this.defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         this.context = context;
     }
 
@@ -37,10 +35,6 @@ public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
         StackTraceElement stackTraceElement = cause.getStackTrace()[0];
         intent.putExtra(BugReportActivity.STACKTRACE, cause.toString() + "\n" + stackTraceElement.toString());
         context.startActivity(intent);
-
-        // Process.killProcess(Process.myPid());
-        // System.exit(10);
-        // defaultHandler.uncaughtException(thread, exception);
     }
 
 }

@@ -764,7 +764,8 @@ public class FinderServiceImpl implements FinderService {
             bitmap = BitmapFactory.decodeStream(inputStream);
             bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+//            throw new RuntimeException(e);
         }
         return bitmap;
     }

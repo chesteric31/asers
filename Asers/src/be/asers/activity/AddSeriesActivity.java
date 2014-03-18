@@ -44,17 +44,18 @@ public class AddSeriesActivity extends Activity {
         setContentView(R.layout.activity_add_series);
         buildProgressDialog();
         addSeriesAutoComplete = (AutoCompleteTextView) findViewById(R.id.add_series_auto_complete);
-        final List<SeriesBean> series = new ArrayList<SeriesBean>();
-        new FindAllSeriesTask(AddSeriesActivity.this, new OnCompleteTaskListener<List<SeriesBean>>() {
-
-            @Override
-            public void onComplete(List<SeriesBean> result) {
-                series.addAll(result);
-            }
-        }).execute();
-        arrayAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_dropdown_item_1line, series);
+        buildArrayAdapter();
         addSeriesAutoComplete.setAdapter(arrayAdapter);
-        addSeriesAutoComplete.setOnItemClickListener(new OnItemClickListener() {
+        addSeriesAutoComplete.setOnItemClickListener(buildOnItemClickListener());
+    }
+
+    /**
+     * Builds {@link OnItemClickListener}.
+     * 
+     * @return the built {@link OnItemClickListener}
+     */
+    private OnItemClickListener buildOnItemClickListener() {
+        return new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,7 +71,22 @@ public class AddSeriesActivity extends Activity {
                     throw new RuntimeException(e.getCause());
                 }
             }
-        });
+        };
+    }
+
+    /**
+     * Builds {@link ArrayAdapter}.
+     */
+    private void buildArrayAdapter() {
+        final List<SeriesBean> series = new ArrayList<SeriesBean>();
+        new FindAllSeriesTask(AddSeriesActivity.this, new OnCompleteTaskListener<List<SeriesBean>>() {
+
+            @Override
+            public void onComplete(List<SeriesBean> result) {
+                series.addAll(result);
+            }
+        }).execute();
+        arrayAdapter = new ArrayAdapter<SeriesBean>(this, android.R.layout.simple_dropdown_item_1line, series);
     }
 
     /**
@@ -176,7 +192,6 @@ public class AddSeriesActivity extends Activity {
          */
         @Override
         protected List<SeriesBean> doInBackground(Void... params) {
-            List<SeriesBean> series = new ArrayList<SeriesBean>();
             FinderService finderService = ((AsersApplication) getApplication()).getFinderService();
             BufferedReader bufferedReader = finderService.createReader(null);
             List<String> contents = finderService.createStringsContent(bufferedReader);
@@ -185,11 +200,29 @@ public class AddSeriesActivity extends Activity {
             if (addSeriesActivity != null) {
                 addSeriesActivity.getProgressDialog().setMax(size);
             }
-            int total = 0;
             long startTime = System.currentTimeMillis();
+            List<SeriesBean> series = processSeries(finderService, contents);
+            long seconds = (System.currentTimeMillis() - startTime) / 1000;
+            String display = String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
+            System.out.println("DURATION: " + display);
+            return series;
+        }
+
+        /**
+         * Processes the series.
+         * 
+         * @param finderService the {@link FinderService} to use
+         * @param contents the contents to use
+         * 
+         * @return the processed {@link SeriesBean}s
+         */
+        private List<SeriesBean> processSeries(FinderService finderService, List<String> contents) {
+            List<SeriesBean> list = new ArrayList<SeriesBean>();
+            int total = 0;
+            int size = contents.size();
             for (int i = 0; i < size; i++) {
                 //TODO
-                if (total == 1000) {
+                if (total == 100) {
                     break;
                 }
                 String content = contents.get(i);
@@ -202,14 +235,11 @@ public class AddSeriesActivity extends Activity {
                         tokens[j] = splits[j];
                     }
                     SeriesBean bean = finderService.buildSkinnySeries(tokens);
-                    series.add(bean);
+                    list.add(bean);
                     publishProgress(total);
                 }
             }
-            long seconds = (System.currentTimeMillis() - startTime) / 1000;
-            String display = String.format("%02d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
-            System.out.println("DURATION: " + display);
-            return series;
+            return list;
         }
 
         /**
