@@ -20,6 +20,7 @@ import be.asers.AsersApplication;
 import be.asers.AsersUncaughtExceptionHandler;
 import be.asers.R;
 import be.asers.bean.SeriesBean;
+import be.asers.service.FinderRemoteService;
 import be.asers.service.FinderService;
 
 /**
@@ -192,7 +193,7 @@ public class AddSeriesActivity extends Activity {
          */
         @Override
         protected List<SeriesBean> doInBackground(Void... params) {
-            FinderService finderService = ((AsersApplication) getApplication()).getFinderService();
+            FinderRemoteService finderService = ((AsersApplication) getApplication()).getFinderRemoteService();
             BufferedReader bufferedReader = finderService.createReader(null);
             List<String> contents = finderService.createStringsContent(bufferedReader);
             AddSeriesActivity addSeriesActivity = activity.get();
@@ -216,7 +217,7 @@ public class AddSeriesActivity extends Activity {
          * 
          * @return the processed {@link SeriesBean}s
          */
-        private List<SeriesBean> processSeries(FinderService finderService, List<String> contents) {
+        private List<SeriesBean> processSeries(FinderRemoteService finderService, List<String> contents) {
             List<SeriesBean> list = new ArrayList<SeriesBean>();
             int total = 0;
             int size = contents.size();
