@@ -292,5 +292,17 @@ public class FinderServiceImplTest extends AndroidTestCase {
         assertTrue("The Mentalist".equals(skinnySeries.getTitle()));
         assertTrue("CBS".equals(skinnySeries.getNetwork()));
     }
+    
+    /**
+     * Test method for {@link be.asers.service.impl.FinderServiceImpl#createBitmap(SeriesBean)}
+     * .
+     */
+    public void testCreateBitmap() {
+        SeriesBean series = new SeriesBean();
+        series.setDirectory("AbbottandCostelloShow");
+        assertNull(finder.createBitmap(series));
+        series.setDirectory("Mentalist");
+        assertNotNull(finder.createBitmap(series));
+    }
 
 }
