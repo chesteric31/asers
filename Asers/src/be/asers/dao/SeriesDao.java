@@ -54,6 +54,7 @@ public class SeriesDao extends AbstractDao {
         if (cursor.getCount() > 0) {
             Series series = new Series();
             series.setId(cursor.getLong(cursor.getColumnIndexOrThrow(Series.COLUMN_ID)));
+            series.setDirectory(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_DIRECTORY)));
             series.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_TITLE)));
             series.setTvRageId(cursor.getInt(cursor.getColumnIndexOrThrow(Series.COLUMN_TV_RAGE_ID)));
             series.setNetwork(cursor.getString(cursor.getColumnIndexOrThrow(Series.COLUMN_NETWORK)));
@@ -102,7 +103,8 @@ public class SeriesDao extends AbstractDao {
         builder.append("S." + Series.COLUMN_START_DATE + ", ");
         builder.append("S." + Series.COLUMN_TITLE + ", ");
         builder.append("S." + Series.COLUMN_TV_RAGE_ID + ", ");
-        builder.append("S." + Series.COLUMN_STATUS + " ");
+        builder.append("S." + Series.COLUMN_STATUS + ", ");
+        builder.append("S." + Series.COLUMN_DIRECTORY + " ");
         builder.append("FROM ");
         builder.append(Series.TABLE_NAME + " S ");
         builder.append("WHERE ");

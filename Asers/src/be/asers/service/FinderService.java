@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.net.URL;
 import java.util.List;
 
+import android.graphics.Bitmap;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeriesBean;
 import be.asers.dao.SeriesDao;
@@ -60,6 +61,14 @@ public interface FinderService {
      * @return the created {@link BufferedReader}
      */
     BufferedReader createReader(URL url);
+    
+    /**
+     * Creates the bitmap cast image from {@link SeriesBean}.
+     * 
+     * @param series the {@link SeriesBean} to use
+     * @return the created {@link Bitmap}
+     */
+    Bitmap createBitmap(SeriesBean series);
 
     /**
      * Creates a list of Strings from an {@link BufferedReader}.

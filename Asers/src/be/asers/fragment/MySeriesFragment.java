@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -86,14 +88,22 @@ public class MySeriesFragment extends Fragment {
                 clear(mySeriesTable);
                 mySeries.addAll(result);
                 TextView textView = null;
+                ImageView imageView = null;
                 TableRow tableRow = null;
                 if (!mySeries.isEmpty()) {
                     for (SeriesBean series : mySeries) {
                         textView = new TextView(getActivity());
                         textView.setText(series.toString());
+                        imageView = new ImageView(getActivity());
+                        imageView.setImageBitmap(series.getCast());
                         tableRow = new TableRow(getActivity());
                         tableRow.addView(textView);
+                        tableRow.addView(imageView);
                         mySeriesTable.addView(tableRow);
+                        View redLineView = new View(getActivity());
+                        redLineView.setLayoutParams(new LayoutParams(100, 2));
+                        redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
+                        mySeriesTable.addView(redLineView);
                     }
                 } else {
                     clear(mySeriesTable);

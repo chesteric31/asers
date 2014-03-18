@@ -19,6 +19,8 @@ import java.util.Locale;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 import be.asers.bean.EpisodeBean;
@@ -74,7 +76,9 @@ public class FinderServiceImpl implements FinderService {
         List<SeriesBean> beans = new ArrayList<SeriesBean>();
         if (!series.isEmpty()) {
             for (Series serie : series) {
-                beans.add(mapSeries(serie));
+                SeriesBean bean = mapSeries(serie);
+                bean.setCast(createBitmap(bean));
+                beans.add(bean);
             }
         }
         return beans;
@@ -216,6 +220,7 @@ public class FinderServiceImpl implements FinderService {
         values.put(Series.COLUMN_TITLE, series.getTitle());
         values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
         values.put(Series.COLUMN_STATUS, series.getStatus());
+        values.put(Series.COLUMN_DIRECTORY, series.getDirectory());
         return values;
     }
 
@@ -238,6 +243,7 @@ public class FinderServiceImpl implements FinderService {
             bean.setTitle(series.getTitle());
             bean.setTvRageId(series.getTvRageId());
             bean.setStatus(series.getStatus());
+            bean.setDirectory(series.getDirectory());
             List<SeasonBean> seasonBeans = mapSeasons(series, bean);
             bean.setSeasons(seasonBeans);
             return bean;
@@ -304,7 +310,9 @@ public class FinderServiceImpl implements FinderService {
     public SeriesBean buildSeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
-        int j = 2;
+        int j = 1;
+        series.setDirectory(tokens[j]);
+        j++;
         buildTvRageId(tokens[j], series);
         j++;
         j = processStartEndDates(tokens, series, j);
@@ -738,4 +746,26 @@ public class FinderServiceImpl implements FinderService {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Bitmap createBitmap(SeriesBean series) {
+        if (series == null || series.getDirectory() == null) {
+            throw new IllegalArgumentException("Series cannot be null");
+        }
+        Bitmap bitmap = null;
+        String castUrl = EPGUIDES_URL + series.getDirectory() + "/cast.jpg";
+        URLConnection connection;
+        try {
+            connection = new URL(castUrl).openConnection();
+            checkProxy(connection);
+            InputStream inputStream = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return bitmap;
+    }
 }

@@ -267,6 +267,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         String[] tokens = {"The Mentalist", "Mentalist", "18967", "Sep 2008", "___ ____", "126+ eps", "60 min", "CBS",
                 "US" };
         SeriesBean series = finder.buildSeries(tokens);
+        assertTrue("Mentalist".equals(series.getDirectory()));
         assertTrue("The Mentalist".equals(series.getTitle()));
         assertTrue(60 == series.getRunTime());
         assertTrue("US".equals(series.getCountry()));

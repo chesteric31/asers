@@ -22,15 +22,17 @@ public class Series extends AbstractIdentity {
     public static final String COLUMN_RUN_TIME = "RUN_TIME";
     public static final String COLUMN_COUNTRY = "COUNTRY";
     public static final String COLUMN_STATUS = "STATUS";
+    public static final String COLUMN_DIRECTORY = "DIRECTORY";
 
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER,"
             + COLUMN_NETWORK + " TEXT, " + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, "
             + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT, "
-            + COLUMN_STATUS + ");";
+            + COLUMN_STATUS + " , " + COLUMN_DIRECTORY + " );";
 
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_COUNTRY, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER,
-            COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_START_DATE, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_STATUS };
+            COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_START_DATE, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_STATUS,
+            COLUMN_DIRECTORY };
 
     public static final String DATE_PATTERN = "MMM yyyy";
     public static final String DATE_PATTERN_OPTIONAL = "yyyy";
@@ -49,6 +51,7 @@ public class Series extends AbstractIdentity {
     private int runTime;
     private String country;
     private String status;
+    private String directory;
 
     /**
      * @return the title
@@ -188,6 +191,21 @@ public class Series extends AbstractIdentity {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+
+    /**
+     * @return the directory
+     */
+    public String getDirectory() {
+        return directory;
+    }
+
+    /**
+     * @param directory the directory to set
+     */
+    public void setDirectory(String directory) {
+        this.directory = directory;
     }
 
     /**

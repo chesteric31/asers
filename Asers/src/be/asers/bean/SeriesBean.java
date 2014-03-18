@@ -3,6 +3,8 @@ package be.asers.bean;
 import java.util.Date;
 import java.util.List;
 
+import android.graphics.Bitmap;
+
 /**
  * Series bean.
  * 
@@ -20,6 +22,8 @@ public class SeriesBean extends AbstractIdentityBean {
     private int runTime;
     private String country;
     private String status;
+    private String directory;
+    private Bitmap cast;
 
     /**
      * @return the title
@@ -160,6 +164,34 @@ public class SeriesBean extends AbstractIdentityBean {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    /**
+     * @return the directory
+     */
+    public String getDirectory() {
+        return directory;
+    }
+
+    /**
+     * @param directory the directory to set
+     */
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+    
+    /**
+     * @return the cast
+     */
+    public Bitmap getCast() {
+        return cast;
+    }
+
+    /**
+     * @param cast the cast to set
+     */
+    public void setCast(Bitmap cast) {
+        this.cast = cast;
+    }
 
     /**
      * {@inheritDoc}
@@ -225,6 +257,12 @@ public class SeriesBean extends AbstractIdentityBean {
             result += title.hashCode();
         }
         result = prime * result + tvRageId;
+        if (directory == null) {
+            result += 0;
+        } else {
+            result += directory.hashCode();
+        }
+        result = prime * result;
         return result;
     }
 
@@ -299,6 +337,13 @@ public class SeriesBean extends AbstractIdentityBean {
             return false;
         }
         if (tvRageId != other.tvRageId) {
+            return false;
+        }
+        if (directory == null) {
+            if (other.directory != null) {
+                return false;
+            }
+        } else if (!directory.equals(other.directory)) {
             return false;
         }
         return true;
