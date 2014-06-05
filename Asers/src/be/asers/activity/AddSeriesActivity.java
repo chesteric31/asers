@@ -21,7 +21,6 @@ import be.asers.AsersUncaughtExceptionHandler;
 import be.asers.R;
 import be.asers.bean.SeriesBean;
 import be.asers.service.FinderRemoteService;
-import be.asers.service.FinderService;
 
 /**
  * Activity to add a new series.
@@ -212,7 +211,7 @@ public class AddSeriesActivity extends Activity {
         /**
          * Processes the series.
          * 
-         * @param finderService the {@link FinderService} to use
+         * @param finderService the {@link FinderRemoteService} to use
          * @param contents the contents to use
          * 
          * @return the processed {@link SeriesBean}s
