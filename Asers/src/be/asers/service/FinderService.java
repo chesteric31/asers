@@ -64,4 +64,11 @@ public interface FinderService {
      */
     EpisodeBean findAirDateNextEpisode(SeriesBean series);
 
+    /**
+     * Refresh series.
+     *
+     * @param mySerie the my serie
+     */
+    void refreshSeries(SeriesBean mySerie);
+
 }

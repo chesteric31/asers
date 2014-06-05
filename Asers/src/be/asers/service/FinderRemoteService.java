@@ -1,7 +1,6 @@
 package be.asers.service;
 
 import java.io.BufferedReader;
-import java.net.URL;
 import java.util.List;
 
 import android.graphics.Bitmap;
@@ -30,7 +29,7 @@ public interface FinderRemoteService {
      *            "http://epguides.com/common/allshows.txt"
      * @return the created {@link BufferedReader}
      */
-    BufferedReader createReader(URL url);
+    BufferedReader createReader(String url);
     
     /**
      * Creates the bitmap cast image from {@link SeriesBean}.

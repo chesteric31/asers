@@ -321,4 +321,106 @@ public class FinderServiceImpl implements FinderService {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void refreshSeries(SeriesBean mySerie) {
+        String title = mySerie.getTitle();
+        SeriesBean remoteSeries = remoteService.findSeries(title);
+        Series series = seriesDao.findByTitle(title);
+        SeriesBean localSeries = mapSeries(series);
+        if (!localSeries.equals(remoteSeries)) {
+            Long id = localSeries.getId();
+            remoteSeries.setId(localSeries.getId());
+            remoteSeries.setStatus(localSeries.getStatus());
+            seriesDao.update(mapSeriesContentValues(remoteSeries), id);
+            List<SeasonBean> localSeasons = localSeries.getSeasons();
+            List<SeasonBean> remoteSeasons = remoteSeries.getSeasons();
+            refreshSeasons(series, localSeasons, remoteSeasons);
+        }
+    }
+
+    /**
+     * Refresh seasons.
+     *
+     * @param series the series
+     * @param localSeasons the local seasons
+     * @param remoteSeasons the remote seasons
+     */
+    private void refreshSeasons(Series series, List<SeasonBean> localSeasons, List<SeasonBean> remoteSeasons) {
+        if (!localSeasons.equals(remoteSeasons)) {
+            int remoteSize = remoteSeasons.size();
+            int localSize = localSeasons.size();
+            if (remoteSize != localSize) {
+                for (int i = 0; i < remoteSize; i++) {
+                    SeasonBean remoteSeason = remoteSeasons.get(i);
+                    boolean found = false;
+                    for (int j = i; j < localSize; j++) {
+                        SeasonBean localSeason = localSeasons.get(j);
+                        if (remoteSeason.getNumber().equals(localSeason.getNumber())) {
+                            refreshSeason(series, remoteSeason, localSeason);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        seasonDao.add(mapSeasonContentValues(series, remoteSeason));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Refresh season.
+     *
+     * @param series the series
+     * @param remoteSeason the remote season
+     * @param localSeason the local season
+     */
+    private void refreshSeason(Series series, SeasonBean remoteSeason, SeasonBean localSeason) {
+        if (!remoteSeason.equals(localSeason)) {
+            List<EpisodeBean> remoteEpisodes = remoteSeason.getEpisodes();
+            List<EpisodeBean> localEpisodes = localSeason.getEpisodes();
+            Long seasonId = localSeason.getId();
+            seasonDao.update(mapSeasonContentValues(series, remoteSeason), seasonId);
+            if (!localEpisodes.equals(remoteEpisodes)) {
+                Season season = seasonDao.findById(seasonId);
+                int remoteSize = remoteEpisodes.size();
+                int localSize = localEpisodes.size();
+                if (remoteSize != localSize) {
+                    for (int i = 0; i < remoteSize; i++) {
+                        EpisodeBean remoteEpisode = remoteEpisodes.get(i);
+                        boolean found = false;
+                        for (int j = i; j < localSize; j++) {
+                            EpisodeBean localEpisode = localEpisodes.get(j);
+                            if (remoteEpisode.getNumber().equals(localEpisode.getNumber())) {
+                                refreshEpisode(season, remoteEpisode, localEpisode);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            episodeDao.add(mapEpisodeContentValues(season, remoteEpisode));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Refresh episode.
+     *
+     * @param season the season
+     * @param remoteEpisode the remote episode
+     * @param localEpisode the local episode
+     */
+    private void refreshEpisode(Season season, EpisodeBean remoteEpisode, EpisodeBean localEpisode) {
+        if (!remoteEpisode.equals(localEpisode)) {
+            episodeDao.update(mapEpisodeContentValues(season, remoteEpisode), localEpisode.getId());
+        }
+    }
+
 }

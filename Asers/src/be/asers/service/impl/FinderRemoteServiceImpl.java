@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,12 +12,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.preference.PreferenceManager;
-import android.util.Base64;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
@@ -34,18 +42,42 @@ import be.asers.service.FinderRemoteService;
  */
 public class FinderRemoteServiceImpl implements FinderRemoteService {
 
+    /** The Constant CSV_DELIMITER. */
     private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
+    
+    /** The Constant MIN. */
     private static final String MIN = "min";
+    
+    /** The Constant EPS. */
     private static final String EPS = "eps";
+    
+    /** The Constant DOUBLE_QUOTES. */
     private static final String DOUBLE_QUOTES = "\"";
+    
+    /** The Constant EMPTY_STRING. */
     private static final String EMPTY_STRING = "";
+    
+    /** The Constant EPGUIDES_URL. */
     private static final String EPGUIDES_URL = "http://epguides.com/";
+    
+    /** The Constant ALL_SERIES_URL. */
     private static final String ALL_SERIES_URL = EPGUIDES_URL + "common/allshows.txt";
+    
+    /** The Constant CSV_EXPORT_URL. */
     private static final String CSV_EXPORT_URL = EPGUIDES_URL + "common/exportToCSV.asp?rage=";
+    
+    /** The Constant END_DATA_DELIMITER. */
     private static final String END_DATA_DELIMITER = "</pre>";
+    
+    /** The Constant HEADER_NUMBER_LINES. */
     private static final int HEADER_NUMBER_LINES = 7;
+    
+    /** The Constant FIRST_COLUMN_TITLE. */
     private static final String FIRST_COLUMN_TITLE = "number";
+    
+    /** The Constant NOT_SPECIAL_EPISODE. */
     private static final String NOT_SPECIAL_EPISODE = "n";
+    
     private Context context;
 
     /**
@@ -264,8 +296,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
      * @throws MalformedURLException if an error occurred
      */
     private SeriesBean buildDetails(SeriesBean series) throws MalformedURLException {
-        URL url = new URL(CSV_EXPORT_URL + series.getTvRageId());
-        BufferedReader reader = createReader(url);
+        BufferedReader reader = createReader(CSV_EXPORT_URL + series.getTvRageId());
         String line = null;
         boolean skipFurtherLines = false;
         int i = 0;
@@ -293,42 +324,77 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     /**
      * {@inheritDoc}
      */
-    public BufferedReader createReader(URL url) {
-        URLConnection connection;
-        BufferedReader reader = null;
-        try {
-            if (url == null) {
-                url = new URL(ALL_SERIES_URL);
-            }
-            connection = url.openConnection();
-            checkProxy(connection);
-            InputStream inputStream = connection.getInputStream();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            reader = new BufferedReader(inputStreamReader);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public BufferedReader createReader(String url) {
+        InputStream inputStream = null;
+        if (url == null) {
+            inputStream = buildStream(buildHttpClient(), ALL_SERIES_URL);
+        } else {
+            inputStream = buildStream(buildHttpClient(), url);
         }
-        return reader;
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        return new BufferedReader(inputStreamReader);
+    }
+   
+    /**
+     * Creates the input stream.
+     *
+     * @param url the url
+     * @return the input stream
+     */
+    private InputStream createInputStream(String url) {
+      if (url == null) {
+          return buildStream(buildHttpClient(), ALL_SERIES_URL);
+      } else {
+          return buildStream(buildHttpClient(), url);
+      }
+  }
+
+    /**
+     * Builds the http client.
+     * 
+     * @return the default http client
+     */
+    private DefaultHttpClient buildHttpClient() {
+        DefaultHttpClient client = new DefaultHttpClient();
+        HttpParams params = client.getParams();
+        HttpConnectionParams.setConnectionTimeout(params, 15000);
+        HttpConnectionParams.setSoTimeout(params, 10000);
+        BasicCredentialsProvider credentialsProvider = buildCredentialsProvider();
+        client.setCredentialsProvider(credentialsProvider);
+        return client;
     }
 
     /**
-     * Checks proxy preferences and in case of, use them.
+     * Builds the stream.
      * 
-     * @param connection the {@link URLConnection} to use
+     * @param client the client
+     * @param url the url
+     * @return the input stream
      */
-    private void checkProxy(URLConnection connection) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
-        boolean isProxy = preferences.getBoolean("isProxy", false);
-        if (isProxy) {
-            boolean isProxyAuthentication = preferences.getBoolean("isProxyAuthentication", false);
-            if (isProxyAuthentication) {
-                String user = preferences.getString("proxyUser", "");
-                String password = preferences.getString("proxyPassword", "");
-                String userPassword = user + ":" + password;
-                String encoded = Base64.encodeToString(userPassword.getBytes(), 0);
-                connection.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
-            }
+    private InputStream buildStream(HttpClient client, String url) {
+        HttpGet get = new HttpGet(url);
+        HttpResponse response;
+        try {
+            response = client.execute(get);
+            HttpEntity entity = response.getEntity();
+            return entity.getContent();
+        } catch (ClientProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Builds the credentials provider.
+     * 
+     * @return the basic credentials provider
+     */
+    private BasicCredentialsProvider buildCredentialsProvider() {
+        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        Credentials credentials = new UsernamePasswordCredentials("bprtester", "bprtester");
+        credentialsProvider.setCredentials(new AuthScope("10.16.0.25", AuthScope.ANY_PORT), credentials);
+        return credentialsProvider;
     }
 
     /**
@@ -476,19 +542,27 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         if (series == null || series.getDirectory() == null) {
             throw new IllegalArgumentException("Series cannot be null");
         }
-        Bitmap bitmap = null;
-        String castUrl = EPGUIDES_URL + series.getDirectory() + "/cast.jpg";
-        URLConnection connection;
-        try {
-            connection = new URL(castUrl).openConnection();
-            checkProxy(connection);
-            InputStream inputStream = connection.getInputStream();
-            bitmap = BitmapFactory.decodeStream(inputStream);
+        String url = EPGUIDES_URL + series.getDirectory() + "/cast.jpg";
+        InputStream inputStream = createInputStream(url);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+        if (bitmap != null) {
             bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
-        } catch (IOException e) {
-            System.err.println(e.getLocalizedMessage());
-//            throw new RuntimeException(e);
         }
         return bitmap;
     }
+
+    /**
+     * @return the context
+     */
+    public Context getContext() {
+        return context;
+    }
+
+    /**
+     * @param context the context to set
+     */
+    public void setContext(Context context) {
+        this.context = context;
+    }
+    
 }

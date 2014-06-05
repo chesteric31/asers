@@ -144,6 +144,7 @@ public class NextEpisodesFragment extends Fragment {
             List<SeriesBean> mySeries = finderService.findMySeries();
             if (mySeries != null && !mySeries.isEmpty()) {
                 for (SeriesBean mySerie : mySeries) {
+                    finderService.refreshSeries(mySerie);
                     EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(mySerie);
                     nextEpisodes.add(nextEpisode);
                 }

@@ -86,4 +86,43 @@ public class SeasonDao extends AbstractDao {
         return seasons;
     }
 
+    /**
+     * Find by id.
+     *
+     * @param id the id
+     * @return the season
+     */
+    public Season findById(Long id) {
+        Season season = null;
+        StringBuilder builder = new StringBuilder("SELECT ");
+        builder.append("S." + Season.COLUMN_ID + ", ");
+        builder.append("S." + Season.COLUMN_NUMBER + ", ");
+        builder.append("S." + Season.COLUMN_SERIES + " ");
+        builder.append("FROM ");
+        builder.append(Season.TABLE_NAME + " S ");
+        builder.append("WHERE ");
+        builder.append("S." + Season.COLUMN_ID + " = " + id);
+        Cursor cursor = getDatabase().rawQuery(builder.toString(), null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                season = retrieveSeason(cursor);
+                cursor.moveToNext();
+            }
+            // Make sure to close the cursor
+            cursor.close();
+        }
+        return season;
+    }
+
+    /**
+     * Update.
+     *
+     * @param contentValues the content values
+     * @param id the id
+     */
+    public void update(ContentValues contentValues, Long id) {
+        getDatabase().update(Season.TABLE_NAME, contentValues, "_id=" + id, null);
+    }
+
 }

@@ -9,21 +9,21 @@ import java.util.List;
  */
 public class SeasonBean extends AbstractIdentityBean {
     
-    private int number;
+    private Integer number;
     private SeriesBean series;
     private List<EpisodeBean> episodes;
     
     /**
      * @return the number
      */
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
     /**
      * @param number the number to set
      */
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
@@ -61,6 +61,51 @@ public class SeasonBean extends AbstractIdentityBean {
     @Override
     public String toString() {
         return String.valueOf(number);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result;
+        if (episodes == null) {
+            result += 0;
+        } else {
+            result += episodes.hashCode();
+        }
+        result = prime * result + number;
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SeasonBean)) {
+            return false;
+        }
+        SeasonBean other = (SeasonBean) obj;
+        if (episodes == null) {
+            if (other.episodes != null) {
+                return false;
+            }
+        } else if (!episodes.equals(other.episodes)) {
+            return false;
+        }
+        if (number != other.number) {
+            return false;
+        }
+        return true;
     }
 
 }

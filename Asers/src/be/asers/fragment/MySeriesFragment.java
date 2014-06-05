@@ -26,7 +26,10 @@ import be.asers.bean.SeriesBean;
  */
 public class MySeriesFragment extends Fragment {
 
+    /** The instance. */
     private static volatile MySeriesFragment instance = null;
+    
+    /** The my series table. */
     private TableLayout mySeriesTable;
 
     /**
@@ -37,6 +40,8 @@ public class MySeriesFragment extends Fragment {
     }
 
     /**
+     * Gets the single instance of MySeriesFragment.
+     *
      * @return singleton instance of {@link MySeriesFragment}
      */
     public static final MySeriesFragment getInstance() {
@@ -76,49 +81,87 @@ public class MySeriesFragment extends Fragment {
      */
     private void fillTableData(final TableLayout mySeriesTable) {
         final List<SeriesBean> mySeries = new ArrayList<SeriesBean>();
-        new MySeriesFinderTask(new OnCompleteTaskListener<List<SeriesBean>>() {
+        new MySeriesFinderTask(new OnCompleteTaskListenerImpl(mySeriesTable, mySeries)).execute();
+    }
 
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void onComplete(List<SeriesBean> result) {
-                mySeries.clear();
+    /**
+     * The Class OnCompleteTaskListenerImpl.
+     *
+     * @author chesteric31
+     */
+    private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<SeriesBean>> {
+        
+        /** The my series table. */
+        private final TableLayout mySeriesTable;
+        
+        /** The my series. */
+        private final List<SeriesBean> mySeries;
+
+        /**
+         * Instantiates a new on complete task listener impl.
+         *
+         * @param mySeriesTable the my series table
+         * @param mySeries the my series
+         */
+        private OnCompleteTaskListenerImpl(TableLayout mySeriesTable, List<SeriesBean> mySeries) {
+            this.mySeriesTable = mySeriesTable;
+            this.mySeries = mySeries;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void onComplete(List<SeriesBean> result) {
+            buildTable(result);
+        }
+
+        /**
+         * Builds the table.
+         *
+         * @param result the result
+         */
+        private void buildTable(List<SeriesBean> result) {
+            mySeries.clear();
+            clear(mySeriesTable);
+            mySeries.addAll(result);
+            TextView textView = null;
+            ImageView imageView = null;
+            TableRow row = null;
+            if (!mySeries.isEmpty()) {
+                for (SeriesBean series : mySeries) {
+                    textView = new TextView(getActivity());
+                    textView.setText(series.toString());
+                    imageView = new ImageView(getActivity());
+                    imageView.setImageBitmap(series.getCast());
+                    row = new TableRow(getActivity());
+                    row.addView(textView);
+                    row.addView(imageView);
+                    mySeriesTable.addView(row);
+                    View redLineView = new View(getActivity());
+                    redLineView.setLayoutParams(new LayoutParams(100, 2));
+                    redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
+                    mySeriesTable.addView(redLineView);
+                }
+            } else {
                 clear(mySeriesTable);
-                mySeries.addAll(result);
-                TextView textView = null;
-                ImageView imageView = null;
-                TableRow tableRow = null;
-                if (!mySeries.isEmpty()) {
-                    for (SeriesBean series : mySeries) {
-                        textView = new TextView(getActivity());
-                        textView.setText(series.toString());
-                        imageView = new ImageView(getActivity());
-                        imageView.setImageBitmap(series.getCast());
-                        tableRow = new TableRow(getActivity());
-                        tableRow.addView(textView);
-                        tableRow.addView(imageView);
-                        mySeriesTable.addView(tableRow);
-                        View redLineView = new View(getActivity());
-                        redLineView.setLayoutParams(new LayoutParams(100, 2));
-                        redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
-                        mySeriesTable.addView(redLineView);
-                    }
-                } else {
-                    clear(mySeriesTable);
-                }
             }
+        }
 
-            private void clear(final TableLayout mySeriesTable) {
-                for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
-                    if (i > 0) {
-                        // don't remove text view
-                        TableRow row = (TableRow) mySeriesTable.getChildAt(i);
-                        mySeriesTable.removeView(row);
-                    }
+        /**
+         * Clear.
+         *
+         * @param mySeriesTable the my series table
+         */
+        private void clear(final TableLayout mySeriesTable) {
+            for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
+                if (i > 0) {
+                    // don't remove text view
+                    TableRow row = (TableRow) mySeriesTable.getChildAt(i);
+                    mySeriesTable.removeView(row);
                 }
             }
-        }).execute();
+        }
     }
 
     /**

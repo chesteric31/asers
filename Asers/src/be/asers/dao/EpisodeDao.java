@@ -109,4 +109,14 @@ public class EpisodeDao extends AbstractDao {
         episode.setTvRageLink(cursor.getString(7));
         return episode;
     }
+
+    /**
+     * Update.
+     *
+     * @param contentValues the content values
+     * @param id the id
+     */
+    public void update(ContentValues contentValues, Long id) {
+        getDatabase().update(Episode.TABLE_NAME, contentValues, "_id=" + id, null);
+    }
 }
