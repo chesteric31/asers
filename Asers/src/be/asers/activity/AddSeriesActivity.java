@@ -222,9 +222,9 @@ public class AddSeriesActivity extends Activity {
             int size = contents.size();
             for (int i = 0; i < size; i++) {
                 //TODO
-                if (total == 1000) {
-                    break;
-                }
+//                if (total == 1000) {
+//                    break;
+//                }
                 String content = contents.get(i);
                 if (content.length() > 0) {
                     total++;
