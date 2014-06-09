@@ -32,6 +32,7 @@ public class Episode extends AbstractIdentity {
             COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_TO_SEE, COLUMN_SEASON };
 
     public static final String DATE_PATTERN = "dd/MMM/yy";
+    public static final String DATE_OPTIONAL_PATTERN = "MMM/yy";
 
     private Integer number;
     private Integer episode;

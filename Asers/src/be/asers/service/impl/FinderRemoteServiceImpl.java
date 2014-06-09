@@ -433,20 +433,22 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
             String[] strings = line.split(CSV_DELIMITER);
             EpisodeBean episode = buildEpisode(strings);
-            Integer seasonNumber = Integer.valueOf(strings[1]);
-            if (Boolean.TRUE.equals(episode.getSpecial())) {
-                specialEpisodeProcess(series, episode, seasonNumber);
-            } else {
-                if (lastSeason.getNumber() != seasonNumber) {
-                    lastSeason = buildSeason(series, seasonNumber);
+            if (episode != null) {
+                Integer seasonNumber = Integer.valueOf(strings[1]);
+                if (Boolean.TRUE.equals(episode.getSpecial())) {
+                    specialEpisodeProcess(series, episode, seasonNumber);
+                } else {
+                    if (lastSeason.getNumber() != seasonNumber) {
+                        lastSeason = buildSeason(series, seasonNumber);
+                    }
+                    List<EpisodeBean> episodes = lastSeason.getEpisodes();
+                    if (episodes == null) {
+                        episodes = new ArrayList<EpisodeBean>();
+                    }
+                    episodes.add(episode);
+                    lastSeason.setEpisodes(episodes);
+                    episode.setSeason(lastSeason);
                 }
-                List<EpisodeBean> episodes = lastSeason.getEpisodes();
-                if (episodes == null) {
-                    episodes = new ArrayList<EpisodeBean>();
-                }
-                episodes.add(episode);
-                lastSeason.setEpisodes(episodes);
-                episode.setSeason(lastSeason);
             }
         }
         return lastSeason;
@@ -499,17 +501,31 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
      * @return the built {@link EpisodeBean}
      */
     private EpisodeBean buildEpisode(String[] strings) {
-        EpisodeBean episode = new EpisodeBean();
+        EpisodeBean episode = null;
         if (!strings[0].isEmpty()) {
+            episode = new EpisodeBean();
             episode.setNumber(Integer.valueOf(strings[0]));
+            if (!strings[2].isEmpty()) {
+                episode.setEpisode(Integer.valueOf(strings[2]));
+            }
+            if (!strings[3].isEmpty()) {
+                episode.setProductionCode(strings[3]);
+            }
+            String date = strings[4];
+            setAirDate(episode, date);
+            episode.setTitle(strings[5]);
+            boolean notSpecial = NOT_SPECIAL_EPISODE.equals(strings[6]);
+            if (notSpecial) {
+                episode.setSpecial(Boolean.FALSE);
+            } else {
+                episode.setSpecial(Boolean.TRUE);
+            }
+            episode.setTvRageLink(strings[7]);
         }
-        if (!strings[2].isEmpty()) {
-            episode.setEpisode(Integer.valueOf(strings[2]));
-        }
-        if (!strings[3].isEmpty()) {
-            episode.setProductionCode(strings[3]);
-        }
-        String date = strings[4];
+        return episode;
+    }
+
+    private void setAirDate(EpisodeBean episode, String date) {
         String unaired = "UNAIRED";
         unaired = "\"" + unaired + "\"";
         if (!unaired.equals(date) && !"UNKNOWN".equals(date) && !"UNAIRED".equals(date)) {
@@ -519,19 +535,16 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
                 Date airDate = simpleDateFormat.parse(date);
                 episode.setAirDate(airDate);
             } catch (ParseException e) {
-                System.err.println(e.getLocalizedMessage());
-                // throw new RuntimeException(e);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Episode.DATE_OPTIONAL_PATTERN, Locale.US);
+                Date airDate;
+                try {
+                    airDate = simpleDateFormat.parse(date);
+                    episode.setAirDate(airDate);
+                } catch (ParseException e1) {
+                    throw new RuntimeException(e1);
+                }
             }
         }
-        episode.setTitle(strings[5]);
-        boolean notSpecial = NOT_SPECIAL_EPISODE.equals(strings[6]);
-        if (notSpecial) {
-            episode.setSpecial(Boolean.FALSE);
-        } else {
-            episode.setSpecial(Boolean.TRUE);
-        }
-        episode.setTvRageLink(strings[7]);
-        return episode;
     }
 
     /**

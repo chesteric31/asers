@@ -22,5 +22,6 @@
 	<string name="delete_series_confirmation">Bent u zeker dat u deze series verwijderen?</string>
 	<string name="delete_series_confirmation_yes">Ja</string>
     <string name="delete_series_confirmation_no">Nee</string>
+    <string name="refresh_my_series_button">Refresh</string>
     
 </resources>

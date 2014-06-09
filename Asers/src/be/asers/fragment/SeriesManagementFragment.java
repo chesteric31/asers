@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import be.asers.R;
 import be.asers.activity.AddSeriesActivity;
-import be.asers.activity.DeleteSeriesActivity;
 
 /**
  * Fragment for Series management.
@@ -72,15 +71,6 @@ public class SeriesManagementFragment extends Fragment {
             public void onClick(View view) {
                 Intent addSeriesActivity = new Intent(getActivity(), AddSeriesActivity.class);
                 startActivityForResult(addSeriesActivity, 0);
-            }
-        });
-        Button deleteSeriesButton = (Button) view.findViewById(R.id.delete_series_button);
-        deleteSeriesButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                Intent deleteSeriesActivity = new Intent(getActivity(), DeleteSeriesActivity.class);
-                startActivityForResult(deleteSeriesActivity, 0);
             }
         });
     }

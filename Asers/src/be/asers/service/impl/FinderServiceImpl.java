@@ -59,7 +59,7 @@ public class FinderServiceImpl implements FinderService {
         if (!series.isEmpty()) {
             for (Series serie : series) {
                 SeriesBean bean = mapSeries(serie);
-                bean.setCast(remoteService.createBitmap(bean));
+//                bean.setCast(remoteService.createBitmap(bean));
                 beans.add(bean);
             }
         }
@@ -352,21 +352,19 @@ public class FinderServiceImpl implements FinderService {
         if (!localSeasons.equals(remoteSeasons)) {
             int remoteSize = remoteSeasons.size();
             int localSize = localSeasons.size();
-            if (remoteSize != localSize) {
-                for (int i = 0; i < remoteSize; i++) {
-                    SeasonBean remoteSeason = remoteSeasons.get(i);
-                    boolean found = false;
-                    for (int j = i; j < localSize; j++) {
-                        SeasonBean localSeason = localSeasons.get(j);
-                        if (remoteSeason.getNumber().equals(localSeason.getNumber())) {
-                            refreshSeason(series, remoteSeason, localSeason);
-                            found = true;
-                            break;
-                        }
+            for (int i = 0; i < remoteSize; i++) {
+                SeasonBean remoteSeason = remoteSeasons.get(i);
+                boolean found = false;
+                for (int j = i; j < localSize; j++) {
+                    SeasonBean localSeason = localSeasons.get(j);
+                    if (remoteSeason.getNumber().equals(localSeason.getNumber())) {
+                        refreshSeason(series, remoteSeason, localSeason);
+                        found = true;
+                        break;
                     }
-                    if (!found) {
-                        seasonDao.add(mapSeasonContentValues(series, remoteSeason));
-                    }
+                }
+                if (!found) {
+                    seasonDao.add(mapSeasonContentValues(series, remoteSeason));
                 }
             }
         }

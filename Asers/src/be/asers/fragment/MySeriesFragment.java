@@ -3,16 +3,21 @@ package be.asers.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import be.asers.AsersApplication;
 import be.asers.R;
 import be.asers.activity.AbstractOnCompleteAsyncTask;
@@ -28,7 +33,7 @@ public class MySeriesFragment extends Fragment {
 
     /** The instance. */
     private static volatile MySeriesFragment instance = null;
-    
+
     /** The my series table. */
     private TableLayout mySeriesTable;
 
@@ -41,7 +46,7 @@ public class MySeriesFragment extends Fragment {
 
     /**
      * Gets the single instance of MySeriesFragment.
-     *
+     * 
      * @return singleton instance of {@link MySeriesFragment}
      */
     public static final MySeriesFragment getInstance() {
@@ -86,20 +91,20 @@ public class MySeriesFragment extends Fragment {
 
     /**
      * The Class OnCompleteTaskListenerImpl.
-     *
+     * 
      * @author chesteric31
      */
     private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<SeriesBean>> {
-        
+
         /** The my series table. */
         private final TableLayout mySeriesTable;
-        
+
         /** The my series. */
         private final List<SeriesBean> mySeries;
 
         /**
          * Instantiates a new on complete task listener impl.
-         *
+         * 
          * @param mySeriesTable the my series table
          * @param mySeries the my series
          */
@@ -118,7 +123,7 @@ public class MySeriesFragment extends Fragment {
 
         /**
          * Builds the table.
-         *
+         * 
          * @param result the result
          */
         private void buildTable(List<SeriesBean> result) {
@@ -129,7 +134,7 @@ public class MySeriesFragment extends Fragment {
             ImageView imageView = null;
             TableRow row = null;
             if (!mySeries.isEmpty()) {
-                for (SeriesBean series : mySeries) {
+                for (final SeriesBean series : mySeries) {
                     textView = new TextView(getActivity());
                     textView.setText(series.toString());
                     imageView = new ImageView(getActivity());
@@ -137,20 +142,98 @@ public class MySeriesFragment extends Fragment {
                     row = new TableRow(getActivity());
                     row.addView(textView);
                     row.addView(imageView);
+                    row.addView(buildRefreshButton(series));
+                    row.addView(buildDeleteButton(series));
                     mySeriesTable.addView(row);
-                    View redLineView = new View(getActivity());
-                    redLineView.setLayoutParams(new LayoutParams(100, 2));
-                    redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
-                    mySeriesTable.addView(redLineView);
+                    addLine();
                 }
             } else {
                 clear(mySeriesTable);
             }
         }
 
+        private Button buildRefreshButton(final SeriesBean series) {
+            Button refreshMySeriesButton = new Button(getActivity());
+            refreshMySeriesButton.setText(getResources().getString(R.string.refresh_my_series_button));
+            refreshMySeriesButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    new RefreshMySeriesTask(new OnCompleteTaskListener<Void>() {
+
+                        @Override
+                        public void onComplete(Void result) {
+                            // TODO Auto-generated method stub
+                            // throw new UnsupportedOperationException();
+                        }
+                    }).execute(series);
+                }
+            });
+            return refreshMySeriesButton;
+        }
+
+        private Button buildDeleteButton(final SeriesBean series) {
+            Button deleteMySeriesButton = new Button(getActivity());
+            deleteMySeriesButton.setText(getResources().getString(R.string.delete_series_button));
+            deleteMySeriesButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    AlertDialog alert = buildConfirmationDialog(series, MySeriesFragment.this.getActivity(),
+                            R.string.delete_series_confirmation);
+                    alert.show();
+                    Toast.makeText(MySeriesFragment.this.getActivity(),
+                            MySeriesFragment.this.getString(R.string.add_series_selected) + series, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+            return deleteMySeriesButton;
+        }
+
+        private AlertDialog buildConfirmationDialog(final SeriesBean series, Context context, int messageId) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(messageId);
+            builder.setCancelable(false);
+            builder.setPositiveButton(R.string.delete_series_confirmation_yes, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new DeleteSeriesTask(new OnCompleteTaskListener<Void>() {
+
+                        @Override
+                        public void onComplete(Void result) {
+                            refresh();
+//                            getInstance().fillTableData(getInstance().mySeriesTable);
+                        }
+
+                        private void refresh() {
+                            getInstance().getFragmentManager().beginTransaction().detach(instance).commit();
+                            getInstance().getFragmentManager().beginTransaction().attach(instance).commit();
+                        }
+                    }).execute(series);
+                }
+            });
+            builder.setNegativeButton(R.string.delete_series_confirmation_no, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog alert = builder.create();
+            return alert;
+        }
+
+        private void addLine() {
+            View redLineView = new View(getActivity());
+            redLineView.setLayoutParams(new LayoutParams(100, 2));
+            redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
+            mySeriesTable.addView(redLineView);
+        }
+
         /**
          * Clear.
-         *
+         * 
          * @param mySeriesTable the my series table
          */
         private void clear(final TableLayout mySeriesTable) {
@@ -188,6 +271,56 @@ public class MySeriesFragment extends Fragment {
         protected List<SeriesBean> doInBackground(Void... params) {
             AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
             return asersApplication.getFinderService().findMySeries();
+        }
+    }
+
+    /**
+     * Asynchronous task to refresh my {@link SeriesBean}.
+     * 
+     * @author chesteric31
+     */
+    private class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
+
+        /**
+         * Constructor.
+         * 
+         * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
+         *            use
+         */
+        public RefreshMySeriesTask(OnCompleteTaskListener<Void> onCompleteTaskListener) {
+            super(onCompleteTaskListener);
+        }
+
+        @Override
+        protected Void doInBackground(SeriesBean... mySeries) {
+            AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
+            asersApplication.getFinderService().refreshSeries(mySeries[0]);
+            return null;
+        }
+    }
+
+    /**
+     * Asynchronous task to set INACTIVE a {@link SeriesBean}.
+     * 
+     * @author chesteric31
+     */
+    private class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
+
+        public DeleteSeriesTask(OnCompleteTaskListener<Void> onCompleteTaskListener) {
+            super(onCompleteTaskListener);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected Void doInBackground(SeriesBean... params) {
+            if (params == null || params.length == 0) {
+                throw new IllegalArgumentException("A series bean must be given!");
+            }
+            AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
+            asersApplication.getFinderService().deleteMySeries(params[0]);
+            return null;
         }
     }
 }

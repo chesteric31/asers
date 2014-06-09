@@ -106,11 +106,11 @@ public class NextEpisodesFragment extends Fragment {
 
             private void clear(final TableLayout nextEpisodesTable) {
                 for (int i = 0; i < nextEpisodesTable.getChildCount(); i++) {
-                    if (i > 0) {
+//                    if (i > 0) {
                         // don't remove text view
                         TableRow row = (TableRow) nextEpisodesTable.getChildAt(i);
                         nextEpisodesTable.removeView(row);
-                    }
+//                    }
                 }
             }
         }).execute();
@@ -144,7 +144,7 @@ public class NextEpisodesFragment extends Fragment {
             List<SeriesBean> mySeries = finderService.findMySeries();
             if (mySeries != null && !mySeries.isEmpty()) {
                 for (SeriesBean mySerie : mySeries) {
-                    finderService.refreshSeries(mySerie);
+                    // finderService.refreshSeries(mySerie);
                     EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(mySerie);
                     nextEpisodes.add(nextEpisode);
                 }
