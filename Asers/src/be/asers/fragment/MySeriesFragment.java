@@ -1,6 +1,8 @@
 package be.asers.fragment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -20,9 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import be.asers.AsersApplication;
 import be.asers.R;
-import be.asers.activity.AbstractOnCompleteAsyncTask;
 import be.asers.activity.OnCompleteTaskListener;
+import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeriesBean;
+import be.asers.service.FinderService;
 
 /**
  * Fragment for My Series.
@@ -84,7 +87,7 @@ public class MySeriesFragment extends Fragment {
      */
     private void fillTableData(final TableLayout mySeriesTable) {
         final List<SeriesBean> mySeries = new ArrayList<SeriesBean>();
-        new MySeriesFinderTask(new OnCompleteTaskListenerImpl(mySeriesTable, mySeries)).execute();
+        new MySeriesFinderTask(this, new OnCompleteTaskListenerImpl(mySeriesTable, mySeries)).execute();
     }
 
     /**
@@ -132,6 +135,8 @@ public class MySeriesFragment extends Fragment {
             ImageView imageView = null;
             TableRow row = null;
             if (!mySeries.isEmpty()) {
+                AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
+                FinderService finderService = asersApplication.getFinderService();
                 for (final SeriesBean series : mySeries) {
                     textView = new TextView(getActivity());
                     textView.setText(series.toString());
@@ -140,6 +145,7 @@ public class MySeriesFragment extends Fragment {
                     row = new TableRow(getActivity());
                     row.addView(textView);
                     row.addView(imageView);
+                    row.addView(buildNextEpisodeAirDate(finderService, series));
                     row.addView(buildRefreshButton(series));
                     row.addView(buildDeleteButton(series));
                     mySeriesTable.addView(row);
@@ -150,6 +156,15 @@ public class MySeriesFragment extends Fragment {
             }
         }
 
+        private TextView buildNextEpisodeAirDate(FinderService finderService, final SeriesBean series) {
+            TextView textView = new TextView(getActivity());
+            EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(series);
+            Date airDate = nextEpisode.getAirDate();
+            textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
+                    + SimpleDateFormat.getDateInstance().format(airDate));
+            return textView;
+        }
+
         private Button buildRefreshButton(final SeriesBean series) {
             Button refreshMySeriesButton = new Button(getActivity());
             refreshMySeriesButton.setText(getResources().getString(R.string.refresh_my_series_button));
@@ -157,7 +172,7 @@ public class MySeriesFragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
-                    new RefreshMySeriesTask(new OnCompleteTaskListener<Void>() {
+                    new RefreshMySeriesTask(MySeriesFragment.this, new OnCompleteTaskListener<Void>() {
 
                         @Override
                         public void onComplete(Void result) {
@@ -196,7 +211,7 @@ public class MySeriesFragment extends Fragment {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    new DeleteSeriesTask(new OnCompleteTaskListener<Void>() {
+                    new DeleteSeriesTask(MySeriesFragment.this, new OnCompleteTaskListener<Void>() {
 
                         @Override
                         public void onComplete(Void result) {
@@ -242,83 +257,6 @@ public class MySeriesFragment extends Fragment {
                     mySeriesTable.removeView(row);
                 }
             }
-        }
-    }
-
-    /**
-     * Asynchronous task to find my {@link SeriesBean}.
-     * 
-     * @author chesteric31
-     */
-    private class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<SeriesBean>> {
-
-        /**
-         * Constructor.
-         * 
-         * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
-         *            use
-         */
-        public MySeriesFinderTask(OnCompleteTaskListener<List<SeriesBean>> onCompleteTaskListener) {
-            super(onCompleteTaskListener);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected List<SeriesBean> doInBackground(Void... params) {
-            AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
-            return asersApplication.getFinderService().findMySeries();
-        }
-    }
-
-    /**
-     * Asynchronous task to refresh my {@link SeriesBean}.
-     * 
-     * @author chesteric31
-     */
-    private class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
-
-        /**
-         * Constructor.
-         * 
-         * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
-         *            use
-         */
-        public RefreshMySeriesTask(OnCompleteTaskListener<Void> onCompleteTaskListener) {
-            super(onCompleteTaskListener);
-        }
-
-        @Override
-        protected Void doInBackground(SeriesBean... mySeries) {
-            AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
-            asersApplication.getFinderService().refreshSeries(mySeries[0]);
-            return null;
-        }
-    }
-
-    /**
-     * Asynchronous task to set INACTIVE a {@link SeriesBean}.
-     * 
-     * @author chesteric31
-     */
-    private class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
-
-        public DeleteSeriesTask(OnCompleteTaskListener<Void> onCompleteTaskListener) {
-            super(onCompleteTaskListener);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected Void doInBackground(SeriesBean... params) {
-            if (params == null || params.length == 0) {
-                throw new IllegalArgumentException("A series bean must be given!");
-            }
-            AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
-            asersApplication.getFinderService().deleteMySeries(params[0]);
-            return null;
         }
     }
 }

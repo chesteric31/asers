@@ -23,5 +23,6 @@
     <string name="delete_series_confirmation_yes">Yes</string>
     <string name="delete_series_confirmation_no">No</string>
     <string name="refresh_my_series_button">Refresh</string>
+    <string name="next_air_date_label">Next air date</string>
 
 </resources>
