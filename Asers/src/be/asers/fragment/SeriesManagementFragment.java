@@ -30,11 +30,9 @@ public class SeriesManagementFragment extends Fragment {
      * @return singleton instance of {@link SeriesManagementFragment}
      */
     public static final SeriesManagementFragment getInstance() {
-        if (SeriesManagementFragment.instance == null) {
-            synchronized (SeriesManagementFragment.class) {
-                if (SeriesManagementFragment.instance == null) {
-                    SeriesManagementFragment.instance = new SeriesManagementFragment();
-                }
+        synchronized (SeriesManagementFragment.class) {
+            if (SeriesManagementFragment.instance == null) {
+                SeriesManagementFragment.instance = new SeriesManagementFragment();
             }
         }
         return SeriesManagementFragment.instance;

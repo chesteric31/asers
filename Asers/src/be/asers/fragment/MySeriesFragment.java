@@ -50,11 +50,9 @@ public class MySeriesFragment extends Fragment {
      * @return singleton instance of {@link MySeriesFragment}
      */
     public static final MySeriesFragment getInstance() {
-        if (MySeriesFragment.instance == null) {
-            synchronized (MySeriesFragment.class) {
-                if (MySeriesFragment.instance == null) {
-                    MySeriesFragment.instance = new MySeriesFragment();
-                }
+        synchronized (MySeriesFragment.class) {
+            if (MySeriesFragment.instance == null) {
+                MySeriesFragment.instance = new MySeriesFragment();
             }
         }
         return MySeriesFragment.instance;
@@ -203,7 +201,7 @@ public class MySeriesFragment extends Fragment {
                         @Override
                         public void onComplete(Void result) {
                             refresh();
-//                            getInstance().fillTableData(getInstance().mySeriesTable);
+                            // getInstance().fillTableData(getInstance().mySeriesTable);
                         }
 
                         private void refresh() {

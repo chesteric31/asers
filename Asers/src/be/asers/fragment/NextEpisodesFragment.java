@@ -41,11 +41,9 @@ public class NextEpisodesFragment extends Fragment {
      * @return singleton instance of {@link NextEpisodesFragment}
      */
     public static final NextEpisodesFragment getInstance() {
-        if (NextEpisodesFragment.instance == null) {
-            synchronized (NextEpisodesFragment.class) {
-                if (NextEpisodesFragment.instance == null) {
-                    NextEpisodesFragment.instance = new NextEpisodesFragment();
-                }
+        synchronized (NextEpisodesFragment.class) {
+            if (NextEpisodesFragment.instance == null) {
+                NextEpisodesFragment.instance = new NextEpisodesFragment();
             }
         }
         return NextEpisodesFragment.instance;
@@ -75,45 +73,67 @@ public class NextEpisodesFragment extends Fragment {
      */
     private void fillTableData(final TableLayout nextEpisodesTable) {
         final List<EpisodeBean> nextEpisodes = new ArrayList<EpisodeBean>();
-        new NextEpisodesFinderTask(new OnCompleteTaskListener<List<EpisodeBean>>() {
+        new NextEpisodesFinderTask(new OnCompleteTaskListenerImpl(nextEpisodesTable, nextEpisodes)).execute();
+    }
 
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public void onComplete(List<EpisodeBean> result) {
-                nextEpisodes.clear();
-                clear(nextEpisodesTable);
-                nextEpisodes.addAll(result);
-                TextView textView = null;
-                TableRow tableRow = null;
-                if (!nextEpisodes.isEmpty()) {
-                    for (EpisodeBean episode : nextEpisodes) {
-                        textView = new TextView(getActivity());
-                        if (episode != null) {
-                            Date airDate = episode.getAirDate();
-                            String title = episode.getSeason().getSeries().getTitle();
-                            textView.setText(title + " : " + airDate);
-                            tableRow = new TableRow(getActivity());
-                            tableRow.addView(textView);
-                            nextEpisodesTable.addView(tableRow);
-                        }
+    private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<EpisodeBean>> {
+
+        private final TableLayout nextEpisodesTable;
+
+        /** The my series. */
+        private final List<EpisodeBean> nextEpisodes;
+
+        /**
+         * Constructor.
+         * 
+         * @param nextEpisodesTable
+         * @param nextEpisodes
+         */
+        public OnCompleteTaskListenerImpl(TableLayout nextEpisodesTable, List<EpisodeBean> nextEpisodes) {
+            this.nextEpisodesTable = nextEpisodesTable;
+            this.nextEpisodes = nextEpisodes;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void onComplete(List<EpisodeBean> result) {
+            buildTable(result);
+        }
+
+        private void buildTable(List<EpisodeBean> result) {
+            nextEpisodes.clear();
+            clear(nextEpisodesTable);
+            nextEpisodes.addAll(result);
+            TextView textView = null;
+            TableRow tableRow = null;
+            if (!nextEpisodes.isEmpty()) {
+                for (EpisodeBean episode : nextEpisodes) {
+                    textView = new TextView(getActivity());
+                    if (episode != null) {
+                        Date airDate = episode.getAirDate();
+                        String title = episode.getSeason().getSeries().getTitle();
+                        textView.setText(title + " : " + airDate);
+                        tableRow = new TableRow(getActivity());
+                        tableRow.addView(textView);
+                        nextEpisodesTable.addView(tableRow);
                     }
-                } else {
-                    clear(nextEpisodesTable);
                 }
+            } else {
+                clear(nextEpisodesTable);
             }
+        }
 
-            private void clear(final TableLayout nextEpisodesTable) {
-                for (int i = 0; i < nextEpisodesTable.getChildCount(); i++) {
-//                    if (i > 0) {
-                        // don't remove text view
-                        TableRow row = (TableRow) nextEpisodesTable.getChildAt(i);
-                        nextEpisodesTable.removeView(row);
-//                    }
+        private void clear(final TableLayout nextEpisodesTable) {
+            for (int i = 0; i < nextEpisodesTable.getChildCount(); i++) {
+                if (i > 0) {
+                    // don't remove text view
+                    TableRow row = (TableRow) nextEpisodesTable.getChildAt(i);
+                    nextEpisodesTable.removeView(row);
                 }
             }
-        }).execute();
+        }
     }
 
     /**
