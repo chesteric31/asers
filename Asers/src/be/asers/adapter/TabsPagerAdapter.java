@@ -1,11 +1,10 @@
 package be.asers.adapter;
 
-import be.asers.fragment.MySeriesFragment;
-import be.asers.fragment.NextEpisodesFragment;
-import be.asers.fragment.SeriesManagementFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import be.asers.fragment.MySeriesFragment;
+import be.asers.fragment.SeriesManagementFragment;
 
 /**
  * {@link FragmentPagerAdapter} with tabs.
@@ -34,9 +33,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             fragment = MySeriesFragment.getInstance();
             break;
         case 1:
-            fragment = NextEpisodesFragment.getInstance();
-            break;
-        case 2:
             fragment = SeriesManagementFragment.getInstance();
             break;
         default:
@@ -50,7 +46,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
      */
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
 }

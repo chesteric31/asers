@@ -159,9 +159,11 @@ public class MySeriesFragment extends Fragment {
         private TextView buildNextEpisodeAirDate(FinderService finderService, final SeriesBean series) {
             TextView textView = new TextView(getActivity());
             EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(series);
-            Date airDate = nextEpisode.getAirDate();
-            textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
+            if (nextEpisode != null) {
+                Date airDate = nextEpisode.getAirDate();
+                textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
                     + SimpleDateFormat.getDateInstance().format(airDate));
+            }
             return textView;
         }
 

@@ -5,7 +5,6 @@
     <string name="action_settings">Instellingen</string>
     <string name="hello_world">Hello world!</string>
     <string name="my_series_label">MIJN SERIES</string>
-    <string name="next_episodes_label">VOLGENDEN AFLEVERINGEN</string>
     <string name="series_management_label">SERIES BEHEER</string>
     <string name="add_series_button">Toevoeging</string>
     <string name="modify_series_button">Wijziging</string>

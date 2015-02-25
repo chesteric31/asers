@@ -37,8 +37,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         CharSequence mySeriesTitle = getResources().getText(R.string.my_series_label);
         actionBar.addTab(actionBar.newTab().setText(mySeriesTitle).setTabListener(this));
-        CharSequence nextEpisodesTitle = getResources().getText(R.string.next_episodes_label);
-        actionBar.addTab(actionBar.newTab().setText(nextEpisodesTitle).setTabListener(this));
         CharSequence seriesManagementTitle = getResources().getText(R.string.series_management_label);
         actionBar.addTab(actionBar.newTab().setText(seriesManagementTitle).setTabListener(this));
         setOnPageChangeListener();
