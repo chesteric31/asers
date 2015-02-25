@@ -60,6 +60,11 @@ public class MySeriesFragment extends Fragment {
         }
         return MySeriesFragment.instance;
     }
+    
+    public void refresh() {
+        getInstance().getFragmentManager().beginTransaction().detach(instance).commit();
+        getInstance().getFragmentManager().beginTransaction().attach(instance).commit();
+    }
 
     /**
      * {@inheritDoc}
@@ -79,7 +84,7 @@ public class MySeriesFragment extends Fragment {
         fillTableData(mySeriesTable);
         return view;
     }
-
+    
     /**
      * Fills the spinner with my series with the data found in database.
      * 
@@ -217,14 +222,10 @@ public class MySeriesFragment extends Fragment {
 
                         @Override
                         public void onComplete(Void result) {
-                            refresh();
+                            instance.refresh();
                             // getInstance().fillTableData(getInstance().mySeriesTable);
                         }
 
-                        private void refresh() {
-                            getInstance().getFragmentManager().beginTransaction().detach(instance).commit();
-                            getInstance().getFragmentManager().beginTransaction().attach(instance).commit();
-                        }
                     }).execute(series);
                 }
             });

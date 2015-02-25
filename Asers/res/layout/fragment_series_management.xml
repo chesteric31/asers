@@ -1,30 +1,20 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:columnCount="1"
+    android:rowCount="2"
     tools:context=".SeriesManagementFragment" >
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_series_title" />
 
-        <Button
-            android:id="@+id/add_series_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_series_button" />
+    <AutoCompleteTextView
+        android:id="@+id/add_series_auto_complete"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:completionThreshold="2" />
 
-        <Button
-            android:id="@+id/modify_series_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/modify_series_button" />
-
-        <Button
-            android:id="@+id/delete_series_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete_series_button" />
-    </GridLayout>
-
-</FrameLayout>
+</GridLayout>

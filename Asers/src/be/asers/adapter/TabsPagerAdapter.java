@@ -33,7 +33,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             fragment = MySeriesFragment.getInstance();
             break;
         case 1:
-            fragment = SeriesManagementFragment.getInstance();
+            fragment = SeriesManagementFragment.getInstance(this);
             break;
         default:
             break;
@@ -47,6 +47,10 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return 2;
+    }
+    
+    public void refreshMySeries() {
+        MySeriesFragment.getInstance().refresh();
     }
 
 }
