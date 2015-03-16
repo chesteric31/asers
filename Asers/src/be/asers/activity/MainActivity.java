@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import be.asers.AsersUncaughtExceptionHandler;
 import be.asers.R;
 import be.asers.adapter.TabsPagerAdapter;
 
@@ -27,6 +28,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new AsersUncaughtExceptionHandler(this));
+        
         setContentView(R.layout.activity_main);
         
         viewPager = (ViewPager) findViewById(R.id.pager);
