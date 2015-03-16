@@ -11,49 +11,102 @@ import java.util.List;
  */
 public class Series extends AbstractIdentity {
 
+    /** The Constant TABLE_NAME. */
     public static final String TABLE_NAME = "SERIES";
 
+    /** The Constant COLUMN_TITLE. */
     public static final String COLUMN_TITLE = "TITLE";
+    
+    /** The Constant COLUMN_TV_RAGE_ID. */
     public static final String COLUMN_TV_RAGE_ID = "TV_RAGE_ID";
+    
+    /** The Constant COLUMN_NETWORK. */
     public static final String COLUMN_NETWORK = "NETWORK";
+    
+    /** The Constant COLUMN_START_DATE. */
     public static final String COLUMN_START_DATE = "START_DATE";
+    
+    /** The Constant COLUMN_END_DATE. */
     public static final String COLUMN_END_DATE = "END_DATE";
+    
+    /** The Constant COLUMN_EPISODES_NUMBER. */
     public static final String COLUMN_EPISODES_NUMBER = "EPISODES_NUMBER";
+    
+    /** The Constant COLUMN_RUN_TIME. */
     public static final String COLUMN_RUN_TIME = "RUN_TIME";
+    
+    /** The Constant COLUMN_COUNTRY. */
     public static final String COLUMN_COUNTRY = "COUNTRY";
+    
+    /** The Constant COLUMN_STATUS. */
     public static final String COLUMN_STATUS = "STATUS";
+    
+    /** The Constant COLUMN_DIRECTORY. */
     public static final String COLUMN_DIRECTORY = "DIRECTORY";
 
+    /** The Constant CREATE_TABLE. */
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_TITLE + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER,"
             + COLUMN_NETWORK + " TEXT, " + COLUMN_START_DATE + " DATE, " + COLUMN_END_DATE + " DATE, "
             + COLUMN_EPISODES_NUMBER + " INTEGER, " + COLUMN_RUN_TIME + " INTEGER, " + COLUMN_COUNTRY + " TEXT, "
             + COLUMN_STATUS + " , " + COLUMN_DIRECTORY + " );";
 
+    /** The Constant ALL_COLUMNS. */
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_COUNTRY, COLUMN_END_DATE, COLUMN_EPISODES_NUMBER,
             COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_START_DATE, COLUMN_TITLE, COLUMN_TV_RAGE_ID, COLUMN_STATUS,
             COLUMN_DIRECTORY };
 
+    /** The Constant DATE_PATTERN. */
     public static final String DATE_PATTERN = "MMM yyyy";
+    
+    /** The Constant DATE_PATTERN_OPTIONAL. */
     public static final String DATE_PATTERN_OPTIONAL = "yyyy";
+    
+    /** The Constant NO_KNOWN_END_DATE. */
     public static final String NO_KNOWN_END_DATE = "___ ____";
 
+    /** The Constant STATUS_ACTIVE. */
     public static final String STATUS_ACTIVE = "ACTIVE";
+    
+    /** The Constant STATUS_INACTIVE. */
     public static final String STATUS_INACTIVE = "INACTIVE";
 
+    /** The title. */
     private String title;
+    
+    /** The tv rage id. */
     private int tvRageId;
+    
+    /** The network. */
     private String network;
+    
+    /** The seasons. */
     private List<Season> seasons;
+    
+    /** The start date. */
     private Date startDate;
+    
+    /** The end date. */
     private Date endDate;
+    
+    /** The episodes number. */
     private int episodesNumber;
+    
+    /** The run time. */
     private int runTime;
+    
+    /** The country. */
     private String country;
+    
+    /** The status. */
     private String status;
+    
+    /** The directory. */
     private String directory;
 
     /**
+     * Gets the title.
+     *
      * @return the title
      */
     public String getTitle() {
@@ -61,6 +114,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the title.
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {
@@ -68,6 +123,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the tv rage id.
+     *
      * @return the tvRageId
      */
     public int getTvRageId() {
@@ -75,6 +132,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the tv rage id.
+     *
      * @param tvRageId the tvRageId to set
      */
     public void setTvRageId(int tvRageId) {
@@ -82,6 +141,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the network.
+     *
      * @return the network
      */
     public String getNetwork() {
@@ -89,6 +150,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the network.
+     *
      * @param network the network to set
      */
     public void setNetwork(String network) {
@@ -96,6 +159,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the seasons.
+     *
      * @return the seasons
      */
     public List<Season> getSeasons() {
@@ -103,6 +168,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the seasons.
+     *
      * @param seasons the seasons to set
      */
     public void setSeasons(List<Season> seasons) {
@@ -110,6 +177,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the start date.
+     *
      * @return the startDate
      */
     public Date getStartDate() {
@@ -117,6 +186,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the start date.
+     *
      * @param startDate the startDate to set
      */
     public void setStartDate(Date startDate) {
@@ -124,6 +195,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the end date.
+     *
      * @return the endDate
      */
     public Date getEndDate() {
@@ -131,6 +204,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the end date.
+     *
      * @param endDate the endDate to set
      */
     public void setEndDate(Date endDate) {
@@ -138,6 +213,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the episodes number.
+     *
      * @return the episodesNumber
      */
     public int getEpisodesNumber() {
@@ -145,6 +222,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the episodes number.
+     *
      * @param episodesNumber the episodesNumber to set
      */
     public void setEpisodesNumber(int episodesNumber) {
@@ -152,6 +231,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the run time.
+     *
      * @return the runTime the run time duration in minute
      */
     public int getRunTime() {
@@ -159,6 +240,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the run time.
+     *
      * @param runTime the runTime to set
      */
     public void setRunTime(int runTime) {
@@ -166,6 +249,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Gets the country.
+     *
      * @return the country the country (like US, UK, ...)
      */
     public String getCountry() {
@@ -173,6 +258,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the country.
+     *
      * @param country the country to set
      */
     public void setCountry(String country) {
@@ -180,6 +267,8 @@ public class Series extends AbstractIdentity {
     }
     
     /**
+     * Gets the status.
+     *
      * @return the status
      */
     public String getStatus() {
@@ -187,6 +276,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the status.
+     *
      * @param status the status to set
      */
     public void setStatus(String status) {
@@ -195,6 +286,8 @@ public class Series extends AbstractIdentity {
     
 
     /**
+     * Gets the directory.
+     *
      * @return the directory
      */
     public String getDirectory() {
@@ -202,6 +295,8 @@ public class Series extends AbstractIdentity {
     }
 
     /**
+     * Sets the directory.
+     *
      * @param directory the directory to set
      */
     public void setDirectory(String directory) {

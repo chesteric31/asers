@@ -12,11 +12,15 @@ import be.asers.bean.SeriesBean;
  */
 class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
 
-    /**
-     * 
-     */
+    /** The my series fragment. */
     private final MySeriesFragment mySeriesFragment;
 
+    /**
+     * Instantiates a new delete series task.
+     *
+     * @param mySeriesFragment the my series fragment
+     * @param onCompleteTaskListener the on complete task listener
+     */
     public DeleteSeriesTask(MySeriesFragment mySeriesFragment, OnCompleteTaskListener<Void> onCompleteTaskListener) {
         super(onCompleteTaskListener);
         this.mySeriesFragment = mySeriesFragment;

@@ -14,17 +14,15 @@ import be.asers.bean.SeriesBean;
  */
 class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<SeriesBean>> {
 
-    /**
-     * 
-     */
+    /** The my series fragment. */
     private final MySeriesFragment mySeriesFragment;
 
     /**
      * Constructor.
-     * 
+     *
+     * @param mySeriesFragment TODO
      * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
      *            use
-     * @param mySeriesFragment TODO
      */
     public MySeriesFinderTask(MySeriesFragment mySeriesFragment, OnCompleteTaskListener<List<SeriesBean>> onCompleteTaskListener) {
         super(onCompleteTaskListener);

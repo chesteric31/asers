@@ -7,10 +7,15 @@ package be.asers.model;
  */
 abstract class AbstractIdentity {
 
+    /** The Constant COLUMN_ID. */
     public static final String COLUMN_ID = "_ID";
+    
+    /** The id. */
     private Long id;
 
     /**
+     * Gets the id.
+     *
      * @return the id
      */
     public Long getId() {
@@ -18,6 +23,8 @@ abstract class AbstractIdentity {
     }
 
     /**
+     * Sets the id.
+     *
      * @param id the id to set
      */
     public void setId(Long id) {

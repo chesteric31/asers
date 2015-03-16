@@ -9,18 +9,37 @@ import java.util.Date;
  */
 public class Episode extends AbstractIdentity {
 
+    /** The Constant TABLE_NAME. */
     public static final String TABLE_NAME = "EPISODE";
 
+    /** The Constant COLUMN_NUMBER. */
     public static final String COLUMN_NUMBER = "NUMBER";
+    
+    /** The Constant COLUMN_EPISODE. */
     public static final String COLUMN_EPISODE = "EPISODE";
+    
+    /** The Constant COLUMN_PRODUCTION_CODE. */
     public static final String COLUMN_PRODUCTION_CODE = "PRODUCTION_CODE";
+    
+    /** The Constant COLUMN_AIR_DATE. */
     public static final String COLUMN_AIR_DATE = "AIR_DATE";
+    
+    /** The Constant COLUMN_TITLE. */
     public static final String COLUMN_TITLE = "TITLE";
+    
+    /** The Constant COLUMN_SPECIAL. */
     public static final String COLUMN_SPECIAL = "SPECIAL";
+    
+    /** The Constant COLUMN_TV_RAGE_LINK. */
     public static final String COLUMN_TV_RAGE_LINK = "TV_RAGE_LINK";
+    
+    /** The Constant COLUMN_TO_SEE. */
     public static final String COLUMN_TO_SEE = "TO_SEE";
+    
+    /** The Constant COLUMN_SEASON. */
     public static final String COLUMN_SEASON = "FK_SEASON";
 
+    /** The Constant CREATE_TABLE. */
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NUMBER + " INTEGER, " + COLUMN_EPISODE + " INTEGER, "
             + COLUMN_PRODUCTION_CODE + " TEXT, " + COLUMN_AIR_DATE + " DATE, " + COLUMN_TITLE + " TEXT, "
@@ -28,23 +47,46 @@ public class Episode extends AbstractIdentity {
             + COLUMN_TO_SEE + " BOOLEAN, FOREIGN KEY (" + COLUMN_SEASON + ") REFERENCES " + Season.TABLE_NAME + "("
             + Season.COLUMN_ID + "));";
 
+    /** The Constant ALL_COLUMNS. */
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_NUMBER, COLUMN_EPISODE, COLUMN_PRODUCTION_CODE,
             COLUMN_AIR_DATE, COLUMN_TITLE, COLUMN_SPECIAL, COLUMN_TV_RAGE_LINK, COLUMN_TO_SEE, COLUMN_SEASON };
 
+    /** The Constant DATE_PATTERN. */
     public static final String DATE_PATTERN = "dd/MMM/yy";
+    
+    /** The Constant DATE_OPTIONAL_PATTERN. */
     public static final String DATE_OPTIONAL_PATTERN = "MMM/yy";
 
+    /** The number. */
     private Integer number;
+    
+    /** The episode. */
     private Integer episode;
+    
+    /** The production code. */
     private String productionCode;
+    
+    /** The air date. */
     private Date airDate;
+    
+    /** The title. */
     private String title;
+    
+    /** The special. */
     private Boolean special;
+    
+    /** The tv rage link. */
     private String tvRageLink;
+    
+    /** The to see. */
     private Boolean toSee;
+    
+    /** The season. */
     private Season season;
 
     /**
+     * Gets the number.
+     *
      * @return the number the sequence number (can be null for special episode)
      */
     public Integer getNumber() {
@@ -52,6 +94,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the number.
+     *
      * @param number the number to set
      */
     public void setNumber(Integer number) {
@@ -59,6 +103,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the season.
+     *
      * @return the season the season number
      */
     public Season getSeason() {
@@ -66,6 +112,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the season.
+     *
      * @param season the season to set
      */
     public void setSeason(Season season) {
@@ -73,6 +121,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the episode.
+     *
      * @return the episode the episode number
      */
     public Integer getEpisode() {
@@ -80,6 +130,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the episode.
+     *
      * @param episode the episode to set
      */
     public void setEpisode(Integer episode) {
@@ -87,6 +139,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the production code.
+     *
      * @return the productionCode the production code
      */
     public String getProductionCode() {
@@ -94,6 +148,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the production code.
+     *
      * @param productionCode the productionCode to set
      */
     public void setProductionCode(String productionCode) {
@@ -101,6 +157,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the air date.
+     *
      * @return the airDate the air date
      */
     public Date getAirDate() {
@@ -108,6 +166,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the air date.
+     *
      * @param airDate the airDate to set
      */
     public void setAirDate(Date airDate) {
@@ -115,6 +175,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the title.
+     *
      * @return the title the title
      */
     public String getTitle() {
@@ -122,6 +184,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the title.
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {
@@ -129,6 +193,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the special.
+     *
      * @return the special true if it's a special episode, otherwise false
      */
     public Boolean getSpecial() {
@@ -136,6 +202,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the special.
+     *
      * @param special the special to set
      */
     public void setSpecial(Boolean special) {
@@ -143,6 +211,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the tv rage link.
+     *
      * @return the tvRageLink the web link to the TvRage episode
      */
     public String getTvRageLink() {
@@ -150,6 +220,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the tv rage link.
+     *
      * @param tvRageLink the tvRageLink to set
      */
     public void setTvRageLink(String tvRageLink) {
@@ -157,6 +229,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Gets the to see.
+     *
      * @return the toSee
      */
     public Boolean getToSee() {
@@ -164,6 +238,8 @@ public class Episode extends AbstractIdentity {
     }
 
     /**
+     * Sets the to see.
+     *
      * @param toSee the toSee to set
      */
     public void setToSee(Boolean toSee) {

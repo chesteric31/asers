@@ -2,9 +2,9 @@ package be.asers.activity;
 
 /**
  * Interface to signal that the task is completed.
- * 
- * @param <Result> the result type
+ *
  * @author chesteric31
+ * @param <Result> the result type
  */
 public interface OnCompleteTaskListener<Result> {
 

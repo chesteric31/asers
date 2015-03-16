@@ -7,9 +7,12 @@ package be.asers.bean;
  */
 public abstract class AbstractIdentityBean {
 
+    /** The id. */
     private Long id;
 
     /**
+     * Gets the id.
+     *
      * @return the id
      */
     public Long getId() {
@@ -17,6 +20,8 @@ public abstract class AbstractIdentityBean {
     }
 
     /**
+     * Sets the id.
+     *
      * @param id the id to set
      */
     public void setId(Long id) {

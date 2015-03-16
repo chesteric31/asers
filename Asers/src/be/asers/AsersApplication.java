@@ -13,7 +13,10 @@ import be.asers.service.impl.FinderServiceImpl;
  */
 public class AsersApplication extends Application {
 
+    /** The finder service. */
     private FinderService finderService;
+    
+    /** The finder remote service. */
     private FinderRemoteService finderRemoteService;
 
     /**
@@ -27,6 +30,8 @@ public class AsersApplication extends Application {
     }
 
     /**
+     * Gets the finder service.
+     *
      * @return the finderService
      */
     public FinderService getFinderService() {
@@ -34,6 +39,8 @@ public class AsersApplication extends Application {
     }
 
     /**
+     * Gets the finder remote service.
+     *
      * @return the finderRemoteService
      */
     public FinderRemoteService getFinderRemoteService() {

@@ -29,11 +29,22 @@ import be.asers.service.FinderService;
  */
 public class FinderServiceImpl implements FinderService {
 
+    /** The date format. */
     private SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
+    
+    /** The context. */
     private Context context;
+    
+    /** The series dao. */
     private SeriesDao seriesDao;
+    
+    /** The season dao. */
     private SeasonDao seasonDao;
+    
+    /** The episode dao. */
     private EpisodeDao episodeDao;
+    
+    /** The remote service. */
     private FinderRemoteService remoteService;
 
     /**
@@ -59,7 +70,7 @@ public class FinderServiceImpl implements FinderService {
         if (!series.isEmpty()) {
             for (Series serie : series) {
                 SeriesBean bean = mapSeries(serie);
-//                bean.setCast(remoteService.createBitmap(bean));
+                bean.setCast(remoteService.createBitmap(bean));
                 beans.add(bean);
             }
         }

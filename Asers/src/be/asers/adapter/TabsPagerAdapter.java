@@ -49,6 +49,9 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         return 2;
     }
     
+    /**
+     * Refresh my series.
+     */
     public void refreshMySeries() {
         MySeriesFragment.getInstance().refresh();
     }

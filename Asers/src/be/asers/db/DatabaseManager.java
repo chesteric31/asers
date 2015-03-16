@@ -15,7 +15,10 @@ import be.asers.model.Series;
  */
 public class DatabaseManager extends SQLiteOpenHelper {
 
+    /** The Constant DATABASE_NAME. */
     private static final String DATABASE_NAME = "asers.db";
+    
+    /** The Constant DATABASE_VERSION. */
     private static final int DATABASE_VERSION = 3;
 
     /**

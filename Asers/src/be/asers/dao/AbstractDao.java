@@ -13,7 +13,10 @@ import be.asers.db.DatabaseManager;
  */
 abstract class AbstractDao {
 
+    /** The database manager. */
     private DatabaseManager databaseManager;
+    
+    /** The database. */
     private SQLiteDatabase database;
 
     /**
@@ -47,6 +50,8 @@ abstract class AbstractDao {
     }
 
     /**
+     * Gets the database.
+     *
      * @return the database
      */
     public SQLiteDatabase getDatabase() {
@@ -54,6 +59,8 @@ abstract class AbstractDao {
     }
 
     /**
+     * Sets the database.
+     *
      * @param database the database to set
      */
     public void setDatabase(SQLiteDatabase database) {

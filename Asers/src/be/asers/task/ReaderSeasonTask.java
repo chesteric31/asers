@@ -22,10 +22,19 @@ import be.asers.model.Episode;
  */
 public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
 
+    /** The Constant END_DATA_DELIMITER. */
     private static final String END_DATA_DELIMITER = "</pre>";
+    
+    /** The Constant HEADER_NUMBER_LINES. */
     private static final int HEADER_NUMBER_LINES = 7;
+    
+    /** The Constant FIRST_COLUMN_TITLE. */
     private static final String FIRST_COLUMN_TITLE = "number";
+    
+    /** The Constant NOT_SPECIAL_EPISODE. */
     private static final String NOT_SPECIAL_EPISODE = "n";
+    
+    /** The series. */
     private SeriesBean series;
 
     /**

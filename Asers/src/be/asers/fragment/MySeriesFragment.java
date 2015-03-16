@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -60,7 +60,10 @@ public class MySeriesFragment extends Fragment {
         }
         return MySeriesFragment.instance;
     }
-    
+
+    /**
+     * Refresh.
+     */
     public void refresh() {
         getInstance().getFragmentManager().beginTransaction().detach(instance).commit();
         getInstance().getFragmentManager().beginTransaction().attach(instance).commit();
@@ -84,7 +87,7 @@ public class MySeriesFragment extends Fragment {
         fillTableData(mySeriesTable);
         return view;
     }
-    
+
     /**
      * Fills the spinner with my series with the data found in database.
      * 
@@ -149,8 +152,8 @@ public class MySeriesFragment extends Fragment {
                     imageView.setImageBitmap(series.getCast());
                     row = new TableRow(getActivity());
                     row.addView(textView);
-                    row.addView(imageView);
                     row.addView(buildNextEpisodeAirDate(finderService, series));
+                    row.addView(imageView);
                     row.addView(buildRefreshButton(series));
                     row.addView(buildDeleteButton(series));
                     mySeriesTable.addView(row);
@@ -161,20 +164,35 @@ public class MySeriesFragment extends Fragment {
             }
         }
 
+        /**
+         * Builds the next episode air date.
+         *
+         * @param finderService the finder service
+         * @param series the series
+         * @return the text view
+         */
         private TextView buildNextEpisodeAirDate(FinderService finderService, final SeriesBean series) {
             TextView textView = new TextView(getActivity());
             EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(series);
             if (nextEpisode != null) {
                 Date airDate = nextEpisode.getAirDate();
                 textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
-                    + SimpleDateFormat.getDateInstance().format(airDate));
+                        + SimpleDateFormat.getDateInstance().format(airDate));
             }
             return textView;
         }
 
-        private Button buildRefreshButton(final SeriesBean series) {
-            Button refreshMySeriesButton = new Button(getActivity());
-            refreshMySeriesButton.setText(getResources().getString(R.string.refresh_my_series_button));
+        /**
+         * Builds the refresh button.
+         *
+         * @param series the series
+         * @return the image button
+         */
+        private ImageButton buildRefreshButton(final SeriesBean series) {
+            ImageButton refreshMySeriesButton = new ImageButton(getActivity());
+//            refreshMySeriesButton
+//                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+            refreshMySeriesButton.setImageResource(R.drawable.view_refresh);
             refreshMySeriesButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -184,7 +202,6 @@ public class MySeriesFragment extends Fragment {
                         @Override
                         public void onComplete(Void result) {
                             // TODO Auto-generated method stub
-                            // throw new UnsupportedOperationException();
                         }
                     }).execute(series);
                 }
@@ -192,9 +209,17 @@ public class MySeriesFragment extends Fragment {
             return refreshMySeriesButton;
         }
 
-        private Button buildDeleteButton(final SeriesBean series) {
-            Button deleteMySeriesButton = new Button(getActivity());
-            deleteMySeriesButton.setText(getResources().getString(R.string.delete_series_button));
+        /**
+         * Builds the delete button.
+         *
+         * @param series the series
+         * @return the image button
+         */
+        private ImageButton buildDeleteButton(final SeriesBean series) {
+            ImageButton deleteMySeriesButton = new ImageButton(getActivity());
+//            deleteMySeriesButton
+//                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+            deleteMySeriesButton.setImageResource(R.drawable.list_remove);
             deleteMySeriesButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -210,6 +235,14 @@ public class MySeriesFragment extends Fragment {
             return deleteMySeriesButton;
         }
 
+        /**
+         * Builds the confirmation dialog.
+         *
+         * @param series the series
+         * @param context the context
+         * @param messageId the message id
+         * @return the alert dialog
+         */
         private AlertDialog buildConfirmationDialog(final SeriesBean series, Context context, int messageId) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(messageId);
@@ -240,6 +273,9 @@ public class MySeriesFragment extends Fragment {
             return alert;
         }
 
+        /**
+         * Adds the line.
+         */
         private void addLine() {
             View redLineView = new View(getActivity());
             redLineView.setLayoutParams(new LayoutParams(100, 2));

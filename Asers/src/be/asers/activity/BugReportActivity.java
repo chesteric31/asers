@@ -16,6 +16,7 @@ import be.asers.R;
  */
 public class BugReportActivity extends Activity {
 
+    /** The Constant STACKTRACE. */
     public static final String STACKTRACE = "asers.stacktrace";
 
     /**
@@ -55,6 +56,8 @@ public class BugReportActivity extends Activity {
     }
 
     /**
+     * Gets the version name.
+     *
      * @return the version name of the application, empty string if an error occurred
      */
     private String getVersionName() {

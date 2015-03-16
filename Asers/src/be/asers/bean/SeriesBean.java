@@ -12,20 +12,45 @@ import android.graphics.Bitmap;
  */
 public class SeriesBean extends AbstractIdentityBean {
 
+    /** The title. */
     private String title;
+    
+    /** The tv rage id. */
     private int tvRageId;
+    
+    /** The network. */
     private String network;
+    
+    /** The seasons. */
     private List<SeasonBean> seasons;
+    
+    /** The start date. */
     private Date startDate;
+    
+    /** The end date. */
     private Date endDate;
+    
+    /** The episodes number. */
     private int episodesNumber;
+    
+    /** The run time. */
     private int runTime;
+    
+    /** The country. */
     private String country;
+    
+    /** The status. */
     private String status;
+    
+    /** The directory. */
     private String directory;
+    
+    /** The cast. */
     private Bitmap cast;
 
     /**
+     * Gets the title.
+     *
      * @return the title
      */
     public String getTitle() {
@@ -33,6 +58,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the title.
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {
@@ -40,6 +67,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the tv rage id.
+     *
      * @return the tvRageId
      */
     public int getTvRageId() {
@@ -47,6 +76,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the tv rage id.
+     *
      * @param tvRageId the tvRageId to set
      */
     public void setTvRageId(int tvRageId) {
@@ -54,6 +85,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the network.
+     *
      * @return the network
      */
     public String getNetwork() {
@@ -61,6 +94,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the network.
+     *
      * @param network the network to set
      */
     public void setNetwork(String network) {
@@ -68,6 +103,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the seasons.
+     *
      * @return the seasons
      */
     public List<SeasonBean> getSeasons() {
@@ -75,6 +112,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the seasons.
+     *
      * @param seasons the seasons to set
      */
     public void setSeasons(List<SeasonBean> seasons) {
@@ -82,6 +121,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the start date.
+     *
      * @return the startDate
      */
     public Date getStartDate() {
@@ -89,6 +130,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the start date.
+     *
      * @param startDate the startDate to set
      */
     public void setStartDate(Date startDate) {
@@ -96,6 +139,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the end date.
+     *
      * @return the endDate
      */
     public Date getEndDate() {
@@ -103,6 +148,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the end date.
+     *
      * @param endDate the endDate to set
      */
     public void setEndDate(Date endDate) {
@@ -110,6 +157,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the episodes number.
+     *
      * @return the episodesNumber
      */
     public int getEpisodesNumber() {
@@ -117,6 +166,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the episodes number.
+     *
      * @param episodesNumber the episodesNumber to set
      */
     public void setEpisodesNumber(int episodesNumber) {
@@ -124,6 +175,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the run time.
+     *
      * @return the runTime the run time duration in minute
      */
     public int getRunTime() {
@@ -131,6 +184,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the run time.
+     *
      * @param runTime the runTime to set
      */
     public void setRunTime(int runTime) {
@@ -138,6 +193,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the country.
+     *
      * @return the country the country (like US, UK, ...)
      */
     public String getCountry() {
@@ -145,6 +202,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the country.
+     *
      * @param country the country to set
      */
     public void setCountry(String country) {
@@ -152,6 +211,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the status.
+     *
      * @return the status
      */
     public String getStatus() {
@@ -159,6 +220,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the status.
+     *
      * @param status the status to set
      */
     public void setStatus(String status) {
@@ -166,6 +229,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
     
     /**
+     * Gets the directory.
+     *
      * @return the directory
      */
     public String getDirectory() {
@@ -173,6 +238,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the directory.
+     *
      * @param directory the directory to set
      */
     public void setDirectory(String directory) {
@@ -180,6 +247,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
     
     /**
+     * Gets the cast.
+     *
      * @return the cast
      */
     public Bitmap getCast() {
@@ -187,6 +256,8 @@ public class SeriesBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the cast.
+     *
      * @param cast the cast to set
      */
     public void setCast(Bitmap cast) {

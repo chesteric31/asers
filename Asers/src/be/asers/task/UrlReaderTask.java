@@ -20,6 +20,7 @@ import android.util.Base64;
  */
 public class UrlReaderTask extends AsyncTask<URL, Void, BufferedReader> {
 
+    /** The context. */
     private Context context;
 
     /**

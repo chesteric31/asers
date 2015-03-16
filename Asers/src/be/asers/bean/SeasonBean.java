@@ -9,11 +9,18 @@ import java.util.List;
  */
 public class SeasonBean extends AbstractIdentityBean {
     
+    /** The number. */
     private Integer number;
+    
+    /** The series. */
     private SeriesBean series;
+    
+    /** The episodes. */
     private List<EpisodeBean> episodes;
     
     /**
+     * Gets the number.
+     *
      * @return the number
      */
     public Integer getNumber() {
@@ -21,6 +28,8 @@ public class SeasonBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the number.
+     *
      * @param number the number to set
      */
     public void setNumber(Integer number) {
@@ -28,6 +37,8 @@ public class SeasonBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the series.
+     *
      * @return the series
      */
     public SeriesBean getSeries() {
@@ -35,6 +46,8 @@ public class SeasonBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the series.
+     *
      * @param series the series to set
      */
     public void setSeries(SeriesBean series) {
@@ -42,6 +55,8 @@ public class SeasonBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the episodes.
+     *
      * @return the episodes
      */
     public List<EpisodeBean> getEpisodes() {
@@ -49,6 +64,8 @@ public class SeasonBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the episodes.
+     *
      * @param episodes the episodes to set
      */
     public void setEpisodes(List<EpisodeBean> episodes) {

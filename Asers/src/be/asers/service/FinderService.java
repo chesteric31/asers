@@ -45,6 +45,8 @@ public interface FinderService {
     void addMySeries(SeriesBean series);
 
     /**
+     * Gets the series dao.
+     *
      * @return the seriesDao
      */
     SeriesDao getSeriesDao();

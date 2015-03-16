@@ -33,11 +33,22 @@ import be.asers.service.FinderRemoteService;
  */
 public class SeriesManagementFragment extends Fragment {
 
+    /** The instance. */
     private static volatile SeriesManagementFragment instance = null;
+    
+    /** The Constant CSV_DELIMITER. */
     private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
+    
+    /** The array adapter. */
     private ArrayAdapter<SeriesBean> arrayAdapter;
+    
+    /** The add series auto complete. */
     private AutoCompleteTextView addSeriesAutoComplete;
+    
+    /** The progress dialog. */
     private ProgressDialog progressDialog;
+    
+    /** The tabs pager adapter. */
     private TabsPagerAdapter tabsPagerAdapter;
 
     /**
@@ -48,8 +59,9 @@ public class SeriesManagementFragment extends Fragment {
     }
 
     /**
-     * @param tabsPagerAdapter 
-     * @param tabsPagerAdapter 
+     * Gets the single instance of SeriesManagementFragment.
+     *
+     * @param tabsPagerAdapter the tabs pager adapter
      * @return singleton instance of {@link SeriesManagementFragment}
      */
     public static final SeriesManagementFragment getInstance(TabsPagerAdapter tabsPagerAdapter) {
@@ -145,6 +157,8 @@ public class SeriesManagementFragment extends Fragment {
     }
 
     /**
+     * Gets the progress dialog.
+     *
      * @return the progressDialog
      */
     public ProgressDialog getProgressDialog() {
@@ -159,8 +173,14 @@ public class SeriesManagementFragment extends Fragment {
      */
     private class AddSeriesTask extends AsyncTask<SeriesBean, Void, Void> {
         
+        /** The fragment. */
         private WeakReference<SeriesManagementFragment> fragment = null;
 
+        /**
+         * Instantiates a new adds the series task.
+         *
+         * @param fragment the fragment
+         */
         public AddSeriesTask(SeriesManagementFragment fragment) {
             this.fragment = new WeakReference<SeriesManagementFragment>(fragment);
         }
@@ -186,10 +206,14 @@ public class SeriesManagementFragment extends Fragment {
      */
     private class FindAllSeriesTask extends AbstractOnCompleteAsyncTask<Void, Integer, List<SeriesBean>> {
 
+        /** The fragment. */
         private WeakReference<SeriesManagementFragment> fragment = null;
 
         /**
          * Constructor.
+         *
+         * @param fragment the fragment
+         * @param taskListener the task listener
          */
         public FindAllSeriesTask(SeriesManagementFragment fragment,
                 OnCompleteTaskListener<List<SeriesBean>> taskListener) {

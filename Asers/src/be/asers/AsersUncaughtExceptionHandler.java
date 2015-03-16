@@ -13,6 +13,7 @@ import be.asers.activity.BugReportActivity;
  */
 public class AsersUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
+    /** The context. */
     private Context context;
 
     /**

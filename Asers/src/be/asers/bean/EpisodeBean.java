@@ -9,16 +9,33 @@ import java.util.Date;
  */
 public class EpisodeBean extends AbstractIdentityBean {
 
+    /** The number. */
     private Integer number;
+    
+    /** The episode. */
     private Integer episode;
+    
+    /** The production code. */
     private String productionCode;
+    
+    /** The air date. */
     private Date airDate;
+    
+    /** The title. */
     private String title;
+    
+    /** The special. */
     private Boolean special;
+    
+    /** The tv rage link. */
     private String tvRageLink;
+    
+    /** The season. */
     private SeasonBean season;
     
     /**
+     * Gets the number.
+     *
      * @return the number the sequence number (can be null for special episode)
      */
     public Integer getNumber() {
@@ -26,6 +43,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the number.
+     *
      * @param number the number to set
      */
     public void setNumber(Integer number) {
@@ -33,6 +52,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the season.
+     *
      * @return the season the season number
      */
     public SeasonBean getSeason() {
@@ -40,6 +61,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the season.
+     *
      * @param season the season to set
      */
     public void setSeason(SeasonBean season) {
@@ -47,6 +70,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the episode.
+     *
      * @return the episode the episode number
      */
     public Integer getEpisode() {
@@ -54,6 +79,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the episode.
+     *
      * @param episode the episode to set
      */
     public void setEpisode(Integer episode) {
@@ -61,6 +88,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the production code.
+     *
      * @return the productionCode the production code
      */
     public String getProductionCode() {
@@ -68,6 +97,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the production code.
+     *
      * @param productionCode the productionCode to set
      */
     public void setProductionCode(String productionCode) {
@@ -75,6 +106,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the air date.
+     *
      * @return the airDate the air date
      */
     public Date getAirDate() {
@@ -82,6 +115,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the air date.
+     *
      * @param airDate the airDate to set
      */
     public void setAirDate(Date airDate) {
@@ -89,6 +124,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the title.
+     *
      * @return the title the title
      */
     public String getTitle() {
@@ -96,6 +133,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the title.
+     *
      * @param title the title to set
      */
     public void setTitle(String title) {
@@ -103,6 +142,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the special.
+     *
      * @return the special true if it's a special episode, otherwise false
      */
     public Boolean getSpecial() {
@@ -110,6 +151,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the special.
+     *
      * @param special the special to set
      */
     public void setSpecial(Boolean special) {
@@ -117,6 +160,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Gets the tv rage link.
+     *
      * @return the tvRageLink the web link to the TvRage episode
      */
     public String getTvRageLink() {
@@ -124,6 +169,8 @@ public class EpisodeBean extends AbstractIdentityBean {
     }
 
     /**
+     * Sets the tv rage link.
+     *
      * @param tvRageLink the tvRageLink to set
      */
     public void setTvRageLink(String tvRageLink) {

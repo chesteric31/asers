@@ -18,8 +18,13 @@ import be.asers.adapter.TabsPagerAdapter;
  */
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
+    /** The view pager. */
     private ViewPager viewPager;
+    
+    /** The adapter. */
     private TabsPagerAdapter adapter;
+    
+    /** The action bar. */
     private ActionBar actionBar;
 
     /**
@@ -46,7 +51,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     /**
-     * Sets {@link OnPageChangeListener} on {@link ViewPager}
+     * Sets {@link OnPageChangeListener} on {@link ViewPager}.
      */
     private void setOnPageChangeListener() {
         viewPager.setOnPageChangeListener(new OnPageChangeListener() {

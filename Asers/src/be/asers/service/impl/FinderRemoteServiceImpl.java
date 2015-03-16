@@ -78,6 +78,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     /** The Constant NOT_SPECIAL_EPISODE. */
     private static final String NOT_SPECIAL_EPISODE = "n";
     
+    /** The context. */
     private Context context;
 
     /**
@@ -525,6 +526,12 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         return episode;
     }
 
+    /**
+     * Sets the air date.
+     *
+     * @param episode the episode
+     * @param date the date
+     */
     private void setAirDate(EpisodeBean episode, String date) {
         String unaired = "UNAIRED";
         unaired = "\"" + unaired + "\"";
@@ -565,6 +572,8 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     }
 
     /**
+     * Gets the context.
+     *
      * @return the context
      */
     public Context getContext() {
@@ -572,6 +581,8 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     }
 
     /**
+     * Sets the context.
+     *
      * @param context the context to set
      */
     public void setContext(Context context) {
