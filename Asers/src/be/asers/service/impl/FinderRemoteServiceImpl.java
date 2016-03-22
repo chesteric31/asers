@@ -70,7 +70,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     private static final String END_DATA_DELIMITER = "</pre>";
     
     /** The Constant HEADER_NUMBER_LINES. */
-    private static final int HEADER_NUMBER_LINES = 7;
+    private static final int HEADER_NUMBER_LINES = 12;
     
     /** The Constant FIRST_COLUMN_TITLE. */
     private static final String FIRST_COLUMN_TITLE = "number";
@@ -134,7 +134,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         series.setDirectory(tokens[j]);
         j++;
         buildTvRageId(tokens[j], series);
-        j++;
+        j += 2;
         j = processStartEndDates(tokens, series, j);
         j++;
         buildEpisodeNumbers(tokens[j], series);
@@ -154,7 +154,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     public SeriesBean buildSkinnySeries(String[] tokens) {
         SeriesBean series = new SeriesBean();
         series.setTitle(tokens[0].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
-        series.setNetwork(tokens[7].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
+        series.setNetwork(tokens[8].replaceAll(DOUBLE_QUOTES, EMPTY_STRING));
         return series;
     }
 

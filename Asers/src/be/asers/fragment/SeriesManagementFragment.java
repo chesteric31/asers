@@ -294,7 +294,7 @@ public class SeriesManagementFragment extends Fragment {
                     String[] tokens = new String[9];
                     String[] splits = content.split(CSV_DELIMITER);
                     int length = splits.length;
-                    for (int j = 0; j < length; j++) {
+                    for (int j = 0; j < length && j < 9; j++) {
                         tokens[j] = splits[j];
                     }
                     SeriesBean bean = finderService.buildSkinnySeries(tokens);
