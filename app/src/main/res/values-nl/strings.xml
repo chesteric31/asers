@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Asers</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="my_series_label">MIJN SERIES</string>
+    <string name="series_management_label">SERIES BEHEER</string>
+    <string name="add_series_button">Toevoeging</string>
+    <string name="modify_series_button">Wijziging</string>
+    <string name="delete_series_button">Verwijdering</string>
+    <string name="title_activity_add_series">Toevoeging van Series</string>
+	<string name="add_series_title">SERIES TE VINDEN</string>
+	<string name="add_series_loading">Lading...</string>
+	<string name="add_series_loading_done">Lading af</string>
+	<string name="add_series_selected">Selectie: </string>
+    <string name="title_activity_bug_report">Foutmelding</string>
+    <string name="ok_button">OK</string>
+    <string name="title_activity_delete_series">Verwijdering</string>
+	<string name="delete_series_title">SERIES TE VERWIJDEREN</string>
+	<string name="delete_series_confirmation">Bent u zeker dat u deze series verwijderen?</string>
+	<string name="delete_series_confirmation_yes">Ja</string>
+    <string name="delete_series_confirmation_no">Nee</string>
+    <string name="refresh_my_series_button">Refresh</string>
+    <string name="next_air_date_label">Volgende omroep</string>
+    
+</resources>
