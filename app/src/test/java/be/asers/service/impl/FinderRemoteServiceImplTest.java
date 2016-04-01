@@ -46,11 +46,11 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderRemoteServiceImpl#findSeries(java.lang.String)}.
+     * {@link be.asers.service.impl.FinderRemoteServiceImpl#findShow(java.lang.String)}.
      */
     public void testFindSeries() {
         String title = "Friends (1994)";
-        SeriesBean series = finder.findSeries(title);
+        SeriesBean series = finder.findShow(title);
         // assertTrue(title.equalsIgnoreCase(series.getTitle()));
         assertTrue(series.getTitle().contains(title));
         // "Friends (1994)",Friends,3616,Sep 1994,May
@@ -73,12 +73,12 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with null.
      */
     public void testFindSeriesNull() {
         try {
-            finder.findSeries(null);
+            finder.findShow(null);
             fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
@@ -87,12 +87,12 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with empty.
      */
     public void testFindSeriesEmpty() {
         try {
-            finder.findSeries("");
+            finder.findShow("");
             fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
@@ -101,11 +101,11 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with unknown series.
      */
     public void testFindSeriesNotFoundSeries() {
-        assertNull(finder.findSeries("xyzxyz"));
+        assertNull(finder.findShow("xyzxyz"));
     }
 
     /**
@@ -125,13 +125,13 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * .
      * 
      * @throws IOException if an error occurred
      */
     public void testFindSeriesDetails() throws IOException {
-        SeriesBean series = finder.findSeries("Friends (1994)");
+        SeriesBean series = finder.findShow("Friends (1994)");
         assertTrue(series != null);
         int episodesNumber = 0;
         List<SeasonBean> seasons = series.getSeasons();

@@ -4,9 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import be.asers.model.Episode;
 import be.asers.model.Season;
-import be.asers.model.Series;
+import be.asers.model.Show;
 
 /**
  * Database manager for create/upgrade database.
@@ -19,7 +20,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "asers.db";
     
     /** The Constant DATABASE_VERSION. */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     /**
      * Constructor.
@@ -35,7 +36,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(Series.CREATE_TABLE);
+        database.execSQL(Show.CREATE_TABLE);
         database.execSQL(Season.CREATE_TABLE);
         database.execSQL(Episode.CREATE_TABLE);
     }
@@ -51,7 +52,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String dropTable = "DROP TABLE IF EXISTS ";
         database.execSQL(dropTable + Episode.TABLE_NAME);
         database.execSQL(dropTable + Season.TABLE_NAME);
-        database.execSQL(dropTable + Series.TABLE_NAME);
+        database.execSQL(dropTable + Show.TABLE_NAME);
         onCreate(database);
     }
 

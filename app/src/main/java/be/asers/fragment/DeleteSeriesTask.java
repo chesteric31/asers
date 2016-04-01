@@ -3,14 +3,14 @@ package be.asers.fragment;
 import be.asers.AsersApplication;
 import be.asers.activity.AbstractOnCompleteAsyncTask;
 import be.asers.activity.OnCompleteTaskListener;
-import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 
 /**
- * Asynchronous task to set INACTIVE a {@link SeriesBean}.
+ * Asynchronous task to set INACTIVE a {@link ShowBean}.
  * 
  * @author chesteric31
  */
-class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
+class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<ShowBean, Void, Void> {
 
     /** The my series fragment. */
     private final MySeriesFragment mySeriesFragment;
@@ -30,12 +30,12 @@ class DeleteSeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Voi
      * {@inheritDoc}
      */
     @Override
-    protected Void doInBackground(SeriesBean... params) {
+    protected Void doInBackground(ShowBean... params) {
         if (params == null || params.length == 0) {
             throw new IllegalArgumentException("A series bean must be given!");
         }
         AsersApplication asersApplication = (AsersApplication) this.mySeriesFragment.getActivity().getApplication();
-        asersApplication.getFinderService().deleteMySeries(params[0]);
+        asersApplication.getFinderService().deleteMyShow(params[0]);
         return null;
     }
 }

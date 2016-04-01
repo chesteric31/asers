@@ -19,6 +19,14 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/NOTICE'
+    }
 }
 
 dependencies {
@@ -26,5 +34,7 @@ dependencies {
     compile('com.android.support:appcompat-v7:19.+') {
         exclude module: 'support-v4'
     }
+    compile 'org.springframework.android:spring-android-rest-template:1.0.1.RELEASE'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     testCompile 'junit:junit:4.12'
 }

@@ -1,10 +1,11 @@
 package be.asers.service;
 
-import java.io.BufferedReader;
+import android.graphics.Bitmap;
+
 import java.util.List;
 
-import android.graphics.Bitmap;
 import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 
 /**
  * Finder service interface.
@@ -16,52 +17,18 @@ public interface FinderRemoteService {
     /**
      * Finds the series following the title criteria.
      * 
-     * @param title the title to use
+     * @param name the title to use
      * @return the found {@link SeriesBean} entity
      */
-    SeriesBean findSeries(String title);
+    ShowBean findShow(String name);
 
     /**
-     * Creates a {@link BufferedReader} from the URL:
-     * "http://epguides.com/common/allshows.txt".
+     * Creates the bitmap cast image from {@link ShowBean}.
      * 
-     * @param url the URL to use, or if null:
-     *            "http://epguides.com/common/allshows.txt"
-     * @return the created {@link BufferedReader}
-     */
-    BufferedReader createReader(String url);
-    
-    /**
-     * Creates the bitmap cast image from {@link SeriesBean}.
-     * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      * @return the created {@link Bitmap}
      */
-    Bitmap createBitmap(SeriesBean series);
+    Bitmap createBitmap(ShowBean show);
 
-    /**
-     * Creates a list of Strings from an {@link BufferedReader}.
-     * 
-     * @param bufferedReader the {@link BufferedReader} to use
-     * @return the created list of Strings
-     */
-    List<String> createStringsContent(BufferedReader bufferedReader);
-
-    /**
-     * Builds a {@link SeriesBean} from the tokens.
-     * 
-     * @param tokens the tokens to use
-     * @return the built {@link SeriesBean}
-     */
-    SeriesBean buildSeries(String[] tokens);
-
-    /**
-     * Builds a "skinny" {@link SeriesBean} from the tokens only with title and
-     * network.
-     * 
-     * @param tokens the tokens to use
-     * @return the built skinny {@link SeriesBean}
-     */
-    SeriesBean buildSkinnySeries(String[] tokens);
-
+    List<ShowBean> findShowsByKeywords(String keywords);
 }

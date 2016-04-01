@@ -1,5 +1,8 @@
 package be.asers.service.impl;
 
+import android.content.ContentValues;
+import android.content.Context;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,35 +11,34 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import android.content.ContentValues;
-import android.content.Context;
+import be.asers.bean.CountryBean;
 import be.asers.bean.EpisodeBean;
+import be.asers.bean.ExternalsBean;
+import be.asers.bean.NetworkBean;
 import be.asers.bean.SeasonBean;
-import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 import be.asers.dao.EpisodeDao;
 import be.asers.dao.SeasonDao;
-import be.asers.dao.SeriesDao;
+import be.asers.dao.ShowDao;
 import be.asers.model.Episode;
 import be.asers.model.Season;
 import be.asers.model.Series;
+import be.asers.model.Show;
 import be.asers.service.FinderRemoteService;
 import be.asers.service.FinderService;
 
 /**
- * {@link Series} Finder service.
+ * {@link Show} Finder service.
  * 
  * @author chesteric31
  */
 public class FinderServiceImpl implements FinderService {
 
-    /** The date format. */
-    private SimpleDateFormat dateFormat = new SimpleDateFormat(Series.DATE_PATTERN, Locale.US);
-    
     /** The context. */
     private Context context;
     
-    /** The series dao. */
-    private SeriesDao seriesDao;
+    /** The show dao. */
+    private ShowDao showDao;
     
     /** The season dao. */
     private SeasonDao seasonDao;
@@ -54,7 +56,7 @@ public class FinderServiceImpl implements FinderService {
      */
     public FinderServiceImpl(Context context) {
         this.context = context;
-        this.seriesDao = new SeriesDao(this.context);
+        this.showDao = new ShowDao(this.context);
         this.seasonDao = new SeasonDao(this.context);
         this.episodeDao = new EpisodeDao(this.context);
         this.remoteService = new FinderRemoteServiceImpl(this.context);
@@ -64,13 +66,12 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public List<SeriesBean> findMySeries() {
-        List<Series> series = seriesDao.findActiveSeries();
-        List<SeriesBean> beans = new ArrayList<SeriesBean>();
-        if (!series.isEmpty()) {
-            for (Series serie : series) {
-                SeriesBean bean = mapSeries(serie);
-                bean.setCast(remoteService.createBitmap(bean));
+    public List<ShowBean> findMyShows() {
+        List<Show> shows = showDao.findActiveShows();
+        List<ShowBean> beans = new ArrayList<ShowBean>();
+        if (!shows.isEmpty()) {
+            for (Show show : shows) {
+                ShowBean bean = mapShow(show);
                 beans.add(bean);
             }
         }
@@ -81,15 +82,15 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public SeriesBean findSeries(String title) {
-        if (title == null || title.isEmpty()) {
+    public ShowBean findShow(String name) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("The series title cannot be empty!");
         }
-        Series series = seriesDao.findByTitle(title);
-        if (series == null) {
-            return remoteService.findSeries(title);
+        Show show = showDao.findByName(name);
+        if (show == null) {
+            return remoteService.findShow(name);
         } else {
-            return mapSeries(series);
+            return mapShow(show);
         }
     }
 
@@ -97,19 +98,19 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public SeriesBean addSeries(SeriesBean series) {
-        SeriesBean updatedSeries = series;
-        ContentValues values = mapSeriesContentValues(series);
-        if (series.getId() != null) {
-            seriesDao.update(values, series.getId());
+    public ShowBean addShow(ShowBean show) {
+        ShowBean updatedShow = show;
+        ContentValues values = mapShowContentValues(show);
+        if (show.getId() != null) {
+            showDao.update(values, show.getId());
         } else {
-            Series addedSeries = seriesDao.add(values);
-            List<SeasonBean> seasons = series.getSeasons();
+            Show addedShow = showDao.add(values);
+            List<SeasonBean> seasons = show.getSeasons();
             if (seasons != null) {
                 for (SeasonBean season : seasons) {
-                    ContentValues seasonValues = mapSeasonContentValues(addedSeries, season);
+                    ContentValues seasonValues = mapSeasonContentValues(addedShow, season);
                     Season addedSeason = seasonDao.add(seasonValues);
-                    addedSeason.setSeries(addedSeries);
+                    addedSeason.setShow(addedShow);
                     List<EpisodeBean> episodes = season.getEpisodes();
                     for (EpisodeBean episode : episodes) {
                         ContentValues episodeValues = mapEpisodeContentValues(addedSeason, episode);
@@ -117,12 +118,12 @@ public class FinderServiceImpl implements FinderService {
                         addedEpisode.setSeason(addedSeason);
                         addedSeason.addEpisode(addedEpisode);
                     }
-                    addedSeries.addSeason(addedSeason);
+                    addedShow.addSeason(addedSeason);
                 }
-                updatedSeries = mapSeries(addedSeries);
+                updatedShow = mapShow(addedShow);
             }
         }
-        return updatedSeries;
+        return updatedShow;
     }
 
     /**
@@ -155,64 +156,60 @@ public class FinderServiceImpl implements FinderService {
     /**
      * Maps a {@link SeasonBean} to a {@link ContentValues}.
      * 
-     * @param addedSeries the {@link Series} to use
+     * @param show the {@link Show} to use
      * @param season the {@link SeasonBean} to map
      * @return the mapped {@link ContentValues}
      */
-    private ContentValues mapSeasonContentValues(Series addedSeries, SeasonBean season) {
+    private ContentValues mapSeasonContentValues(Show show, SeasonBean season) {
         ContentValues seasonValues = new ContentValues();
         seasonValues.put(Season.COLUMN_NUMBER, season.getNumber());
-        seasonValues.put(Season.COLUMN_SERIES, addedSeries.getId());
+        seasonValues.put(Season.COLUMN_SERIES, show.getId());
         return seasonValues;
     }
 
     /**
-     * Maps a {@link SeriesBean} to a {@link ContentValues}.
+     * Maps a {@link ShowBean} to a {@link ContentValues}.
      * 
-     * @param series the {@link SeriesBean} to map
+     * @param show the {@link ShowBean} to map
      * @return the mapped {@link ContentValues}
      */
-    private ContentValues mapSeriesContentValues(SeriesBean series) {
+    private ContentValues mapShowContentValues(ShowBean show) {
         ContentValues values = new ContentValues();
-        values.put(Series.COLUMN_ID, series.getId());
-        values.put(Series.COLUMN_COUNTRY, series.getCountry());
-        if (series.getEndDate() != null) {
-            values.put(Series.COLUMN_END_DATE, dateFormat.format(series.getEndDate()));
-        } else {
-            values.put(Series.COLUMN_END_DATE, "");
-        }
-        values.put(Series.COLUMN_EPISODES_NUMBER, series.getEpisodesNumber());
-        values.put(Series.COLUMN_NETWORK, series.getNetwork());
-        values.put(Series.COLUMN_RUN_TIME, series.getRunTime());
-        values.put(Series.COLUMN_START_DATE, dateFormat.format(series.getStartDate()));
-        values.put(Series.COLUMN_TITLE, series.getTitle());
-        values.put(Series.COLUMN_TV_RAGE_ID, series.getTvRageId());
-        values.put(Series.COLUMN_STATUS, series.getStatus());
-        values.put(Series.COLUMN_DIRECTORY, series.getDirectory());
+        values.put(Show.COLUMN_ID, show.getId());
+        values.put(Show.COLUMN_COUNTRY, show.getNetwork().getCountry().getCode());
+        values.put(Show.COLUMN_NETWORK, show.getNetwork().getName());
+        values.put(Show.COLUMN_RUN_TIME, show.getRunTime());
+        values.put(Show.COLUMN_NAME, show.getName());
+        values.put(Show.COLUMN_TV_RAGE_ID, show.getExternals().getTvRage());
+        values.put(Show.COLUMN_TV_MAZE_ID, show.getTvMazeId());
+        values.put(Show.COLUMN_STATUS, show.getStatus());
         return values;
     }
 
     /**
-     * Translates a {@link Series} model to a {@link SeriesBean}.
+     * Translates a {@link Show} model to a {@link ShowBean}.
      * 
-     * @param series the {@link Series} to map
-     * @return the mapped {@link SeriesBean}
+     * @param show the {@link Show} to map
+     * @return the mapped {@link ShowBean}
      */
-    private SeriesBean mapSeries(Series series) {
-        if (series != null) {
-            SeriesBean bean = new SeriesBean();
-            bean.setId(series.getId());
-            bean.setCountry(series.getCountry());
-            bean.setEndDate(series.getEndDate());
-            bean.setEpisodesNumber(series.getEpisodesNumber());
-            bean.setNetwork(series.getNetwork());
-            bean.setRunTime(series.getRunTime());
-            bean.setStartDate(series.getStartDate());
-            bean.setTitle(series.getTitle());
-            bean.setTvRageId(series.getTvRageId());
-            bean.setStatus(series.getStatus());
-            bean.setDirectory(series.getDirectory());
-            List<SeasonBean> seasonBeans = mapSeasons(series, bean);
+    private ShowBean mapShow(Show show) {
+        if (show != null) {
+            ShowBean bean = new ShowBean();
+            bean.setId(show.getId());
+            NetworkBean networkBean = new NetworkBean();
+            networkBean.setName(show.getNetwork());
+            CountryBean countryBean = new CountryBean();
+            countryBean.setCode(show.getCountry());
+            networkBean.setCountry(countryBean);
+            bean.setNetwork(networkBean);
+            bean.setRunTime(show.getRunTime());
+            bean.setName(show.getName());
+            ExternalsBean externalsBean = new ExternalsBean();
+            externalsBean.setTvRage(show.getTvRageId());
+            bean.setExternals(externalsBean);
+            bean.setTvMazeId(show.getTvMazeId());
+            bean.setStatus(show.getStatus());
+            List<SeasonBean> seasonBeans = mapSeasons(show, bean);
             bean.setSeasons(seasonBeans);
             return bean;
         } else {
@@ -223,12 +220,12 @@ public class FinderServiceImpl implements FinderService {
     /**
      * Maps {@link SeasonBean}s.
      * 
-     * @param series the {@link Series} to use
-     * @param bean the {@link SeriesBean} to use
+     * @param show the {@link Show} to use
+     * @param bean the {@link ShowBean} to use
      * @return the mapped {@link SeasonBean}s
      */
-    private List<SeasonBean> mapSeasons(Series series, SeriesBean bean) {
-        List<Season> seasons = seasonDao.findBySerieId(series.getId());
+    private List<SeasonBean> mapSeasons(Show show, ShowBean bean) {
+        List<Season> seasons = seasonDao.findByShowId(show.getId());
         List<SeasonBean> seasonBeans = new ArrayList<SeasonBean>();
         if (seasons != null && !seasons.isEmpty()) {
             for (Season season : seasons) {
@@ -244,7 +241,7 @@ public class FinderServiceImpl implements FinderService {
                     }
                 }
                 seasonBean.setEpisodes(episodesBeans);
-                seasonBean.setSeries(bean);
+                seasonBean.setShow(bean);
                 seasonBeans.add(seasonBean);
             }
         }
@@ -276,36 +273,36 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public void addMySeries(SeriesBean series) {
-        series = findSeries(series.getTitle());
-        series.setStatus(Series.STATUS_ACTIVE);
-        addSeries(series);
+    public void addMyShow(ShowBean show) {
+        show = findShow(show.getName());
+        show.setStatus(Series.STATUS_ACTIVE);
+        addShow(show);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteMySeries(SeriesBean series) {
-        series.setStatus(Series.STATUS_INACTIVE);
-        ContentValues contentValues = mapSeriesContentValues(series);
-        seriesDao.update(contentValues, series.getId());
+    public void deleteMyShow(ShowBean show) {
+        show.setStatus(Series.STATUS_INACTIVE);
+        ContentValues contentValues = mapShowContentValues(show);
+        showDao.update(contentValues, show.getId());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public SeriesDao getSeriesDao() {
-        return seriesDao;
+    public ShowDao getShowDao() {
+        return showDao;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public EpisodeBean findAirDateNextEpisode(SeriesBean series) {
-        List<SeasonBean> seasons = series.getSeasons();
+    public EpisodeBean findAirDateNextEpisode(ShowBean show) {
+        List<SeasonBean> seasons = show.getSeasons();
         if (seasons != null && !seasons.isEmpty()) {
             for (SeasonBean season : seasons) {
                 List<EpisodeBean> episodes = season.getEpisodes();
@@ -321,7 +318,7 @@ public class FinderServiceImpl implements FinderService {
                             EpisodeBean bean = new EpisodeBean();
                             bean.setAirDate(airDate);
                             SeasonBean seasonBean = new SeasonBean();
-                            seasonBean.setSeries(series);
+                            seasonBean.setShow(show);
                             bean.setSeason(seasonBean);
                             return bean;
                         }
@@ -336,30 +333,30 @@ public class FinderServiceImpl implements FinderService {
      * {@inheritDoc}
      */
     @Override
-    public void refreshSeries(SeriesBean mySerie) {
-        String title = mySerie.getTitle();
-        SeriesBean remoteSeries = remoteService.findSeries(title);
-        Series series = seriesDao.findByTitle(title);
-        SeriesBean localSeries = mapSeries(series);
-        if (!localSeries.equals(remoteSeries)) {
-            Long id = localSeries.getId();
-            remoteSeries.setId(localSeries.getId());
-            remoteSeries.setStatus(localSeries.getStatus());
-            seriesDao.update(mapSeriesContentValues(remoteSeries), id);
-            List<SeasonBean> localSeasons = localSeries.getSeasons();
-            List<SeasonBean> remoteSeasons = remoteSeries.getSeasons();
-            refreshSeasons(series, localSeasons, remoteSeasons);
+    public void refreshShow(ShowBean showBean) {
+        String name = showBean.getName();
+        ShowBean remoteShow = remoteService.findShow(name);
+        Show show = showDao.findByName(name);
+        ShowBean localShow = mapShow(show);
+        if (!localShow.equals(remoteShow)) {
+            Long id = localShow.getId();
+            remoteShow.setId(localShow.getId());
+            remoteShow.setStatus(localShow.getStatus());
+            showDao.update(mapShowContentValues(remoteShow), id);
+            List<SeasonBean> localSeasons = localShow.getSeasons();
+            List<SeasonBean> remoteSeasons = remoteShow.getSeasons();
+            refreshSeasons(show, localSeasons, remoteSeasons);
         }
     }
 
     /**
      * Refresh seasons.
      *
-     * @param series the series
+     * @param show the series
      * @param localSeasons the local seasons
      * @param remoteSeasons the remote seasons
      */
-    private void refreshSeasons(Series series, List<SeasonBean> localSeasons, List<SeasonBean> remoteSeasons) {
+    private void refreshSeasons(Show show, List<SeasonBean> localSeasons, List<SeasonBean> remoteSeasons) {
         if (!localSeasons.equals(remoteSeasons)) {
             int remoteSize = remoteSeasons.size();
             int localSize = localSeasons.size();
@@ -369,13 +366,13 @@ public class FinderServiceImpl implements FinderService {
                 for (int j = i; j < localSize; j++) {
                     SeasonBean localSeason = localSeasons.get(j);
                     if (remoteSeason.getNumber().equals(localSeason.getNumber())) {
-                        refreshSeason(series, remoteSeason, localSeason);
+                        refreshSeason(show, remoteSeason, localSeason);
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    seasonDao.add(mapSeasonContentValues(series, remoteSeason));
+                    seasonDao.add(mapSeasonContentValues(show, remoteSeason));
                 }
             }
         }
@@ -384,16 +381,16 @@ public class FinderServiceImpl implements FinderService {
     /**
      * Refresh season.
      *
-     * @param series the series
+     * @param show the series
      * @param remoteSeason the remote season
      * @param localSeason the local season
      */
-    private void refreshSeason(Series series, SeasonBean remoteSeason, SeasonBean localSeason) {
+    private void refreshSeason(Show show, SeasonBean remoteSeason, SeasonBean localSeason) {
         if (!remoteSeason.equals(localSeason)) {
             List<EpisodeBean> remoteEpisodes = remoteSeason.getEpisodes();
             List<EpisodeBean> localEpisodes = localSeason.getEpisodes();
             Long seasonId = localSeason.getId();
-            seasonDao.update(mapSeasonContentValues(series, remoteSeason), seasonId);
+            seasonDao.update(mapSeasonContentValues(show, remoteSeason), seasonId);
             if (!localEpisodes.equals(remoteEpisodes)) {
                 Season season = seasonDao.findById(seasonId);
                 int remoteSize = remoteEpisodes.size();

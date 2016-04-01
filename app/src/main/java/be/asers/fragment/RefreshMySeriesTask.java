@@ -3,14 +3,14 @@ package be.asers.fragment;
 import be.asers.AsersApplication;
 import be.asers.activity.AbstractOnCompleteAsyncTask;
 import be.asers.activity.OnCompleteTaskListener;
-import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 
 /**
- * Asynchronous task to refresh my {@link SeriesBean}.
+ * Asynchronous task to refresh my {@link ShowBean}.
  * 
  * @author chesteric31
  */
-class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, Void> {
+class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<ShowBean, Void, Void> {
 
     /** The my series fragment. */
     private final MySeriesFragment mySeriesFragment;
@@ -18,7 +18,7 @@ class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, 
     /**
      * Constructor.
      *
-     * @param mySeriesFragment TODO
+     * @param mySeriesFragment
      * @param onCompleteTaskListener the {@link OnCompleteTaskListener} to
      *            use
      */
@@ -31,9 +31,9 @@ class RefreshMySeriesTask extends AbstractOnCompleteAsyncTask<SeriesBean, Void, 
      * {@inheritDoc}
      */
     @Override
-    protected Void doInBackground(SeriesBean... mySeries) {
+    protected Void doInBackground(ShowBean... myShow) {
         AsersApplication asersApplication = (AsersApplication) this.mySeriesFragment.getActivity().getApplication();
-        asersApplication.getFinderService().refreshSeries(mySeries[0]);
+        asersApplication.getFinderService().refreshShow(myShow[0]);
         return null;
     }
 }

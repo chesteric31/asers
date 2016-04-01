@@ -12,8 +12,7 @@ public class SeasonBean extends AbstractIdentityBean {
     /** The number. */
     private Integer number;
     
-    /** The series. */
-    private SeriesBean series;
+    private ShowBean show;
     
     /** The episodes. */
     private List<EpisodeBean> episodes;
@@ -36,22 +35,12 @@ public class SeasonBean extends AbstractIdentityBean {
         this.number = number;
     }
 
-    /**
-     * Gets the series.
-     *
-     * @return the series
-     */
-    public SeriesBean getSeries() {
-        return series;
+    public ShowBean getShow() {
+        return show;
     }
 
-    /**
-     * Sets the series.
-     *
-     * @param series the series to set
-     */
-    public void setSeries(SeriesBean series) {
-        this.series = series;
+    public void setShow(ShowBean show) {
+        this.show = show;
     }
 
     /**

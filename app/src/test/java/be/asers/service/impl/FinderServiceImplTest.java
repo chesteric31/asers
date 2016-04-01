@@ -47,16 +47,16 @@ public class FinderServiceImplTest extends AndroidTestCase {
         editor.commit();
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
         finder = new FinderServiceImpl(otherContext);
-        finder.getSeriesDao().deleteTable();
+        finder.getShowDao().deleteTable();
     }
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}.
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}.
      */
     public void testFindSeries() {
         String title = "Friends (1994)";
-        SeriesBean series = finder.findSeries(title);
+        SeriesBean series = finder.findShow(title);
         // assertTrue(title.equalsIgnoreCase(series.getTitle()));
         assertTrue(series.getTitle().contains(title));
         // "Friends (1994)",Friends,3616,Sep 1994,May
@@ -78,17 +78,17 @@ public class FinderServiceImplTest extends AndroidTestCase {
     }
 
     /**
-     * Test method for {@link be.asers.service.impl.FinderServiceImpl#findMySeries()}
+     * Test method for {@link be.asers.service.impl.FinderServiceImpl#findMyShow()}
      * .
      */
     public void testFindMySeries() {
-        List<SeriesBean> series = finder.findMySeries();
+        List<SeriesBean> series = finder.findMyShow();
         assertTrue(series.isEmpty());
     }
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#addSeries(SeriesBean)}.
+     * {@link be.asers.service.impl.FinderServiceImpl#addShow(SeriesBean)}.
      */
     public void testAddSeries() {
         SeriesBean series = new SeriesBean();
@@ -107,19 +107,19 @@ public class FinderServiceImplTest extends AndroidTestCase {
         String title = "My Serie";
         series.setTitle(title);
         series.setTvRageId(0);
-        finder.addSeries(series);
-        SeriesBean addedSeries = finder.findSeries(title);
+        finder.addShow(series);
+        SeriesBean addedSeries = finder.findShow(title);
         assertTrue(addedSeries.getId() == 1L);
     }
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with null.
      */
     public void testFindSeriesNull() {
         try {
-            finder.findSeries(null);
+            finder.findShow(null);
             fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
@@ -128,12 +128,12 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with empty.
      */
     public void testFindSeriesEmpty() {
         try {
-            finder.findSeries("");
+            finder.findShow("");
             fail("That cannot be there");
         } catch (IllegalArgumentException e) {
             System.out.println("That's ok!");
@@ -142,11 +142,11 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * with unknown series.
      */
     public void testFindSeriesNotFoundSeries() {
-        assertNull(finder.findSeries("xyzxyz"));
+        assertNull(finder.findShow("xyzxyz"));
     }
 
     /**
@@ -166,13 +166,13 @@ public class FinderServiceImplTest extends AndroidTestCase {
 
     /**
      * Test method for
-     * {@link be.asers.service.impl.FinderServiceImpl#findSeries(java.lang.String)}
+     * {@link be.asers.service.impl.FinderServiceImpl#findShow(java.lang.String)}
      * .
      * 
      * @throws IOException if an error occurred
      */
     public void testFindSeriesDetails() throws IOException {
-        SeriesBean series = finder.findSeries("Friends (1994)");
+        SeriesBean series = finder.findShow("Friends (1994)");
         assertTrue(series != null);
         int episodesNumber = 0;
         List<SeasonBean> seasons = series.getSeasons();
@@ -214,7 +214,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         String title = "Friends (1994)";
         List<SeriesBean> mySeries = addMySeries(title);
         finder.deleteMySeries(mySeries.get(0));
-        List<SeriesBean> myUpdatedSeries = finder.findMySeries();
+        List<SeriesBean> myUpdatedSeries = finder.findMyShow();
         assertTrue(myUpdatedSeries.isEmpty());
     }
 
@@ -228,7 +228,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         SeriesBean series = new SeriesBean();
         series.setTitle(title);
         finder.addMySeries(series);
-        return finder.findMySeries();
+        return finder.findMyShow();
     }
 
     /**

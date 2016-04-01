@@ -31,8 +31,7 @@ public class Season extends AbstractIdentity {
     /** The number. */
     private int number;
     
-    /** The series. */
-    private Series series;
+    private Show show;
     
     /** The episodes. */
     private List<Episode> episodes;
@@ -55,22 +54,13 @@ public class Season extends AbstractIdentity {
         this.number = number;
     }
 
-    /**
-     * Gets the series.
-     *
-     * @return the series
-     */
-    public AbstractIdentity getSeries() {
-        return series;
+
+    public Show getShow() {
+        return show;
     }
 
-    /**
-     * Sets the series.
-     *
-     * @param series the series to set
-     */
-    public void setSeries(Series series) {
-        this.series = series;
+    public void setShow(Show show) {
+        this.show = show;
     }
 
     /**

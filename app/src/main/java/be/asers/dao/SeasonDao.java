@@ -1,11 +1,12 @@
 package be.asers.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import be.asers.model.Season;
 
 /**
@@ -63,7 +64,7 @@ public class SeasonDao extends AbstractDao {
      * @param id the Serie id
      * @return the found seasons, empty list if none found
      */
-    public List<Season> findBySerieId(Long id) {
+    public List<Season> findByShowId(Long id) {
         List<Season> seasons = new ArrayList<Season>();
         StringBuilder builder = new StringBuilder("SELECT ");
         builder.append("S." + Season.COLUMN_ID + ", ");

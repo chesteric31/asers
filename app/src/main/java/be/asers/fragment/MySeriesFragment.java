@@ -1,10 +1,5 @@
 package be.asers.fragment;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,11 +15,18 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import be.asers.AsersApplication;
 import be.asers.R;
 import be.asers.activity.OnCompleteTaskListener;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 import be.asers.service.FinderService;
 
 /**
@@ -91,11 +93,11 @@ public class MySeriesFragment extends Fragment {
     /**
      * Fills the spinner with my series with the data found in database.
      * 
-     * @param mySeriesTable the {@link TableLayout} to use
+     * @param myShowsTable the {@link TableLayout} to use
      */
-    private void fillTableData(final TableLayout mySeriesTable) {
-        final List<SeriesBean> mySeries = new ArrayList<SeriesBean>();
-        new MySeriesFinderTask(this, new OnCompleteTaskListenerImpl(mySeriesTable, mySeries)).execute();
+    private void fillTableData(final TableLayout myShowsTable) {
+        final List<ShowBean> myShows = new ArrayList<ShowBean>();
+        new MySeriesFinderTask(this, new OnCompleteTaskListenerImpl(myShowsTable, myShows)).execute();
     }
 
     /**
@@ -103,30 +105,30 @@ public class MySeriesFragment extends Fragment {
      * 
      * @author chesteric31
      */
-    private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<SeriesBean>> {
+    private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<ShowBean>> {
 
         /** The my series table. */
         private final TableLayout mySeriesTable;
 
         /** The my series. */
-        private final List<SeriesBean> mySeries;
+        private final List<ShowBean> myShows;
 
         /**
          * Instantiates a new on complete task listener impl.
          * 
          * @param mySeriesTable the my series table
-         * @param mySeries the my series
+         * @param myShows the my series
          */
-        private OnCompleteTaskListenerImpl(TableLayout mySeriesTable, List<SeriesBean> mySeries) {
+        private OnCompleteTaskListenerImpl(TableLayout mySeriesTable, List<ShowBean> myShows) {
             this.mySeriesTable = mySeriesTable;
-            this.mySeries = mySeries;
+            this.myShows = myShows;
         }
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public void onComplete(List<SeriesBean> result) {
+        public void onComplete(List<ShowBean> result) {
             buildTable(result);
         }
 
@@ -135,27 +137,27 @@ public class MySeriesFragment extends Fragment {
          * 
          * @param result the result
          */
-        private void buildTable(List<SeriesBean> result) {
-            mySeries.clear();
+        private void buildTable(List<ShowBean> result) {
+            myShows.clear();
             clear(mySeriesTable);
-            mySeries.addAll(result);
+            myShows.addAll(result);
             TextView textView = null;
             ImageView imageView = null;
             TableRow row = null;
-            if (!mySeries.isEmpty()) {
+            if (!myShows.isEmpty()) {
                 AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
                 FinderService finderService = asersApplication.getFinderService();
-                for (final SeriesBean series : mySeries) {
+                for (final ShowBean show : myShows) {
                     textView = new TextView(getActivity());
-                    textView.setText(series.toString());
+                    textView.setText(show.toString());
                     imageView = new ImageView(getActivity());
-                    imageView.setImageBitmap(series.getCast());
+                    //imageView.setImageBitmap(show.getCast());
                     row = new TableRow(getActivity());
                     row.addView(textView);
-                    row.addView(buildNextEpisodeAirDate(finderService, series));
+                    row.addView(buildNextEpisodeAirDate(finderService, show));
                     row.addView(imageView);
-                    row.addView(buildRefreshButton(series));
-                    row.addView(buildDeleteButton(series));
+                    row.addView(buildRefreshButton(show));
+                    row.addView(buildDeleteButton(show));
                     mySeriesTable.addView(row);
                     addLine();
                 }
@@ -168,12 +170,12 @@ public class MySeriesFragment extends Fragment {
          * Builds the next episode air date.
          *
          * @param finderService the finder service
-         * @param series the series
+         * @param show the show
          * @return the text view
          */
-        private TextView buildNextEpisodeAirDate(FinderService finderService, final SeriesBean series) {
+        private TextView buildNextEpisodeAirDate(FinderService finderService, final ShowBean show) {
             TextView textView = new TextView(getActivity());
-            EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(series);
+            EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(show);
             if (nextEpisode != null) {
                 Date airDate = nextEpisode.getAirDate();
                 textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
@@ -185,10 +187,10 @@ public class MySeriesFragment extends Fragment {
         /**
          * Builds the refresh button.
          *
-         * @param series the series
+         * @param show the show
          * @return the image button
          */
-        private ImageButton buildRefreshButton(final SeriesBean series) {
+        private ImageButton buildRefreshButton(final ShowBean show) {
             ImageButton refreshMySeriesButton = new ImageButton(getActivity());
 //            refreshMySeriesButton
 //                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
@@ -203,7 +205,7 @@ public class MySeriesFragment extends Fragment {
                         public void onComplete(Void result) {
                             // TODO Auto-generated method stub
                         }
-                    }).execute(series);
+                    }).execute(show);
                 }
             });
             return refreshMySeriesButton;
@@ -212,10 +214,10 @@ public class MySeriesFragment extends Fragment {
         /**
          * Builds the delete button.
          *
-         * @param series the series
+         * @param show the show
          * @return the image button
          */
-        private ImageButton buildDeleteButton(final SeriesBean series) {
+        private ImageButton buildDeleteButton(final ShowBean show) {
             ImageButton deleteMySeriesButton = new ImageButton(getActivity());
 //            deleteMySeriesButton
 //                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
@@ -224,11 +226,11 @@ public class MySeriesFragment extends Fragment {
 
                 @Override
                 public void onClick(View view) {
-                    AlertDialog alert = buildConfirmationDialog(series, MySeriesFragment.this.getActivity(),
+                    AlertDialog alert = buildConfirmationDialog(show, MySeriesFragment.this.getActivity(),
                             R.string.delete_series_confirmation);
                     alert.show();
                     Toast.makeText(MySeriesFragment.this.getActivity(),
-                            MySeriesFragment.this.getString(R.string.add_series_selected) + series, Toast.LENGTH_SHORT)
+                            MySeriesFragment.this.getString(R.string.add_series_selected) + show, Toast.LENGTH_SHORT)
                             .show();
                 }
             });
@@ -238,12 +240,12 @@ public class MySeriesFragment extends Fragment {
         /**
          * Builds the confirmation dialog.
          *
-         * @param series the series
+         * @param show the show
          * @param context the context
          * @param messageId the message id
          * @return the alert dialog
          */
-        private AlertDialog buildConfirmationDialog(final SeriesBean series, Context context, int messageId) {
+        private AlertDialog buildConfirmationDialog(final ShowBean show, Context context, int messageId) {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(messageId);
             builder.setCancelable(false);
@@ -259,7 +261,7 @@ public class MySeriesFragment extends Fragment {
                             // getInstance().fillTableData(getInstance().mySeriesTable);
                         }
 
-                    }).execute(series);
+                    }).execute(show);
                 }
             });
             builder.setNegativeButton(R.string.delete_series_confirmation_no, new DialogInterface.OnClickListener() {

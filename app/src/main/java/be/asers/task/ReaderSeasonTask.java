@@ -1,5 +1,7 @@
 package be.asers.task;
 
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,10 +11,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import android.os.AsyncTask;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.SeriesBean;
+import be.asers.bean.ShowBean;
 import be.asers.model.Episode;
 
 /**
@@ -35,15 +37,15 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
     private static final String NOT_SPECIAL_EPISODE = "n";
     
     /** The series. */
-    private SeriesBean series;
+    private ShowBean show;
 
     /**
      * Constructor.
      * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      */
-    public ReaderSeasonTask(SeriesBean series) {
-        this.series = series;
+    public ReaderSeasonTask(ShowBean show) {
+        this.show = show;
     }
 
     /**
@@ -58,7 +60,7 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
         boolean skipFurtherLines = false;
         int i = 0;
         SeasonBean lastSeason = new SeasonBean();
-        lastSeason.setSeries(series);
+        lastSeason.setShow(show);
         lastSeason.setNumber(0);
         try {
             while ((line = params[0].readLine()) != null) {
@@ -70,7 +72,7 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
                 if (line.startsWith(END_DATA_DELIMITER)) {
                     skipFurtherLines = true;
                 }
-                lastSeason = processEpisodes(series, line, skipFurtherLines, lastSeason);
+                lastSeason = processEpisodes(show, line, skipFurtherLines, lastSeason);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -81,22 +83,22 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
     /**
      * Process the episodes.
      * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      * @param line the line to process
      * @param skipNextLines if we must skip the next lines
      * @param lastSeason the last {@link SeasonBean} processed
      * @return the {@link SeasonBean} entity
      */
-    private SeasonBean processEpisodes(SeriesBean series, String line, boolean skipNextLines, SeasonBean lastSeason) {
+    private SeasonBean processEpisodes(ShowBean show, String line, boolean skipNextLines, SeasonBean lastSeason) {
         if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
             String[] strings = line.split(",");
             EpisodeBean episode = buildEpisode(strings);
             Integer seasonNumber = Integer.valueOf(strings[1]);
             if (Boolean.TRUE.equals(episode.getSpecial())) {
-                specialEpisodeProcess(series, episode, seasonNumber);
+                specialEpisodeProcess(show, episode, seasonNumber);
             } else {
                 if (lastSeason.getNumber() != seasonNumber) {
-                    lastSeason = buildSeason(series, seasonNumber);
+                    lastSeason = buildSeason(show, seasonNumber);
                 }
                 List<EpisodeBean> episodes = lastSeason.getEpisodes();
                 if (episodes == null) {
@@ -114,33 +116,33 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
      * Builds the {@link SeasonBean} from the {@link SeriesBean} and the
      * {@link SeasonBean} number.
      * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      * @param seasonNumber the {@link SeasonBean} number to use
      * @return the build {@link SeasonBean}
      */
-    private SeasonBean buildSeason(SeriesBean series, Integer seasonNumber) {
+    private SeasonBean buildSeason(ShowBean show, Integer seasonNumber) {
         SeasonBean lastSeason;
-        List<SeasonBean> seasons = series.getSeasons();
+        List<SeasonBean> seasons = show.getSeasons();
         if (seasons == null) {
             seasons = new ArrayList<SeasonBean>();
         }
         lastSeason = new SeasonBean();
         lastSeason.setNumber(seasonNumber);
-        lastSeason.setSeries(series);
+        lastSeason.setShow(show);
         seasons.add(lastSeason);
-        series.setSeasons(seasons);
+        show.setSeasons(seasons);
         return lastSeason;
     }
 
     /**
      * Special {@link EpisodeBean} process.
      * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      * @param episode the {@link EpisodeBean} to process
      * @param seasonNumber the {@link SeasonBean} number to use
      */
-    private void specialEpisodeProcess(SeriesBean series, EpisodeBean episode, Integer seasonNumber) {
-        List<SeasonBean> seasons = series.getSeasons();
+    private void specialEpisodeProcess(ShowBean show, EpisodeBean episode, Integer seasonNumber) {
+        List<SeasonBean> seasons = show.getSeasons();
         for (SeasonBean season : seasons) {
             if (seasonNumber.equals(season.getNumber())) {
                 episode.setSeason(season);

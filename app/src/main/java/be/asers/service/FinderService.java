@@ -3,8 +3,8 @@ package be.asers.service;
 import java.util.List;
 
 import be.asers.bean.EpisodeBean;
-import be.asers.bean.SeriesBean;
-import be.asers.dao.SeriesDao;
+import be.asers.bean.ShowBean;
+import be.asers.dao.ShowDao;
 
 /**
  * Finder service interface.
@@ -16,61 +16,49 @@ public interface FinderService {
     /**
      * Finds the series where the status has active.
      * 
-     * @return the found {@link SeriesBean}s with active status
+     * @return the found {@link ShowBean}s with active status
      */
-    List<SeriesBean> findMySeries();
+    List<ShowBean> findMyShows();
 
     /**
      * Finds the series following the title criteria.
      * 
      * @param title the title to use
-     * @return the found {@link SeriesBean} entity
+     * @return the found {@link ShowBean} entity
      */
-    SeriesBean findSeries(String title);
+    ShowBean findShow(String title);
 
-    /**
-     * Creates a new {@link SeriesBean} from a {@link SeriesBean}.
-     * 
-     * @param series the {@link SeriesBean} to use
-     * @return the added SeriesBean 
-     */
-    SeriesBean addSeries(SeriesBean series);
+    ShowBean addShow(ShowBean series);
 
-    /**
-     * Creates a new {@link SeriesBean} from a {@link SeriesBean} in my
-     * favorites.
-     * 
-     * @param series the {@link SeriesBean} to add as favorite
-     */
-    void addMySeries(SeriesBean series);
+    void addMyShow(ShowBean show);
 
     /**
      * Gets the series dao.
      *
      * @return the seriesDao
      */
-    SeriesDao getSeriesDao();
+    ShowDao getShowDao();
 
     /**
-     * Deletes a {@link SeriesBean} from our favorites, i.e.: set to INACTIVE.
+     * Deletes a {@link ShowBean} from our favorites, i.e.: set to INACTIVE.
      * 
-     * @param series the {@link SeriesBean} to set to INACTIVE
+     * @param show the {@link ShowBean} to set to INACTIVE
      */
-    void deleteMySeries(SeriesBean series);
+    void deleteMyShow(ShowBean show);
 
     /**
      * Finds air date of episode after today.
      * 
-     * @param series the {@link SeriesBean} to use
+     * @param show the {@link ShowBean} to use
      * @return the found air date of episode after today
      */
-    EpisodeBean findAirDateNextEpisode(SeriesBean series);
+    EpisodeBean findAirDateNextEpisode(ShowBean show);
 
     /**
      * Refresh series.
      *
-     * @param mySerie the my serie
+     * @param show the show to refresh
      */
-    void refreshSeries(SeriesBean mySerie);
+    void refreshShow(ShowBean show);
 
 }
