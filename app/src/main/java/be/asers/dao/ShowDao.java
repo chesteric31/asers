@@ -7,11 +7,10 @@ import android.database.Cursor;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.asers.model.Series;
 import be.asers.model.Show;
 
 /**
- * Data Access Object for {@link Series} entity.
+ * Data Access Object for {@link Show} entity.
  * 
  * @author chesteric31
  */
@@ -118,17 +117,17 @@ public class ShowDao extends AbstractDao {
      * @return the number of deleted rows
      */
     public int deleteTable() {
-        return getDatabase().delete(Series.TABLE_NAME, null, null);
+        return getDatabase().delete(Show.TABLE_NAME, null, null);
     }
 
     /**
-     * Updates the {@link Series}.
+     * Updates the {@link Show}.
      * 
      * @param contentValues the {@link ContentValues} to use
      * @param id the id of the series to update
      */
     public void update(ContentValues contentValues, Long id) {
-        getDatabase().update(Series.TABLE_NAME, contentValues, "_id=" + id, null);
+        getDatabase().update(Show.TABLE_NAME, contentValues, "_id=" + id, null);
     }
 
 }

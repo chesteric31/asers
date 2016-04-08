@@ -2,6 +2,7 @@ package be.asers.service;
 
 import android.graphics.Bitmap;
 
+import java.util.Date;
 import java.util.List;
 
 import be.asers.bean.SeriesBean;
@@ -31,4 +32,14 @@ public interface FinderRemoteService {
     Bitmap createBitmap(ShowBean show);
 
     List<ShowBean> findShowsByKeywords(String keywords);
+
+
+    /**
+     * Finds air date of episode after today.
+     *
+     * @param show the {@link ShowBean} to use
+     * @return the found air date of episode after today
+     */
+    Date findAirDateNextEpisode(ShowBean show);
+
 }

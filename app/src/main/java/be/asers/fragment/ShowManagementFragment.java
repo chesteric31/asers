@@ -22,20 +22,20 @@ import be.asers.adapter.TabsPagerAdapter;
 import be.asers.bean.ShowBean;
 
 /**
- * Fragment for Series management.
+ * Fragment for Show management.
  * 
  * @author chesteric31
  */
-public class SeriesManagementFragment extends Fragment {
+public class ShowManagementFragment extends Fragment {
 
     /** The instance. */
-    private static volatile SeriesManagementFragment instance = null;
+    private static volatile ShowManagementFragment instance = null;
     
     /** The array adapter. */
     private ShowBeanListAdapter adapter;
 
     /** The add series auto complete. */
-    private AutoCompleteTextView addSeriesAutoComplete;
+    private AutoCompleteTextView addShowAutoComplete;
     
     /** The progress dialog. */
     private ProgressDialog progressDialog;
@@ -46,24 +46,24 @@ public class SeriesManagementFragment extends Fragment {
     /**
      * Constructor.
      */
-    public SeriesManagementFragment() {
+    public ShowManagementFragment() {
         // Required empty public constructor
     }
 
     /**
-     * Gets the single instance of SeriesManagementFragment.
+     * Gets the single instance of ShowManagementFragment.
      *
      * @param tabsPagerAdapter the tabs pager adapter
-     * @return singleton instance of {@link SeriesManagementFragment}
+     * @return singleton instance of {@link ShowManagementFragment}
      */
-    public static final SeriesManagementFragment getInstance(TabsPagerAdapter tabsPagerAdapter) {
-        synchronized (SeriesManagementFragment.class) {
-            if (SeriesManagementFragment.instance == null) {
-                SeriesManagementFragment.instance = new SeriesManagementFragment();
-                SeriesManagementFragment.instance.tabsPagerAdapter = tabsPagerAdapter;
+    public static final ShowManagementFragment getInstance(TabsPagerAdapter tabsPagerAdapter) {
+        synchronized (ShowManagementFragment.class) {
+            if (ShowManagementFragment.instance == null) {
+                ShowManagementFragment.instance = new ShowManagementFragment();
+                ShowManagementFragment.instance.tabsPagerAdapter = tabsPagerAdapter;
             }
         }
-        return SeriesManagementFragment.instance;
+        return ShowManagementFragment.instance;
     }
 
     /**
@@ -79,11 +79,11 @@ public class SeriesManagementFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_series_management, container, false);
-        addSeriesAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.add_series_auto_complete);
+        View view = inflater.inflate(R.layout.fragment_show_management, container, false);
+        addShowAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.add_series_auto_complete);
         adapter = new ShowBeanListAdapter(this.getActivity());
-        addSeriesAutoComplete.setAdapter(adapter);
-        addSeriesAutoComplete.setOnItemClickListener(buildOnItemClickListener());
+        addShowAutoComplete.setAdapter(adapter);
+        addShowAutoComplete.setOnItemClickListener(buildOnItemClickListener());
         return view;
     }
 
@@ -98,11 +98,11 @@ public class SeriesManagementFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ShowBean selected = (ShowBean) parent.getAdapter().getItem(position);
-                Toast.makeText(SeriesManagementFragment.this.getActivity(),
-                        SeriesManagementFragment.this.getString(R.string.add_series_selected) + selected, Toast.LENGTH_SHORT)
+                Toast.makeText(ShowManagementFragment.this.getActivity(),
+                        ShowManagementFragment.this.getString(R.string.add_series_selected) + selected, Toast.LENGTH_SHORT)
                         .show();
                 try {
-                    new AddShowTask(SeriesManagementFragment.this).execute(selected).get();
+                    new AddShowTask(ShowManagementFragment.this).execute(selected).get();
                     tabsPagerAdapter.refreshMySeries();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -122,15 +122,15 @@ public class SeriesManagementFragment extends Fragment {
     private class AddShowTask extends AsyncTask<ShowBean, Void, Void> {
         
         /** The fragment. */
-        private WeakReference<SeriesManagementFragment> fragment = null;
+        private WeakReference<ShowManagementFragment> fragment = null;
 
         /**
          * Instantiates a new adds the series task.
          *
          * @param fragment the fragment
          */
-        public AddShowTask(SeriesManagementFragment fragment) {
-            this.fragment = new WeakReference<SeriesManagementFragment>(fragment);
+        public AddShowTask(ShowManagementFragment fragment) {
+            this.fragment = new WeakReference<ShowManagementFragment>(fragment);
         }
 
         /**

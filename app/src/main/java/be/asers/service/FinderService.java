@@ -46,19 +46,4 @@ public interface FinderService {
      */
     void deleteMyShow(ShowBean show);
 
-    /**
-     * Finds air date of episode after today.
-     * 
-     * @param show the {@link ShowBean} to use
-     * @return the found air date of episode after today
-     */
-    EpisodeBean findAirDateNextEpisode(ShowBean show);
-
-    /**
-     * Refresh series.
-     *
-     * @param show the show to refresh
-     */
-    void refreshShow(ShowBean show);
-
 }

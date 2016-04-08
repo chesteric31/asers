@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import be.asers.fragment.MySeriesFragment;
-import be.asers.fragment.SeriesManagementFragment;
+import be.asers.fragment.ShowManagementFragment;
 
 /**
  * {@link FragmentPagerAdapter} with tabs.
@@ -33,7 +33,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             fragment = MySeriesFragment.getInstance();
             break;
         case 1:
-            fragment = SeriesManagementFragment.getInstance(this);
+            fragment = ShowManagementFragment.getInstance(this);
             break;
         default:
             break;

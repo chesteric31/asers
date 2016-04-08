@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,10 +23,8 @@ import java.util.List;
 import be.asers.AsersApplication;
 import be.asers.R;
 import be.asers.activity.OnCompleteTaskListener;
-import be.asers.bean.EpisodeBean;
-import be.asers.bean.SeriesBean;
 import be.asers.bean.ShowBean;
-import be.asers.service.FinderService;
+import be.asers.service.FinderRemoteService;
 
 /**
  * Fragment for My Series.
@@ -116,11 +113,11 @@ public class MySeriesFragment extends Fragment {
         /**
          * Instantiates a new on complete task listener impl.
          * 
-         * @param mySeriesTable the my series table
+         * @param myShowsTable the my series table
          * @param myShows the my series
          */
-        private OnCompleteTaskListenerImpl(TableLayout mySeriesTable, List<ShowBean> myShows) {
-            this.mySeriesTable = mySeriesTable;
+        private OnCompleteTaskListenerImpl(TableLayout myShowsTable, List<ShowBean> myShows) {
+            this.mySeriesTable = myShowsTable;
             this.myShows = myShows;
         }
 
@@ -146,7 +143,7 @@ public class MySeriesFragment extends Fragment {
             TableRow row = null;
             if (!myShows.isEmpty()) {
                 AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
-                FinderService finderService = asersApplication.getFinderService();
+                FinderRemoteService finderService = asersApplication.getFinderRemoteService();
                 for (final ShowBean show : myShows) {
                     textView = new TextView(getActivity());
                     textView.setText(show.toString());
@@ -156,7 +153,6 @@ public class MySeriesFragment extends Fragment {
                     row.addView(textView);
                     row.addView(buildNextEpisodeAirDate(finderService, show));
                     row.addView(imageView);
-                    row.addView(buildRefreshButton(show));
                     row.addView(buildDeleteButton(show));
                     mySeriesTable.addView(row);
                     addLine();
@@ -173,42 +169,14 @@ public class MySeriesFragment extends Fragment {
          * @param show the show
          * @return the text view
          */
-        private TextView buildNextEpisodeAirDate(FinderService finderService, final ShowBean show) {
+        private TextView buildNextEpisodeAirDate(FinderRemoteService finderService, final ShowBean show) {
             TextView textView = new TextView(getActivity());
-            EpisodeBean nextEpisode = finderService.findAirDateNextEpisode(show);
-            if (nextEpisode != null) {
-                Date airDate = nextEpisode.getAirDate();
+            Date airDateNextEpisode = finderService.findAirDateNextEpisode(show);
+            if (airDateNextEpisode != null) {
                 textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
-                        + SimpleDateFormat.getDateInstance().format(airDate));
+                        + SimpleDateFormat.getDateInstance().format(airDateNextEpisode));
             }
             return textView;
-        }
-
-        /**
-         * Builds the refresh button.
-         *
-         * @param show the show
-         * @return the image button
-         */
-        private ImageButton buildRefreshButton(final ShowBean show) {
-            ImageButton refreshMySeriesButton = new ImageButton(getActivity());
-//            refreshMySeriesButton
-//                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-            refreshMySeriesButton.setImageResource(R.drawable.view_refresh);
-            refreshMySeriesButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    new RefreshMySeriesTask(MySeriesFragment.this, new OnCompleteTaskListener<Void>() {
-
-                        @Override
-                        public void onComplete(Void result) {
-                            // TODO Auto-generated method stub
-                        }
-                    }).execute(show);
-                }
-            });
-            return refreshMySeriesButton;
         }
 
         /**
@@ -219,8 +187,7 @@ public class MySeriesFragment extends Fragment {
          */
         private ImageButton buildDeleteButton(final ShowBean show) {
             ImageButton deleteMySeriesButton = new ImageButton(getActivity());
-//            deleteMySeriesButton
-//                    .setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+            deleteMySeriesButton.setBackgroundResource(0);
             deleteMySeriesButton.setImageResource(R.drawable.list_remove);
             deleteMySeriesButton.setOnClickListener(new View.OnClickListener() {
 
@@ -229,9 +196,6 @@ public class MySeriesFragment extends Fragment {
                     AlertDialog alert = buildConfirmationDialog(show, MySeriesFragment.this.getActivity(),
                             R.string.delete_series_confirmation);
                     alert.show();
-                    Toast.makeText(MySeriesFragment.this.getActivity(),
-                            MySeriesFragment.this.getString(R.string.add_series_selected) + show, Toast.LENGTH_SHORT)
-                            .show();
                 }
             });
             return deleteMySeriesButton;
@@ -258,7 +222,6 @@ public class MySeriesFragment extends Fragment {
                         @Override
                         public void onComplete(Void result) {
                             instance.refresh();
-                            // getInstance().fillTableData(getInstance().mySeriesTable);
                         }
 
                     }).execute(show);
@@ -288,14 +251,14 @@ public class MySeriesFragment extends Fragment {
         /**
          * Clear.
          * 
-         * @param mySeriesTable the my series table
+         * @param myShowsTable the my series table
          */
-        private void clear(final TableLayout mySeriesTable) {
-            for (int i = 0; i < mySeriesTable.getChildCount(); i++) {
+        private void clear(final TableLayout myShowsTable) {
+            for (int i = 0; i < myShowsTable.getChildCount(); i++) {
                 if (i > 0) {
                     // don't remove text view
-                    TableRow row = (TableRow) mySeriesTable.getChildAt(i);
-                    mySeriesTable.removeView(row);
+                    TableRow row = (TableRow) myShowsTable.getChildAt(i);
+                    myShowsTable.removeView(row);
                 }
             }
         }
