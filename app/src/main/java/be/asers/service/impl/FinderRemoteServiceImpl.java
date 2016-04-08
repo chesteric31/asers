@@ -8,6 +8,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import be.asers.bean.QueryShowBean;
@@ -116,6 +117,26 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
             shows = mapQueriesToShows(response.getBody());
         }
         return shows;
+    }
+
+    @Override
+    public Date findAirDateNextEpisode(ShowBean show) {
+        if (show != null) {
+            String url = "http://api.tvmaze.com/shows/" + show.getTvMazeId() + "?embed=nextepisode";
+//            MappingJackson2HttpMessageConverter converter= new MappingJackson2HttpMessageConverter();
+//            converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
+//            ObjectMapper mapper = new ObjectMapper();
+//            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//            mapper.registerModule(new Jackson2HalModule());
+//            converter.setObjectMapper(mapper);
+//            RestTemplate restTemplate = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
+//            restTemplate.getMessageConverters().add(converter);
+//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getContent().size());
+//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getLinks().size());
+//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getMetadata().getTotalElements());
+
+        }
+        return null;
     }
 
     private List<ShowBean> mapQueriesToShows(QueryShowBean[] queries) {

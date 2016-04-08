@@ -27,6 +27,7 @@ android {
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/NOTICE'
     }
+
 }
 
 dependencies {

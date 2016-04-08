@@ -38,26 +38,8 @@
         <uses-library android:name="android.test.runner" />
 
         <activity
-            android:name=".activity.AddSeriesActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_add_series" />
-        <activity
             android:name=".activity.BugReportActivity"
             android:label="@string/title_activity_bug_report" />
-        <activity
-            android:name=".activity.TvMazeActivity"
-            android:label="@string/title_activity_tv_maze"
-            android:parentActivityName="android.support.v7.app.ActionBarActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.support.v7.app.ActionBarActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

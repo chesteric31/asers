@@ -5,9 +5,7 @@ import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -295,138 +293,6 @@ public class FinderServiceImpl implements FinderService {
     @Override
     public ShowDao getShowDao() {
         return showDao;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public EpisodeBean findAirDateNextEpisode(ShowBean show) {
-        List<SeasonBean> seasons = show.getSeasons();
-        if (seasons != null && !seasons.isEmpty()) {
-            for (SeasonBean season : seasons) {
-                List<EpisodeBean> episodes = season.getEpisodes();
-                if (episodes != null && !episodes.isEmpty()) {
-                    for (EpisodeBean episode : episodes) {
-                        Calendar calendar = new GregorianCalendar();
-                        calendar.set(Calendar.HOUR_OF_DAY, 0);
-                        calendar.set(Calendar.MINUTE, 0);
-                        calendar.set(Calendar.SECOND, 0);
-                        Date today = calendar.getTime();
-                        Date airDate = episode.getAirDate();
-                        if (airDate != null && airDate.after(today)) {
-                            EpisodeBean bean = new EpisodeBean();
-                            bean.setAirDate(airDate);
-                            SeasonBean seasonBean = new SeasonBean();
-                            seasonBean.setShow(show);
-                            bean.setSeason(seasonBean);
-                            return bean;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void refreshShow(ShowBean showBean) {
-        String name = showBean.getName();
-        ShowBean remoteShow = remoteService.findShow(name);
-        Show show = showDao.findByName(name);
-        ShowBean localShow = mapShow(show);
-        if (!localShow.equals(remoteShow)) {
-            Long id = localShow.getId();
-            remoteShow.setId(localShow.getId());
-            remoteShow.setStatus(localShow.getStatus());
-            showDao.update(mapShowContentValues(remoteShow), id);
-            List<SeasonBean> localSeasons = localShow.getSeasons();
-            List<SeasonBean> remoteSeasons = remoteShow.getSeasons();
-            refreshSeasons(show, localSeasons, remoteSeasons);
-        }
-    }
-
-    /**
-     * Refresh seasons.
-     *
-     * @param show the series
-     * @param localSeasons the local seasons
-     * @param remoteSeasons the remote seasons
-     */
-    private void refreshSeasons(Show show, List<SeasonBean> localSeasons, List<SeasonBean> remoteSeasons) {
-        if (!localSeasons.equals(remoteSeasons)) {
-            int remoteSize = remoteSeasons.size();
-            int localSize = localSeasons.size();
-            for (int i = 0; i < remoteSize; i++) {
-                SeasonBean remoteSeason = remoteSeasons.get(i);
-                boolean found = false;
-                for (int j = i; j < localSize; j++) {
-                    SeasonBean localSeason = localSeasons.get(j);
-                    if (remoteSeason.getNumber().equals(localSeason.getNumber())) {
-                        refreshSeason(show, remoteSeason, localSeason);
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    seasonDao.add(mapSeasonContentValues(show, remoteSeason));
-                }
-            }
-        }
-    }
-
-    /**
-     * Refresh season.
-     *
-     * @param show the series
-     * @param remoteSeason the remote season
-     * @param localSeason the local season
-     */
-    private void refreshSeason(Show show, SeasonBean remoteSeason, SeasonBean localSeason) {
-        if (!remoteSeason.equals(localSeason)) {
-            List<EpisodeBean> remoteEpisodes = remoteSeason.getEpisodes();
-            List<EpisodeBean> localEpisodes = localSeason.getEpisodes();
-            Long seasonId = localSeason.getId();
-            seasonDao.update(mapSeasonContentValues(show, remoteSeason), seasonId);
-            if (!localEpisodes.equals(remoteEpisodes)) {
-                Season season = seasonDao.findById(seasonId);
-                int remoteSize = remoteEpisodes.size();
-                int localSize = localEpisodes.size();
-                if (remoteSize != localSize) {
-                    for (int i = 0; i < remoteSize; i++) {
-                        EpisodeBean remoteEpisode = remoteEpisodes.get(i);
-                        boolean found = false;
-                        for (int j = i; j < localSize; j++) {
-                            EpisodeBean localEpisode = localEpisodes.get(j);
-                            if (remoteEpisode.getNumber().equals(localEpisode.getNumber())) {
-                                refreshEpisode(season, remoteEpisode, localEpisode);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            episodeDao.add(mapEpisodeContentValues(season, remoteEpisode));
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Refresh episode.
-     *
-     * @param season the season
-     * @param remoteEpisode the remote episode
-     * @param localEpisode the local episode
-     */
-    private void refreshEpisode(Season season, EpisodeBean remoteEpisode, EpisodeBean localEpisode) {
-        if (!remoteEpisode.equals(localEpisode)) {
-            episodeDao.update(mapEpisodeContentValues(season, remoteEpisode), localEpisode.getId());
-        }
     }
 
 }
