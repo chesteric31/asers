@@ -3,10 +3,24 @@ package be.asers.service.impl;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -119,22 +133,65 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         return shows;
     }
 
+    public static void main(String... args) {
+        try {
+            URL url = new URL("http://api.tvmaze.com/shows/" + 4 + "?embed=nextepisode");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            System.out.println("Response Code: " + conn.getResponseCode());
+            InputStream in = new BufferedInputStream(conn.getInputStream());
+
+            BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            StringBuilder responseStrBuilder = new StringBuilder();
+
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuilder.append(inputStr);
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode actualObj = mapper.readTree(responseStrBuilder.toString());
+            String airStamp = actualObj.path("_embedded").path("nextepisode").path("airstamp").toString().replace("\"", "");
+            System.out.println(airStamp.substring(0, 19));
+            java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp.replace("T", " ").substring(0, 19));
+            Date date = new Date(timestamp.getTime());
+            System.out.println(date.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public Date findAirDateNextEpisode(ShowBean show) {
         if (show != null) {
-            String url = "http://api.tvmaze.com/shows/" + show.getTvMazeId() + "?embed=nextepisode";
-//            MappingJackson2HttpMessageConverter converter= new MappingJackson2HttpMessageConverter();
-//            converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
-//            ObjectMapper mapper = new ObjectMapper();
-//            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//            mapper.registerModule(new Jackson2HalModule());
-//            converter.setObjectMapper(mapper);
-//            RestTemplate restTemplate = new RestTemplate(Collections.<HttpMessageConverter<?>> singletonList(converter));
-//            restTemplate.getMessageConverters().add(converter);
-//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getContent().size());
-//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getLinks().size());
-//            System.out.println(restTemplate.getForObject(url, PagedResources.class).getMetadata().getTotalElements());
-
+            try {
+                URL url = new URL("http://api.tvmaze.com/shows/" + show.getTvMazeId() + "?embed=nextepisode");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line;
+                while ((line = streamReader.readLine()) != null)
+                    stringBuilder.append(line);
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode jsonNode = mapper.readTree(stringBuilder.toString());
+                String airStamp = jsonNode.path("_embedded").path("nextepisode").path("airstamp").toString();
+                airStamp = airStamp.replace("\"", "");
+                airStamp = airStamp.replace("T", " ");
+                airStamp = airStamp.substring(0, 19);
+                java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp);
+                return new Date(timestamp.getTime());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
