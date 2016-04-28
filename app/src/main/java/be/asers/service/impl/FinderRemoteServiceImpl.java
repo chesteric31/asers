@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -131,36 +130,6 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
             shows = mapQueriesToShows(response.getBody());
         }
         return shows;
-    }
-
-    public static void main(String... args) {
-        try {
-            URL url = new URL("http://api.tvmaze.com/shows/" + 4 + "?embed=nextepisode");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            System.out.println("Response Code: " + conn.getResponseCode());
-            InputStream in = new BufferedInputStream(conn.getInputStream());
-
-            BufferedReader streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            StringBuilder responseStrBuilder = new StringBuilder();
-
-            String inputStr;
-            while ((inputStr = streamReader.readLine()) != null)
-                responseStrBuilder.append(inputStr);
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode actualObj = mapper.readTree(responseStrBuilder.toString());
-            String airStamp = actualObj.path("_embedded").path("nextepisode").path("airstamp").toString().replace("\"", "");
-            System.out.println(airStamp.substring(0, 19));
-            java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp.replace("T", " ").substring(0, 19));
-            Date date = new Date(timestamp.getTime());
-            System.out.println(date.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

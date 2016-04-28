@@ -1,5 +1,6 @@
 package be.asers.fragment;
 
+import java.util.Date;
 import java.util.List;
 
 import be.asers.AsersApplication;
@@ -7,6 +8,7 @@ import be.asers.activity.AbstractOnCompleteAsyncTask;
 import be.asers.activity.OnCompleteTaskListener;
 import be.asers.bean.SeriesBean;
 import be.asers.bean.ShowBean;
+import be.asers.service.FinderRemoteService;
 
 /**
  * Asynchronous task to find my {@link SeriesBean}.
@@ -36,6 +38,12 @@ class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<Sh
     @Override
     protected List<ShowBean> doInBackground(Void... params) {
         AsersApplication asersApplication = (AsersApplication) this.mySeriesFragment.getActivity().getApplication();
-        return asersApplication.getFinderService().findMyShows();
+        List<ShowBean> myShows = asersApplication.getFinderService().findMyShows();
+        FinderRemoteService remoteService = asersApplication.getFinderRemoteService();
+        for (ShowBean myShow : myShows) {
+            Date airDateNextEpisode = remoteService.findAirDateNextEpisode(myShow);
+            myShow.setNextEpisodeAirDate(airDateNextEpisode);
+        }
+        return myShows;
     }
 }

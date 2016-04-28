@@ -15,4 +15,5 @@ public class QueryShowBean {
     public ShowBean getShow() {
         return show;
     }
+
 }

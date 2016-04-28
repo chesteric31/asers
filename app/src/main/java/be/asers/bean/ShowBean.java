@@ -3,6 +3,7 @@ package be.asers.bean;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -11,6 +12,15 @@ public class ShowBean extends AbstractIdentityBean {
     @JsonProperty("id")
     private int tvMazeId;
     private String name;
+    private Date nextEpisodeAirDate;
+
+    public Date getNextEpisodeAirDate() {
+        return nextEpisodeAirDate;
+    }
+
+    public void setNextEpisodeAirDate(Date nextEpisodeAirDate) {
+        this.nextEpisodeAirDate = nextEpisodeAirDate;
+    }
 
     public int getTvMazeId() {
         return tvMazeId;

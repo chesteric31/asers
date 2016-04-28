@@ -15,9 +15,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import be.asers.AsersApplication;
@@ -151,8 +150,11 @@ public class MySeriesFragment extends Fragment {
                     //imageView.setImageBitmap(show.getCast());
                     row = new TableRow(getActivity());
                     row.addView(textView);
-                    row.addView(buildNextEpisodeAirDate(finderService, show));
-                    row.addView(imageView);
+                    String nextEpisodeAirDate = DateFormat.getDateTimeInstance().format(show.getNextEpisodeAirDate());
+                    TextView dateView = new TextView(getActivity());
+                    dateView.setText(getResources().getString(R.string.next_air_date_label) + " : " + nextEpisodeAirDate);
+                    row.addView(dateView);
+                    //row.addView(imageView);
                     row.addView(buildDeleteButton(show));
                     mySeriesTable.addView(row);
                     addLine();
@@ -160,23 +162,6 @@ public class MySeriesFragment extends Fragment {
             } else {
                 clear(mySeriesTable);
             }
-        }
-
-        /**
-         * Builds the next episode air date.
-         *
-         * @param finderService the finder service
-         * @param show the show
-         * @return the text view
-         */
-        private TextView buildNextEpisodeAirDate(FinderRemoteService finderService, final ShowBean show) {
-            TextView textView = new TextView(getActivity());
-            Date airDateNextEpisode = finderService.findAirDateNextEpisode(show);
-            if (airDateNextEpisode != null) {
-                textView.setText(getResources().getString(R.string.next_air_date_label) + " : "
-                        + SimpleDateFormat.getDateInstance().format(airDateNextEpisode));
-            }
-            return textView;
         }
 
         /**

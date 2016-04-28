@@ -1,5 +1,8 @@
 package be.asers.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 /**
@@ -7,6 +10,7 @@ import java.util.Date;
  *
  * @author chesteric31
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EpisodeBean extends AbstractIdentityBean {
 
     /** The number. */
@@ -19,6 +23,7 @@ public class EpisodeBean extends AbstractIdentityBean {
     private String productionCode;
     
     /** The air date. */
+    @JsonProperty("airdate")
     private Date airDate;
     
     /** The title. */
