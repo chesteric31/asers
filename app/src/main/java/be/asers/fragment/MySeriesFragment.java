@@ -17,13 +17,13 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import be.asers.AsersApplication;
 import be.asers.R;
 import be.asers.activity.OnCompleteTaskListener;
 import be.asers.bean.ShowBean;
-import be.asers.service.FinderRemoteService;
 
 /**
  * Fragment for My Series.
@@ -142,19 +142,19 @@ public class MySeriesFragment extends Fragment {
             TableRow row = null;
             if (!myShows.isEmpty()) {
                 AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
-                FinderRemoteService finderService = asersApplication.getFinderRemoteService();
                 for (final ShowBean show : myShows) {
                     textView = new TextView(getActivity());
                     textView.setText(show.toString());
                     imageView = new ImageView(getActivity());
-                    //imageView.setImageBitmap(show.getCast());
+                    imageView.setImageBitmap(show.getCast());
                     row = new TableRow(getActivity());
+                    row.addView(imageView);
                     row.addView(textView);
-                    String nextEpisodeAirDate = DateFormat.getDateTimeInstance().format(show.getNextEpisodeAirDate());
-                    TextView dateView = new TextView(getActivity());
-                    dateView.setText(getResources().getString(R.string.next_air_date_label) + " : " + nextEpisodeAirDate);
-                    row.addView(dateView);
-                    //row.addView(imageView);
+                    Date airDate = show.getNextEpisodeAirDate();
+                    if (airDate != null) {
+                        TextView dateView = buildDateView(airDate);
+                        row.addView(dateView);
+                    }
                     row.addView(buildDeleteButton(show));
                     mySeriesTable.addView(row);
                     addLine();
@@ -162,6 +162,13 @@ public class MySeriesFragment extends Fragment {
             } else {
                 clear(mySeriesTable);
             }
+        }
+
+        private TextView buildDateView(Date airDate) {
+            String nextEpisodeAirDate = DateFormat.getDateTimeInstance().format(airDate);
+            TextView dateView = new TextView(getActivity());
+            dateView.setText(getResources().getString(R.string.next_air_date_label) + " : " + nextEpisodeAirDate);
+            return dateView;
         }
 
         /**

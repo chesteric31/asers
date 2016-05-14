@@ -43,6 +43,8 @@ class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<Sh
         for (ShowBean myShow : myShows) {
             Date airDateNextEpisode = remoteService.findAirDateNextEpisode(myShow);
             myShow.setNextEpisodeAirDate(airDateNextEpisode);
+            //Bitmap bitmap = remoteService.createBitmap(myShow);
+            //myShow.setCast(bitmap);
         }
         return myShows;
     }

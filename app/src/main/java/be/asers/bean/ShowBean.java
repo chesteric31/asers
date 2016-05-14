@@ -1,5 +1,7 @@
 package be.asers.bean;
 
+import android.graphics.Bitmap;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,6 +15,7 @@ public class ShowBean extends AbstractIdentityBean {
     private int tvMazeId;
     private String name;
     private Date nextEpisodeAirDate;
+    private Bitmap cast;
 
     public Date getNextEpisodeAirDate() {
         return nextEpisodeAirDate;
@@ -153,5 +156,13 @@ public class ShowBean extends AbstractIdentityBean {
 
     public void setImage(ImageBean image) {
         this.image = image;
+    }
+
+    public void setCast(Bitmap cast) {
+        this.cast = cast;
+    }
+
+    public Bitmap getCast() {
+        return cast;
     }
 }

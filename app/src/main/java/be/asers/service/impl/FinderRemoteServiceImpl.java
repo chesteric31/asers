@@ -2,8 +2,8 @@ package be.asers.service.impl;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,9 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,32 +135,49 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         if (show != null) {
             try {
                 URL url = new URL("http://api.tvmaze.com/shows/" + show.getTvMazeId() + "?embed=nextepisode");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = streamReader.readLine()) != null)
-                    stringBuilder.append(line);
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode jsonNode = mapper.readTree(stringBuilder.toString());
-                String airStamp = jsonNode.path("_embedded").path("nextepisode").path("airstamp").toString();
-                airStamp = airStamp.replace("\"", "");
-                airStamp = airStamp.replace("T", " ");
-                airStamp = airStamp.substring(0, 19);
-                java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp);
-                return new Date(timestamp.getTime());
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                StringBuilder stringBuilder = buildStringBuilder(url);
+                JsonNode jsonNode = buildJsonNode(stringBuilder);
+                String airStamp = retrieveAirStamp(jsonNode).toString();
+                if (!airStamp.isEmpty()) {
+                    return parseAirStampIntoDate(airStamp);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return null;
+    }
+
+    private JsonNode retrieveAirStamp(JsonNode jsonNode) {
+        return retrieveNextEpisode(jsonNode).path("airstamp");
+    }
+
+    private JsonNode retrieveNextEpisode(JsonNode jsonNode) {
+        return jsonNode.path("_embedded").path("nextepisode");
+    }
+
+    private JsonNode buildJsonNode(StringBuilder stringBuilder) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readTree(stringBuilder.toString());
+    }
+
+    private StringBuilder buildStringBuilder(URL url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+        BufferedReader streamReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        StringBuilder stringBuilder = new StringBuilder();
+        String line;
+        while ((line = streamReader.readLine()) != null)
+            stringBuilder.append(line);
+        return stringBuilder;
+    }
+
+    private Date parseAirStampIntoDate(String airStamp) {
+        airStamp = airStamp.replace("\"", "");
+        airStamp = airStamp.replace("T", " ");
+        airStamp = airStamp.substring(0, 19);
+        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp);
+        return new Date(timestamp.getTime());
     }
 
     private List<ShowBean> mapQueriesToShows(QueryShowBean[] queries) {
@@ -181,11 +196,17 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         if (show == null || show.getImage() == null) {
             throw new IllegalArgumentException("Series cannot be null");
         }
-        /**InputStream inputStream = new
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        if (bitmap != null) {
-            bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
-        }*/
+        String url = show.getImage().getMedium();
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
+            if (bitmap != null) {
+                bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
