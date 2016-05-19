@@ -58,6 +58,7 @@ public class ShowDao extends AbstractDao {
             show.setRunTime(cursor.getInt(cursor.getColumnIndexOrThrow(Show.COLUMN_RUN_TIME)));
             show.setCountry(cursor.getString(cursor.getColumnIndexOrThrow(Show.COLUMN_COUNTRY)));
             show.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(Show.COLUMN_STATUS)));
+            show.setCast(cursor.getString(cursor.getColumnIndexOrThrow(Show.COLUMN_IMAGE)));
             return show;
         } else {
             return null;
@@ -81,7 +82,8 @@ public class ShowDao extends AbstractDao {
         builder.append("S." + Show.COLUMN_NAME + ", ");
         builder.append("S." + Show.COLUMN_TV_RAGE_ID + ", ");
         builder.append("S." + Show.COLUMN_TV_MAZE_ID + ", ");
-        builder.append("S." + Show.COLUMN_STATUS + " ");
+        builder.append("S." + Show.COLUMN_STATUS + ", ");
+        builder.append("S." + Show.COLUMN_IMAGE + " ");
         builder.append("FROM ");
         builder.append(Show.TABLE_NAME + " S ");
         builder.append("WHERE ");

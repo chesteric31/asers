@@ -1,5 +1,7 @@
 package be.asers.fragment;
 
+import android.graphics.Bitmap;
+
 import java.util.Date;
 import java.util.List;
 
@@ -43,8 +45,8 @@ class MySeriesFinderTask extends AbstractOnCompleteAsyncTask<Void, Void, List<Sh
         for (ShowBean myShow : myShows) {
             Date airDateNextEpisode = remoteService.findAirDateNextEpisode(myShow);
             myShow.setNextEpisodeAirDate(airDateNextEpisode);
-            //Bitmap bitmap = remoteService.createBitmap(myShow);
-            //myShow.setCast(bitmap);
+            Bitmap bitmap = remoteService.createBitmap(myShow);
+            myShow.setCast(bitmap);
         }
         return myShows;
     }

@@ -3,13 +3,14 @@ package be.asers.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import be.asers.AsersApplication;
 import be.asers.R;
 import be.asers.activity.OnCompleteTaskListener;
 import be.asers.bean.ShowBean;
@@ -36,7 +36,7 @@ public class MySeriesFragment extends Fragment {
     private static volatile MySeriesFragment instance = null;
 
     /** The my series table. */
-    private TableLayout mySeriesTable;
+    private TableLayout myShowsTable;
 
     /**
      * Constructor.
@@ -81,8 +81,8 @@ public class MySeriesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_series, container, false);
-        mySeriesTable = (TableLayout) view.findViewById(R.id.my_series_table);
-        fillTableData(mySeriesTable);
+        myShowsTable = (TableLayout) view.findViewById(R.id.my_series_table);
+        fillTableData(myShowsTable);
         return view;
     }
 
@@ -103,8 +103,8 @@ public class MySeriesFragment extends Fragment {
      */
     private final class OnCompleteTaskListenerImpl implements OnCompleteTaskListener<List<ShowBean>> {
 
-        /** The my series table. */
-        private final TableLayout mySeriesTable;
+        /** The my shows table. */
+        private final TableLayout myShowsTable;
 
         /** The my series. */
         private final List<ShowBean> myShows;
@@ -116,7 +116,7 @@ public class MySeriesFragment extends Fragment {
          * @param myShows the my series
          */
         private OnCompleteTaskListenerImpl(TableLayout myShowsTable, List<ShowBean> myShows) {
-            this.mySeriesTable = myShowsTable;
+            this.myShowsTable = myShowsTable;
             this.myShows = myShows;
         }
 
@@ -135,20 +135,17 @@ public class MySeriesFragment extends Fragment {
          */
         private void buildTable(List<ShowBean> result) {
             myShows.clear();
-            clear(mySeriesTable);
+            clear(myShowsTable);
             myShows.addAll(result);
             TextView textView = null;
             ImageView imageView = null;
             TableRow row = null;
             if (!myShows.isEmpty()) {
-                AsersApplication asersApplication = (AsersApplication) getActivity().getApplication();
                 for (final ShowBean show : myShows) {
-                    textView = new TextView(getActivity());
-                    textView.setText(show.toString());
-                    imageView = new ImageView(getActivity());
-                    imageView.setImageBitmap(show.getCast());
                     row = new TableRow(getActivity());
+                    imageView = buildImageView(show);
                     row.addView(imageView);
+                    textView = buildTextView(show);
                     row.addView(textView);
                     Date airDate = show.getNextEpisodeAirDate();
                     if (airDate != null) {
@@ -156,12 +153,24 @@ public class MySeriesFragment extends Fragment {
                         row.addView(dateView);
                     }
                     row.addView(buildDeleteButton(show));
-                    mySeriesTable.addView(row);
+                    myShowsTable.addView(row);
                     addLine();
                 }
             } else {
-                clear(mySeriesTable);
+                clear(myShowsTable);
             }
+        }
+
+        private ImageView buildImageView(ShowBean show) {
+            ImageView imageView = new ImageView(getActivity());
+            imageView.setImageBitmap(show.getCast());
+            return imageView;
+        }
+
+        private TextView buildTextView(ShowBean show) {
+            TextView textView = new TextView(getActivity());
+            textView.setText(show.toString());
+            return textView;
         }
 
         private TextView buildDateView(Date airDate) {
@@ -177,10 +186,12 @@ public class MySeriesFragment extends Fragment {
          * @param show the show
          * @return the image button
          */
-        private ImageButton buildDeleteButton(final ShowBean show) {
-            ImageButton deleteMySeriesButton = new ImageButton(getActivity());
+        private Button buildDeleteButton(final ShowBean show) {
+            Button deleteMySeriesButton = new Button(getActivity());
+            Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf" );
+            deleteMySeriesButton.setTypeface(font);
+            deleteMySeriesButton.setText(R.string.remove_icon);
             deleteMySeriesButton.setBackgroundResource(0);
-            deleteMySeriesButton.setImageResource(R.drawable.list_remove);
             deleteMySeriesButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -235,9 +246,9 @@ public class MySeriesFragment extends Fragment {
          */
         private void addLine() {
             View redLineView = new View(getActivity());
-            redLineView.setLayoutParams(new LayoutParams(100, 2));
+            redLineView.setLayoutParams(new LayoutParams(500, 2));
             redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
-            mySeriesTable.addView(redLineView);
+            myShowsTable.addView(redLineView);
         }
 
         /**

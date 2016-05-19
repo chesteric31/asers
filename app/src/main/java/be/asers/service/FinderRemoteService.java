@@ -33,7 +33,6 @@ public interface FinderRemoteService {
 
     List<ShowBean> findShowsByKeywords(String keywords);
 
-
     /**
      * Finds air date of episode after today.
      *

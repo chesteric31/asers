@@ -32,15 +32,18 @@ public class Show extends AbstractIdentity {
     /** The Constant COLUMN_STATUS. */
     public static final String COLUMN_STATUS = "STATUS";
 
+    public static final String COLUMN_IMAGE = "IMAGE";
+
     /** The Constant CREATE_TABLE. */
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_NAME + " TEXT, " + COLUMN_TV_RAGE_ID + " INTEGER,"
             + COLUMN_TV_MAZE_ID + " INTEGER," + COLUMN_NETWORK + " TEXT, " + COLUMN_RUN_TIME + " INTEGER, "
-            + COLUMN_COUNTRY + " TEXT, " + COLUMN_STATUS + " );";
+            + COLUMN_COUNTRY + " TEXT, " + COLUMN_IMAGE + " TEXT, " + COLUMN_STATUS + " );";
 
     /** The Constant ALL_COLUMNS. */
     public static final String[] ALL_COLUMNS = {COLUMN_ID, COLUMN_COUNTRY,
-            COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_NAME, COLUMN_TV_RAGE_ID, COLUMN_TV_MAZE_ID, COLUMN_STATUS};
+            COLUMN_NETWORK, COLUMN_RUN_TIME, COLUMN_NAME, COLUMN_TV_RAGE_ID, COLUMN_TV_MAZE_ID,
+            COLUMN_STATUS, COLUMN_IMAGE};
 
     /** The Constant STATUS_ACTIVE. */
     public static final String STATUS_ACTIVE = "ACTIVE";
@@ -70,6 +73,8 @@ public class Show extends AbstractIdentity {
 
     /** The status. */
     private String status;
+
+    private String cast;
 
     /**
      * Gets the title.
@@ -225,4 +230,11 @@ public class Show extends AbstractIdentity {
         seasons.add(season);
     }
 
+    public String getCast() {
+        return cast;
+    }
+
+    public void setCast(String cast) {
+        this.cast = cast;
+    }
 }

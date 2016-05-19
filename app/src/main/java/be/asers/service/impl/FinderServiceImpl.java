@@ -12,6 +12,7 @@ import java.util.Locale;
 import be.asers.bean.CountryBean;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.ExternalsBean;
+import be.asers.bean.ImageBean;
 import be.asers.bean.NetworkBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.ShowBean;
@@ -174,13 +175,18 @@ public class FinderServiceImpl implements FinderService {
     private ContentValues mapShowContentValues(ShowBean show) {
         ContentValues values = new ContentValues();
         values.put(Show.COLUMN_ID, show.getId());
-        values.put(Show.COLUMN_COUNTRY, show.getNetwork().getCountry().getCode());
-        values.put(Show.COLUMN_NETWORK, show.getNetwork().getName());
+        NetworkBean network = show.getNetwork();
+        values.put(Show.COLUMN_COUNTRY, network.getCountry().getCode());
+        values.put(Show.COLUMN_NETWORK, network.getName());
         values.put(Show.COLUMN_RUN_TIME, show.getRunTime());
         values.put(Show.COLUMN_NAME, show.getName());
         values.put(Show.COLUMN_TV_RAGE_ID, show.getExternals().getTvRage());
         values.put(Show.COLUMN_TV_MAZE_ID, show.getTvMazeId());
         values.put(Show.COLUMN_STATUS, show.getStatus());
+        ImageBean image = show.getImage();
+        if (image != null) {
+            values.put(Show.COLUMN_IMAGE, image.getMedium());
+        }
         return values;
     }
 
@@ -199,6 +205,11 @@ public class FinderServiceImpl implements FinderService {
             CountryBean countryBean = new CountryBean();
             countryBean.setCode(show.getCountry());
             networkBean.setCountry(countryBean);
+            if (show.getCast() != null) {
+                ImageBean imageBean = new ImageBean();
+                imageBean.setMedium(show.getCast());
+                bean.setImage(imageBean);
+            }
             bean.setNetwork(networkBean);
             bean.setRunTime(show.getRunTime());
             bean.setName(show.getName());
