@@ -23,5 +23,6 @@
     <string name="delete_series_confirmation_no">Nee</string>
     <string name="refresh_my_series_button">Refresh</string>
     <string name="next_air_date_label">Volgende omroep</string>
+    <string name="remove_icon">&#xf00d;</string>
     
 </resources>

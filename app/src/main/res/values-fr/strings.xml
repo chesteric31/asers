@@ -23,5 +23,6 @@
     <string name="delete_series_confirmation_no">Non</string>
     <string name="refresh_my_series_button">Mise à jour</string>
 	<string name="next_air_date_label">Prochaine diffusion</string>
+    <string name="remove_icon">&#xf00d;</string>
 	
 </resources>
