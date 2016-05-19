@@ -2,8 +2,6 @@
 <resources>
 
     <color name="text_color">#FFFFFF</color>
-    <color name="series_color">#00FF00</color>
-    <color name="background_color">#000000</color>
     <color name="bug_report_text_color">#FF0000</color>
     <color name="row_separator_color">#FF0000</color>
 

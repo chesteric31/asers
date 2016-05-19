@@ -1,5 +1,6 @@
 package be.asers.service.impl;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -177,7 +178,7 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     }
 
     private Date parseAirStampIntoDate(String airStamp) {
-        SimpleDateFormat format = new SimpleDateFormat(AIR_DATE_PATTERN);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(AIR_DATE_PATTERN);
         String airStampWithoutQuotes = airStamp.replace("\"", "");
         StringBuilder builder = new StringBuilder(airStampWithoutQuotes);
         int lastIndexOf = airStamp.lastIndexOf(":");
@@ -226,18 +227,6 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         }
         return null;
     }
-
-    public static void main(String[] args) throws ParseException {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date date = format.parse("2016-05-18T20:00:00-04:00");
-        System.out.println(date.toString());
-    /*
-        String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        Date date = format.parse("2016-05-18T20:00:00-04:00");
-        System.out.println(date.toString());
-    */}
 
     /**
      * Gets the context.

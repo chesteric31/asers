@@ -6,22 +6,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="my_series_label">MY SERIES</string>
     <string name="series_management_label">SERIES MANAGEMENT</string>
-    <string name="add_series_button">Add</string>
-    <string name="modify_series_button">Modify</string>
-    <string name="delete_series_button">Delete</string>
     <string name="title_activity_add_series">Add Series</string>
     <string name="add_series_title">SERIES TO FIND</string>
-    <string name="add_series_loading">Loading…</string>
-    <string name="add_series_loading_done">Loading done</string>
     <string name="add_series_selected">Selection: </string>
     <string name="title_activity_bug_report">BugReportActivity</string>
     <string name="ok_button">OK</string>
-    <string name="title_activity_delete_series">DeleteSeriesActivity</string>
     <string name="delete_series_title">SERIES TO DELETE</string>
     <string name="delete_series_confirmation">Are you sure to delete this series?</string>
     <string name="delete_series_confirmation_yes">Yes</string>
     <string name="delete_series_confirmation_no">No</string>
-    <string name="refresh_my_series_button">Refresh</string>
     <string name="next_air_date_label">Next air date</string>
     <string name="remove_icon">&#xf00d;</string>
 

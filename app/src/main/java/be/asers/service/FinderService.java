@@ -2,7 +2,6 @@ package be.asers.service;
 
 import java.util.List;
 
-import be.asers.bean.EpisodeBean;
 import be.asers.bean.ShowBean;
 import be.asers.dao.ShowDao;
 
