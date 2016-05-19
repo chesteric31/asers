@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -80,6 +82,8 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     private static final String NOT_SPECIAL_EPISODE = "n";
     private static final String HTTP_API_TVMAZE_COM_SEARCH_SHOWS_QUERY = "http://api.tvmaze.com/search/shows?q=";
     private static final String HTTP_API_TVMAZE_COM_SINGLESEARCH_SHOWS_QUERY = "http://api.tvmaze.com/singlesearch/shows?q=";
+
+    private static final String AIR_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
 
     /**
      * The context.
@@ -173,17 +177,27 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
     }
 
     private Date parseAirStampIntoDate(String airStamp) {
-        airStamp = airStamp.replace("\"", "");
-        airStamp = airStamp.replace("T", " ");
-        airStamp = airStamp.substring(0, 19);
-        java.sql.Timestamp timestamp = java.sql.Timestamp.valueOf(airStamp);
-        return new Date(timestamp.getTime());
+        SimpleDateFormat format = new SimpleDateFormat(AIR_DATE_PATTERN);
+        String airStampWithoutQuotes = airStamp.replace("\"", "");
+        StringBuilder builder = new StringBuilder(airStampWithoutQuotes);
+        int lastIndexOf = airStamp.lastIndexOf(":");
+        builder = builder.replace(lastIndexOf, lastIndexOf + 1, "");
+        String formattedAirStamp = builder.toString();
+        try {
+            return format.parse(formattedAirStamp);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private List<ShowBean> mapQueriesToShows(QueryShowBean[] queries) {
         List<ShowBean> shows = new ArrayList<ShowBean>();
         for (QueryShowBean query : queries) {
-            shows.add(query.getShow());
+            ShowBean show = query.getShow();
+            //Bitmap bitmap = createBitmap(show);
+            //show.setCast(bitmap);
+            shows.add(show);
         }
         return shows;
     }
@@ -193,22 +207,37 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
      */
     @Override
     public Bitmap createBitmap(ShowBean show) {
-        if (show == null || show.getImage() == null) {
+        if (show == null) {
             throw new IllegalArgumentException("Series cannot be null");
         }
-        String url = show.getImage().getMedium();
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
-            Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
-            if (bitmap != null) {
-                bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
+        if (show.getImage() != null) {
+            String url = show.getImage().getMedium();
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) new URL(url).openConnection();
+                Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
+                if (bitmap != null) {
+                    //bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
+                    return bitmap;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }
+
+    public static void main(String[] args) throws ParseException {
+        String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date date = format.parse("2016-05-18T20:00:00-04:00");
+        System.out.println(date.toString());
+    /*
+        String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        Date date = format.parse("2016-05-18T20:00:00-04:00");
+        System.out.println(date.toString());
+    */}
 
     /**
      * Gets the context.
