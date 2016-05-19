@@ -3,15 +3,12 @@
 
     <string name="app_name">Asers</string>
     <string name="action_settings">Instellingen</string>
-    <string name="hello_world">Hello world!</string>
     <string name="my_series_label">MIJN SERIES</string>
     <string name="series_management_label">SERIES BEHEER</string>
-    <string name="title_activity_add_series">Toevoeging van Series</string>
+    <string name="add_series_title">Series te vinden</string>
 	<string name="add_series_selected">Selectie: </string>
     <string name="title_activity_bug_report">Foutmelding</string>
     <string name="ok_button">OK</string>
-    <string name="title_activity_delete_series">Verwijdering</string>
-	<string name="delete_series_title">SERIES TE VERWIJDEREN</string>
 	<string name="delete_series_confirmation">Bent u zeker dat u deze series verwijderen?</string>
 	<string name="delete_series_confirmation_yes">Ja</string>
     <string name="delete_series_confirmation_no">Nee</string>

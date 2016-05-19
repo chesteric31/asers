@@ -5,12 +5,10 @@
     <string name="action_settings">Paramètres</string>
     <string name="my_series_label">MES SÉRIES</string>
     <string name="series_management_label">GESTION DES SÉRIES</string>
-    <string name="title_activity_add_series">Ajout de Séries</string>
+    <string name="add_series_title">Séries à trouver</string>
     <string name="add_series_selected">Sélection : </string>
     <string name="title_activity_bug_report">Rapport d\'erreurs</string>
     <string name="ok_button">OK</string>
-    <string name="title_activity_delete_series">Suppression</string>
-    <string name="delete_series_title">SÉRIES À SUPPRIMER</string>
     <string name="delete_series_confirmation">Êtes-vous sûr de vouloir supprimer cette série ?</string>
     <string name="delete_series_confirmation_yes">Oui</string>
     <string name="delete_series_confirmation_no">Non</string>
