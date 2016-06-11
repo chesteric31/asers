@@ -16,24 +16,13 @@ import be.asers.model.Show;
  */
 public class DatabaseManager extends SQLiteOpenHelper {
 
-    /** The Constant DATABASE_NAME. */
     private static final String DATABASE_NAME = "asers.db";
-    
-    /** The Constant DATABASE_VERSION. */
     private static final int DATABASE_VERSION = 5;
 
-    /**
-     * Constructor.
-     * 
-     * @param context the {@link Context} to use
-     */
     public DatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(Show.CREATE_TABLE);
@@ -41,18 +30,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         database.execSQL(Episode.CREATE_TABLE);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        String message = "Upgrading database from version " + oldVersion + " to " + newVersion
-                + ", which will destroy all old data";
-        Log.w(DatabaseManager.class.getName(), message);
-        String dropTable = "DROP TABLE IF EXISTS ";
-        database.execSQL(dropTable + Episode.TABLE_NAME);
-        database.execSQL(dropTable + Season.TABLE_NAME);
-        database.execSQL(dropTable + Show.TABLE_NAME);
+        String message = "Upgrading database from version %d to %d, which will destroy all old data";
+        Log.w(DatabaseManager.class.getName(), String.format(message, oldVersion, newVersion));
+        String dropTableIfExists = "DROP TABLE IF EXISTS %s";
+        database.execSQL(String.format(dropTableIfExists, Episode.TABLE_NAME));
+        database.execSQL(String.format(dropTableIfExists, Season.TABLE_NAME));
+        database.execSQL(String.format(dropTableIfExists, Show.TABLE_NAME));
         onCreate(database);
     }
 

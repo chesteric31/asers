@@ -12,7 +12,7 @@
     <string name="delete_series_confirmation">Are you sure to delete this series?</string>
     <string name="delete_series_confirmation_yes">Yes</string>
     <string name="delete_series_confirmation_no">No</string>
-    <string name="next_air_date_label">Next air date</string>
+    <string name="next_air_date_label">Next air date: %s</string>
     <string name="remove_icon">&#xf00d;</string>
 
 </resources>

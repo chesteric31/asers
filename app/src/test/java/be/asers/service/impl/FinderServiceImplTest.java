@@ -14,7 +14,6 @@ import java.util.List;
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
 import be.asers.bean.ShowBean;
-import be.asers.model.Series;
 import be.asers.service.FinderService;
 
 /**
@@ -43,7 +42,7 @@ public class FinderServiceImplTest extends AndroidTestCase {
         editor.putBoolean("isProxyAuthentication", true);
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
-        editor.commit();
+        editor.apply();
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
         finder = new FinderServiceImpl(otherContext);
         finder.getShowDao().deleteTable();

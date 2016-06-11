@@ -33,90 +33,34 @@ public class ShowBean extends AbstractIdentityBean {
         return name;
     }
 
-    /**
-     * The network.
-     */
     private NetworkBean network;
-
     private ExternalsBean externals;
-
-    /**
-     * The seasons.
-     */
     private List<SeasonBean> seasons;
-
-    /**
-     * The run time.
-     */
     private int runTime;
-
-    /**
-     * The status.
-     */
     private String status;
-
-    /**
-     * The cast.
-     */
     private ImageBean image;
-
-    /**
-     * Gets the network.
-     *
-     * @return the network
-     */
     public NetworkBean getNetwork() {
         return network;
     }
 
-    /**
-     * Gets the seasons.
-     *
-     * @return the seasons
-     */
     public List<SeasonBean> getSeasons() {
         return seasons;
     }
-
-    /**
-     * Sets the seasons.
-     *
-     * @param seasons the seasons to set
-     */
     public void setSeasons(List<SeasonBean> seasons) {
         this.seasons = seasons;
     }
 
-    /**
-     * Gets the run time.
-     *
-     * @return the runTime the run time duration in minute
-     */
     public int getRunTime() {
         return runTime;
     }
 
-    /**
-     * Gets the status.
-     *
-     * @return the status
-     */
     public String getStatus() {
         return status;
     }
-
-    /**
-     * Sets the status.
-     *
-     * @param status the status to set
-     */
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         if (name != null && network != null) {

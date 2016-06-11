@@ -40,7 +40,7 @@ public class FinderRemoteServiceImplTest extends AndroidTestCase {
         editor.putBoolean("isProxyAuthentication", true);
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
-        editor.commit();
+        editor.apply();
         finder = new FinderRemoteServiceImpl(context);
     }
 

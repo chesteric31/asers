@@ -37,72 +37,15 @@ import be.asers.service.FinderRemoteService;
  */
 public class FinderRemoteServiceImpl implements FinderRemoteService {
 
-    /**
-     * The Constant CSV_DELIMITER.
-     */
-    private static final String CSV_DELIMITER = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-
-    /**
-     * The Constant MIN.
-     */
-    private static final String MIN = "min";
-
-    /**
-     * The Constant EPS.
-     */
-    private static final String EPS = "eps";
-
-    /**
-     * The Constant DOUBLE_QUOTES.
-     */
-    private static final String DOUBLE_QUOTES = "\"";
-
-    /**
-     * The Constant EMPTY_STRING.
-     */
-    private static final String EMPTY_STRING = "";
-
-    /**
-     * The Constant END_DATA_DELIMITER.
-     */
-    private static final String END_DATA_DELIMITER = "</pre>";
-
-    /**
-     * The Constant HEADER_NUMBER_LINES.
-     */
-    private static final int HEADER_NUMBER_LINES = 12;
-
-    /**
-     * The Constant FIRST_COLUMN_TITLE.
-     */
-    private static final String FIRST_COLUMN_TITLE = "number";
-
-    /**
-     * The Constant NOT_SPECIAL_EPISODE.
-     */
-    private static final String NOT_SPECIAL_EPISODE = "n";
     private static final String HTTP_API_TVMAZE_COM_SEARCH_SHOWS_QUERY = "http://api.tvmaze.com/search/shows?q=";
     private static final String HTTP_API_TVMAZE_COM_SINGLESEARCH_SHOWS_QUERY = "http://api.tvmaze.com/singlesearch/shows?q=";
-
     private static final String AIR_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
-
-    /**
-     * The context.
-     */
     private Context context;
 
-    /**
-     * Constructor.
-     *
-     * @param context the {@link Context} to set
-     */
     public FinderRemoteServiceImpl(Context context) {
         this.context = context;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ShowBean findShow(String name) {
         if (name == null || name.isEmpty()) {
@@ -196,16 +139,11 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         List<ShowBean> shows = new ArrayList<ShowBean>();
         for (QueryShowBean query : queries) {
             ShowBean show = query.getShow();
-            //Bitmap bitmap = createBitmap(show);
-            //show.setCast(bitmap);
             shows.add(show);
         }
         return shows;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Bitmap createBitmap(ShowBean show) {
         if (show == null) {
@@ -218,7 +156,6 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
                 connection = (HttpURLConnection) new URL(url).openConnection();
                 Bitmap bitmap = BitmapFactory.decodeStream(connection.getInputStream());
                 if (bitmap != null) {
-                    //bitmap = Bitmap.createScaledBitmap(bitmap, 125, 100, true);
                     return bitmap;
                 }
             } catch (IOException e) {
@@ -228,20 +165,10 @@ public class FinderRemoteServiceImpl implements FinderRemoteService {
         return null;
     }
 
-    /**
-     * Gets the context.
-     *
-     * @return the context
-     */
     public Context getContext() {
         return context;
     }
 
-    /**
-     * Sets the context.
-     *
-     * @param context the context to set
-     */
     public void setContext(Context context) {
         this.context = context;
     }

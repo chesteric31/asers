@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,7 +177,7 @@ public class MySeriesFragment extends Fragment {
         private TextView buildDateView(Date airDate) {
             String nextEpisodeAirDate = DateFormat.getDateTimeInstance().format(airDate);
             TextView dateView = new TextView(getActivity());
-            dateView.setText(getResources().getString(R.string.next_air_date_label) + " : " + nextEpisodeAirDate);
+            dateView.setText(getResources().getString(R.string.next_air_date_label, nextEpisodeAirDate));
             return dateView;
         }
 
@@ -237,8 +238,7 @@ public class MySeriesFragment extends Fragment {
                     dialog.cancel();
                 }
             });
-            AlertDialog alert = builder.create();
-            return alert;
+            return builder.create();
         }
 
         /**
@@ -247,7 +247,7 @@ public class MySeriesFragment extends Fragment {
         private void addLine() {
             View redLineView = new View(getActivity());
             redLineView.setLayoutParams(new LayoutParams(500, 2));
-            redLineView.setBackgroundColor(getResources().getColor(R.color.row_separator_color));
+            redLineView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.row_separator_color));
             myShowsTable.addView(redLineView);
         }
 

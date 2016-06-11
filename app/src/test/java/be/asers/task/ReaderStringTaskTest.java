@@ -1,5 +1,10 @@
 package be.asers.task;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.test.AndroidTestCase;
+import android.util.Base64;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.test.AndroidTestCase;
-import android.util.Base64;
 
 /**
  * Test class for {@link ReaderStringTask}.
@@ -46,13 +46,6 @@ public class ReaderStringTaskTest extends AndroidTestCase {
         assertFalse(strings.isEmpty());
     }
 
-    /**
-     * Test method for
-     * {@link be.asers.task.UrlReaderTask#retrieveBasicUrlContent(java.net.URL)}
-     * with empty.
-     * 
-     * @throws IOException if an error occurred
-     */
     public void testDoInBackgroundEmpty() throws IOException {
         try {
             URL url = new URL("");

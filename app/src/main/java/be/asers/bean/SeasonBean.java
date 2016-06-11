@@ -9,28 +9,15 @@ import java.util.List;
  */
 public class SeasonBean extends AbstractIdentityBean {
     
-    /** The number. */
     private Integer number;
     
     private ShowBean show;
     
-    /** The episodes. */
     private List<EpisodeBean> episodes;
-    
-    /**
-     * Gets the number.
-     *
-     * @return the number
-     */
+
     public Integer getNumber() {
         return number;
     }
-
-    /**
-     * Sets the number.
-     *
-     * @param number the number to set
-     */
     public void setNumber(Integer number) {
         this.number = number;
     }
@@ -38,40 +25,22 @@ public class SeasonBean extends AbstractIdentityBean {
     public ShowBean getShow() {
         return show;
     }
-
     public void setShow(ShowBean show) {
         this.show = show;
     }
 
-    /**
-     * Gets the episodes.
-     *
-     * @return the episodes
-     */
     public List<EpisodeBean> getEpisodes() {
         return episodes;
     }
-
-    /**
-     * Sets the episodes.
-     *
-     * @param episodes the episodes to set
-     */
     public void setEpisodes(List<EpisodeBean> episodes) {
         this.episodes = episodes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String toString() {
         return String.valueOf(number);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -86,9 +55,6 @@ public class SeasonBean extends AbstractIdentityBean {
         return result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -108,10 +74,7 @@ public class SeasonBean extends AbstractIdentityBean {
         } else if (!episodes.equals(other.episodes)) {
             return false;
         }
-        if (number != other.number) {
-            return false;
-        }
-        return true;
+        return number == other.number;
     }
 
 }

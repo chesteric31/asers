@@ -7,23 +7,10 @@ package be.asers.bean;
  */
 public abstract class AbstractIdentityBean {
 
-    /** The id. */
     private Long id;
-
-    /**
-     * Gets the id.
-     *
-     * @return the id
-     */
     public Long getId() {
         return id;
     }
-
-    /**
-     * Sets the id.
-     *
-     * @param id the id to set
-     */
     public void setId(Long id) {
         this.id = id;
     }

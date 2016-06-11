@@ -23,7 +23,7 @@ public abstract class AbstractOnCompleteAsyncTask<Params, Progress, Result>
      */
     public AbstractOnCompleteAsyncTask(OnCompleteTaskListener<Result> onCompleteTaskListener) {
         this.onCompleteTaskListener = onCompleteTaskListener;
-    };
+    }
 
     /**
      * {@inheritDoc}

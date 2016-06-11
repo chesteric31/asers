@@ -37,7 +37,7 @@ public class UrlReaderTaskTest extends AndroidTestCase {
         editor.putBoolean("isProxyAuthentication", true);
         editor.putString("proxyUser", "bprtester");
         editor.putString("proxyPassword", "bprtester");
-        editor.commit();
+        editor.apply();
         RenamingDelegatingContext otherContext = new RenamingDelegatingContext(context, "test_");
         task = new UrlReaderTask(otherContext);
     }

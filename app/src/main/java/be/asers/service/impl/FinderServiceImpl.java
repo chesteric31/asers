@@ -21,7 +21,6 @@ import be.asers.dao.SeasonDao;
 import be.asers.dao.ShowDao;
 import be.asers.model.Episode;
 import be.asers.model.Season;
-import be.asers.model.Series;
 import be.asers.model.Show;
 import be.asers.service.FinderRemoteService;
 import be.asers.service.FinderService;
@@ -33,26 +32,12 @@ import be.asers.service.FinderService;
  */
 public class FinderServiceImpl implements FinderService {
 
-    /** The context. */
     private Context context;
-    
-    /** The show dao. */
     private ShowDao showDao;
-    
-    /** The season dao. */
     private SeasonDao seasonDao;
-    
-    /** The episode dao. */
     private EpisodeDao episodeDao;
-    
-    /** The remote service. */
     private FinderRemoteService remoteService;
 
-    /**
-     * Constructor.
-     * 
-     * @param context the {@link Context} to set
-     */
     public FinderServiceImpl(Context context) {
         this.context = context;
         this.showDao = new ShowDao(this.context);
@@ -61,9 +46,6 @@ public class FinderServiceImpl implements FinderService {
         this.remoteService = new FinderRemoteServiceImpl(this.context);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<ShowBean> findMyShows() {
         List<Show> shows = showDao.findActiveShows();
@@ -77,9 +59,6 @@ public class FinderServiceImpl implements FinderService {
         return beans;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ShowBean findShow(String name) {
         if (name == null || name.isEmpty()) {
@@ -93,9 +72,6 @@ public class FinderServiceImpl implements FinderService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ShowBean addShow(ShowBean show) {
         ShowBean updatedShow = show;
@@ -104,34 +80,11 @@ public class FinderServiceImpl implements FinderService {
             showDao.update(values, show.getId());
         } else {
             Show addedShow = showDao.add(values);
-            List<SeasonBean> seasons = show.getSeasons();
-            if (seasons != null) {
-                for (SeasonBean season : seasons) {
-                    ContentValues seasonValues = mapSeasonContentValues(addedShow, season);
-                    Season addedSeason = seasonDao.add(seasonValues);
-                    addedSeason.setShow(addedShow);
-                    List<EpisodeBean> episodes = season.getEpisodes();
-                    for (EpisodeBean episode : episodes) {
-                        ContentValues episodeValues = mapEpisodeContentValues(addedSeason, episode);
-                        Episode addedEpisode = episodeDao.add(episodeValues);
-                        addedEpisode.setSeason(addedSeason);
-                        addedSeason.addEpisode(addedEpisode);
-                    }
-                    addedShow.addSeason(addedSeason);
-                }
-                updatedShow = mapShow(addedShow);
-            }
+            updatedShow = mapShow(addedShow);
         }
         return updatedShow;
     }
 
-    /**
-     * Maps a {@link EpisodeBean} to a {@link ContentValues}.
-     * 
-     * @param addedSeason the {@link Season} to use
-     * @param episode the {@link EpisodeBean} to map
-     * @return the mapped {@link ContentValues}
-     */
     private ContentValues mapEpisodeContentValues(Season addedSeason, EpisodeBean episode) {
         ContentValues episodeValues = new ContentValues();
         Date airDate = episode.getAirDate();
@@ -152,13 +105,6 @@ public class FinderServiceImpl implements FinderService {
         return episodeValues;
     }
 
-    /**
-     * Maps a {@link SeasonBean} to a {@link ContentValues}.
-     * 
-     * @param show the {@link Show} to use
-     * @param season the {@link SeasonBean} to map
-     * @return the mapped {@link ContentValues}
-     */
     private ContentValues mapSeasonContentValues(Show show, SeasonBean season) {
         ContentValues seasonValues = new ContentValues();
         seasonValues.put(Season.COLUMN_NUMBER, season.getNumber());
@@ -166,12 +112,6 @@ public class FinderServiceImpl implements FinderService {
         return seasonValues;
     }
 
-    /**
-     * Maps a {@link ShowBean} to a {@link ContentValues}.
-     * 
-     * @param show the {@link ShowBean} to map
-     * @return the mapped {@link ContentValues}
-     */
     private ContentValues mapShowContentValues(ShowBean show) {
         ContentValues values = new ContentValues();
         values.put(Show.COLUMN_ID, show.getId());
@@ -190,12 +130,6 @@ public class FinderServiceImpl implements FinderService {
         return values;
     }
 
-    /**
-     * Translates a {@link Show} model to a {@link ShowBean}.
-     * 
-     * @param show the {@link Show} to map
-     * @return the mapped {@link ShowBean}
-     */
     private ShowBean mapShow(Show show) {
         if (show != null) {
             ShowBean bean = new ShowBean();
@@ -226,13 +160,6 @@ public class FinderServiceImpl implements FinderService {
         }
     }
 
-    /**
-     * Maps {@link SeasonBean}s.
-     * 
-     * @param show the {@link Show} to use
-     * @param bean the {@link ShowBean} to use
-     * @return the mapped {@link SeasonBean}s
-     */
     private List<SeasonBean> mapSeasons(Show show, ShowBean bean) {
         List<Season> seasons = seasonDao.findByShowId(show.getId());
         List<SeasonBean> seasonBeans = new ArrayList<SeasonBean>();
@@ -257,13 +184,6 @@ public class FinderServiceImpl implements FinderService {
         return seasonBeans;
     }
 
-    /**
-     * Maps a {@link EpisodeBean} from {@link SeasonBean} and {@link Episode}.
-     * 
-     * @param seasonBean the {@link SeasonBean} to use
-     * @param episode the {@link Episode} to map
-     * @return the mapped {@link EpisodeBean}
-     */
     private EpisodeBean mapEpisode(SeasonBean seasonBean, Episode episode) {
         EpisodeBean episodeBean = new EpisodeBean();
         episodeBean.setAirDate(episode.getAirDate());
@@ -278,29 +198,20 @@ public class FinderServiceImpl implements FinderService {
         return episodeBean;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void addMyShow(ShowBean show) {
         show = findShow(show.getName());
-        show.setStatus(Series.STATUS_ACTIVE);
+        show.setStatus(Show.STATUS_ACTIVE);
         addShow(show);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void deleteMyShow(ShowBean show) {
-        show.setStatus(Series.STATUS_INACTIVE);
+        show.setStatus(Show.STATUS_INACTIVE);
         ContentValues contentValues = mapShowContentValues(show);
         showDao.update(contentValues, show.getId());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public ShowDao getShowDao() {
         return showDao;

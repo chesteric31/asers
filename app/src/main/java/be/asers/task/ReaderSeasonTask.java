@@ -13,7 +13,6 @@ import java.util.Locale;
 
 import be.asers.bean.EpisodeBean;
 import be.asers.bean.SeasonBean;
-import be.asers.bean.SeriesBean;
 import be.asers.bean.ShowBean;
 import be.asers.model.Episode;
 
@@ -24,33 +23,16 @@ import be.asers.model.Episode;
  */
 public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
 
-    /** The Constant END_DATA_DELIMITER. */
     private static final String END_DATA_DELIMITER = "</pre>";
-    
-    /** The Constant HEADER_NUMBER_LINES. */
     private static final int HEADER_NUMBER_LINES = 7;
-    
-    /** The Constant FIRST_COLUMN_TITLE. */
     private static final String FIRST_COLUMN_TITLE = "number";
-    
-    /** The Constant NOT_SPECIAL_EPISODE. */
     private static final String NOT_SPECIAL_EPISODE = "n";
-    
-    /** The series. */
     private ShowBean show;
 
-    /**
-     * Constructor.
-     * 
-     * @param show the {@link ShowBean} to use
-     */
     public ReaderSeasonTask(ShowBean show) {
         this.show = show;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     protected Void doInBackground(BufferedReader... params) {
         if (params == null) {
@@ -80,15 +62,6 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
         return null;
     }
 
-    /**
-     * Process the episodes.
-     * 
-     * @param show the {@link ShowBean} to use
-     * @param line the line to process
-     * @param skipNextLines if we must skip the next lines
-     * @param lastSeason the last {@link SeasonBean} processed
-     * @return the {@link SeasonBean} entity
-     */
     private SeasonBean processEpisodes(ShowBean show, String line, boolean skipNextLines, SeasonBean lastSeason) {
         if (!skipNextLines && !line.startsWith(FIRST_COLUMN_TITLE)) {
             String[] strings = line.split(",");
@@ -112,14 +85,6 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
         return lastSeason;
     }
 
-    /**
-     * Builds the {@link SeasonBean} from the {@link SeriesBean} and the
-     * {@link SeasonBean} number.
-     * 
-     * @param show the {@link ShowBean} to use
-     * @param seasonNumber the {@link SeasonBean} number to use
-     * @return the build {@link SeasonBean}
-     */
     private SeasonBean buildSeason(ShowBean show, Integer seasonNumber) {
         SeasonBean lastSeason;
         List<SeasonBean> seasons = show.getSeasons();
@@ -134,13 +99,6 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
         return lastSeason;
     }
 
-    /**
-     * Special {@link EpisodeBean} process.
-     * 
-     * @param show the {@link ShowBean} to use
-     * @param episode the {@link EpisodeBean} to process
-     * @param seasonNumber the {@link SeasonBean} number to use
-     */
     private void specialEpisodeProcess(ShowBean show, EpisodeBean episode, Integer seasonNumber) {
         List<SeasonBean> seasons = show.getSeasons();
         for (SeasonBean season : seasons) {
@@ -151,13 +109,6 @@ public class ReaderSeasonTask extends AsyncTask<BufferedReader, Void, Void> {
         }
     }
 
-    /**
-     * Builds the {@link EpisodeBean} from the String array.
-     * 
-     * @param strings the String array contained all the {@link EpisodeBean}
-     *            informations
-     * @return the built {@link EpisodeBean}
-     */
     private EpisodeBean buildEpisode(String[] strings) {
         EpisodeBean episode = new EpisodeBean();
         if (!strings[0].isEmpty()) {
