@@ -16,7 +16,6 @@ import be.asers.R;
  */
 public class BugReportActivity extends Activity {
 
-    /** The Constant STACKTRACE. */
     public static final String STACKTRACE = "asers.stacktrace";
 
     /**
