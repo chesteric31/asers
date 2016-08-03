@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 public abstract class AbstractOnCompleteAsyncTask<Params, Progress, Result>
         extends AsyncTask<Params, Progress, Result> {
 
-    /** The on complete task listener. */
     private OnCompleteTaskListener<Result> onCompleteTaskListener;
 
     /**
